@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Products – foodPac</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: { 50:'#f1f8e9', 100:'#dcedc8', 200:'#c5e1a5', 500:'#4caf50', 600:'#43a047', 700:'#388e3c', 800:'#2e7d32', 900:'#1b5e20' },
+            accent:  { 400:'#ffa726', 500:'#f57c00', 600:'#e65100' }
+          },
+          fontFamily: { sans: ['Inter','ui-sans-serif','system-ui'] }
+        }
+      }
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    html { scroll-behavior: smooth; }
+    .hero-gradient { background: linear-gradient(135deg,#1b5e20 0%,#2e7d32 40%,#388e3c 70%,#1b5e20 100%); }
+    .card-hover { transition: transform .2s ease, box-shadow .2s ease; }
+    .card-hover:hover { transform: translateY(-4px); box-shadow: 0 20px 40px rgba(0,0,0,.12); }
+    .nav-link { position: relative; }
+    .nav-link::after { content:''; position:absolute; bottom:-2px; left:0; width:0; height:2px; background:#f57c00; transition:width .2s ease; }
+    .nav-link:hover::after { width:100%; }
+    .filter-btn.active { background:#2e7d32; color:#fff; border-color:#2e7d32; }
+  </style>
+</head>
+<body class="font-sans text-gray-800 bg-white">
+
+  <!-- NAV -->
+  <header class="sticky top-0 z-50 bg-white shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <a href="index.html" class="flex items-center gap-2 shrink-0">
+          <div class="flex items-center gap-1">
+            <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+              <polygon points="18,2 32,10 32,26 18,34 4,26 4,10" fill="#2e7d32"/>
+              <polygon points="18,6 29,12 29,24 18,30 7,24 7,12" fill="#388e3c"/>
+              <path d="M12 20 L16 16 L20 19 L26 13" stroke="#f57c00" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+              <path d="M14 22 L14 17" stroke="#f57c00" stroke-width="2" stroke-linecap="round"/>
+              <path d="M17 22 L17 16" stroke="#f57c00" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <span class="text-xl font-bold"><span class="text-primary-800">food</span><span class="text-primary-600">Pac</span></span>
+          </div>
+        </a>
+        <nav class="hidden md:flex items-center gap-8">
+          <a href="products.html" class="nav-link text-sm font-medium text-primary-800 font-semibold">Products</a>
+          <a href="index.html#how-it-works" class="nav-link text-sm font-medium text-gray-700 hover:text-primary-800">How It Works</a>
+          <a href="index.html#why-foodpac" class="nav-link text-sm font-medium text-gray-700 hover:text-primary-800">Why foodPac</a>
+          <a href="index.html#restaurant-types" class="nav-link text-sm font-medium text-gray-700 hover:text-primary-800">Solutions</a>
+          <a href="about.html" class="nav-link text-sm font-medium text-gray-700 hover:text-primary-800">About</a>
+        </nav>
+        <div class="flex items-center gap-3">
+          <a href="contact.html" class="hidden sm:inline-flex items-center px-5 py-2.5 bg-accent-500 hover:bg-accent-600 text-white text-sm font-semibold rounded-lg transition-colors">Get a Quote</a>
+          <button id="menuToggle" class="md:hidden p-2 rounded-md text-gray-700 hover:bg-gray-100">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div id="mobileMenu" class="hidden md:hidden border-t border-gray-100 bg-white px-4 pb-4 pt-2">
+      <nav class="flex flex-col gap-3">
+        <a href="products.html" class="text-sm font-medium text-gray-700 py-2">Products</a>
+        <a href="index.html#how-it-works" class="text-sm font-medium text-gray-700 py-2">How It Works</a>
+        <a href="index.html#why-foodpac" class="text-sm font-medium text-gray-700 py-2">Why foodPac</a>
+        <a href="index.html#restaurant-types" class="text-sm font-medium text-gray-700 py-2">Solutions</a>
+        <a href="about.html" class="text-sm font-medium text-gray-700 py-2">About</a>
+        <a href="contact.html" class="inline-flex items-center justify-center px-5 py-2.5 bg-accent-500 text-white text-sm font-semibold rounded-lg">Get a Quote</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- PAGE HERO -->
+  <section class="hero-gradient text-white py-14">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="max-w-2xl">
+        <p class="text-primary-200 text-sm font-medium mb-3 uppercase tracking-wider">Our Range</p>
+        <h1 class="text-4xl lg:text-5xl font-extrabold mb-4">Packaging Products</h1>
+        <p class="text-white/75 text-lg">Eco-friendly, custom-branded packaging for every part of your operation. All products available from 1,000 units.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FILTER + GRID -->
+  <section class="py-12 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+      <!-- Filter bar -->
+      <div class="flex flex-wrap gap-2 mb-10" id="filterBar">
+        <button data-cat="all"      class="filter-btn active px-4 py-2 rounded-full text-sm font-medium border border-gray-200 text-gray-700 hover:border-primary-700 hover:text-primary-800 transition-colors">All Products</button>
+        <button data-cat="boxes"    class="filter-btn px-4 py-2 rounded-full text-sm font-medium border border-gray-200 text-gray-700 hover:border-primary-700 hover:text-primary-800 transition-colors">Takeout Boxes</button>
+        <button data-cat="cups"     class="filter-btn px-4 py-2 rounded-full text-sm font-medium border border-gray-200 text-gray-700 hover:border-primary-700 hover:text-primary-800 transition-colors">Cups & Lids</button>
+        <button data-cat="bags"     class="filter-btn px-4 py-2 rounded-full text-sm font-medium border border-gray-200 text-gray-700 hover:border-primary-700 hover:text-primary-800 transition-colors">Paper Bags</button>
+        <button data-cat="bowls"    class="filter-btn px-4 py-2 rounded-full text-sm font-medium border border-gray-200 text-gray-700 hover:border-primary-700 hover:text-primary-800 transition-colors">Bowls</button>
+        <button data-cat="wraps"    class="filter-btn px-4 py-2 rounded-full text-sm font-medium border border-gray-200 text-gray-700 hover:border-primary-700 hover:text-primary-800 transition-colors">Wrapping Paper</button>
+        <button data-cat="cutlery"  class="filter-btn px-4 py-2 rounded-full text-sm font-medium border border-gray-200 text-gray-700 hover:border-primary-700 hover:text-primary-800 transition-colors">Cutlery</button>
+      </div>
+
+      <!-- Product grid -->
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" id="productGrid">
+        <!-- Products injected by JS -->
+      </div>
+
+      <!-- Empty state -->
+      <div id="emptyState" class="hidden text-center py-20 text-gray-400">
+        <svg class="w-12 h-12 mx-auto mb-4 opacity-40" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+        <p class="text-lg font-medium">No products in this category yet.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA STRIP -->
+  <section class="bg-primary-50 border-t border-primary-100 py-14">
+    <div class="max-w-4xl mx-auto px-4 text-center">
+      <h2 class="text-2xl lg:text-3xl font-bold text-gray-900 mb-3">Don't see exactly what you need?</h2>
+      <p class="text-gray-500 mb-7">We handle custom requests. Tell us your requirements and we'll find the perfect packaging solution for you.</p>
+      <a href="contact.html" class="inline-flex items-center gap-2 px-7 py-3.5 bg-primary-800 hover:bg-primary-900 text-white font-semibold rounded-lg transition-colors shadow-lg shadow-primary-800/20">
+        Talk to Our Team
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+      </a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="bg-primary-900 text-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div class="lg:col-span-1">
+          <span class="text-xl font-bold"><span class="text-white">food</span><span class="text-accent-400">Pac</span></span>
+          <p class="text-white/60 text-sm mt-3 leading-relaxed">Professional Takeaway Solutions for independent restaurants across Canada.</p>
+        </div>
+        <div>
+          <h4 class="font-semibold mb-4 text-white/90">Products</h4>
+          <ul class="space-y-2 text-sm text-white/60">
+            <li><a href="products.html?cat=boxes"   class="hover:text-white transition-colors">Takeout Boxes</a></li>
+            <li><a href="products.html?cat=cups"    class="hover:text-white transition-colors">Cups & Lids</a></li>
+            <li><a href="products.html?cat=bags"    class="hover:text-white transition-colors">Paper Bags</a></li>
+            <li><a href="products.html?cat=bowls"   class="hover:text-white transition-colors">Bowls</a></li>
+            <li><a href="products.html?cat=wraps"   class="hover:text-white transition-colors">Wrapping Paper</a></li>
+            <li><a href="products.html?cat=cutlery" class="hover:text-white transition-colors">Cutlery Sets</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="font-semibold mb-4 text-white/90">Company</h4>
+          <ul class="space-y-2 text-sm text-white/60">
+            <li><a href="about.html"   class="hover:text-white transition-colors">About Us</a></li>
+            <li><a href="index.html#how-it-works" class="hover:text-white transition-colors">How It Works</a></li>
+            <li><a href="contact.html" class="hover:text-white transition-colors">Contact</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="font-semibold mb-4 text-white/90">Contact</h4>
+          <ul class="space-y-2 text-sm text-white/60">
+            <li>hello@foodpac.ca</li>
+            <li>Toronto, Ontario, Canada</li>
+          </ul>
+          <a href="contact.html" class="inline-flex items-center mt-5 px-5 py-2.5 bg-accent-500 hover:bg-accent-600 text-white text-sm font-semibold rounded-lg transition-colors">Get a Quote</a>
+        </div>
+      </div>
+      <div class="border-t border-white/10 mt-10 pt-6 text-sm text-white/40 flex flex-col sm:flex-row justify-between gap-3">
+        <p>© 2025 foodPac. All rights reserved.</p>
+        <div class="flex gap-6"><a href="#" class="hover:text-white/70">Privacy Policy</a><a href="#" class="hover:text-white/70">Terms of Service</a></div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // ── Product data ──────────────────────────────────────────────
+    // Each product: { id, name, cat, tag, tagColor, desc, moq, icon (SVG path snippet), badge? }
+    // To add real images later: replace the icon SVG with <img src="...">
+    const products = [
+      // BOXES
+      { id:'box-kraft',    cat:'boxes',   name:'Kraft Takeout Box',          tag:'Eco Pick',    tagColor:'green',  moq:'1,000',
+        desc:'Classic kraft paperboard box. Grease-resistant liner, microwave-safe. Perfect for burgers, rice bowls, and more.',
+        emoji:'📦' },
+      { id:'box-hinged',   cat:'boxes',   name:'Hinged-Lid Clamshell',       tag:'Best Seller', tagColor:'orange', moq:'1,000',
+        desc:'One-piece fold-over design. No assembly needed. Great for sandwiches, salads, and hot entrées.',
+        emoji:'🥡' },
+      { id:'box-noodle',   cat:'boxes',   name:'Noodle & Rice Box',          tag:'',            tagColor:'',       moq:'1,000',
+        desc:'Tall, sturdy paperboard box designed for noodles, fried rice, and deep-filled dishes. Leak-resistant.',
+        emoji:'🍜' },
+      { id:'box-window',   cat:'boxes',   name:'Window Pastry Box',          tag:'New',         tagColor:'blue',   moq:'1,000',
+        desc:'Kraft box with a clear PLA window. Ideal for pastries, cakes, and baked goods. Showcases your product.',
+        emoji:'🎂' },
+      // CUPS
+      { id:'cup-hot',      cat:'cups',    name:'Hot Drink Cup (8/12/16 oz)', tag:'Best Seller', tagColor:'orange', moq:'1,000',
+        desc:'Single-wall paper cup for coffee, tea, and hot drinks. Compatible with standard lids. Full-wrap print.',
+        emoji:'☕' },
+      { id:'cup-cold',     cat:'cups',    name:'Cold Drink Cup (16/22 oz)',  tag:'',            tagColor:'',       moq:'1,000',
+        desc:'Clear PLA cold cup — 100% compostable. Dome or flat lid options. Great for iced drinks and smoothies.',
+        emoji:'🥤' },
+      { id:'cup-sleeve',   cat:'cups',    name:'Cup Sleeve',                 tag:'Eco Pick',    tagColor:'green',  moq:'2,000',
+        desc:'Corrugated kraft sleeve for hot cups. Keeps hands cool while showing off your brand.',
+        emoji:'🧡' },
+      { id:'cup-lid',      cat:'cups',    name:'Compostable Lids',           tag:'Eco Pick',    tagColor:'green',  moq:'2,000',
+        desc:'PLA flat and dome lids to pair with our hot and cold cups. Fully compostable.',
+        emoji:'🪣' },
+      // BAGS
+      { id:'bag-kraft-sm', cat:'bags',    name:'Kraft Paper Bag (Small)',    tag:'',            tagColor:'',       moq:'1,000',
+        desc:'Flat-bottom kraft bag for light takeout and pastries. Twisted paper handles. Printed with your logo.',
+        emoji:'🛍️' },
+      { id:'bag-kraft-lg', cat:'bags',    name:'Kraft Paper Bag (Large)',    tag:'Best Seller', tagColor:'orange', moq:'1,000',
+        desc:'Larger flat-bottom bag for full meal orders. Strong twisted handles support up to 3 kg. Fully recyclable.',
+        emoji:'🧺' },
+      { id:'bag-foil',     cat:'bags',    name:'Foil-Lined Insulated Bag',   tag:'New',         tagColor:'blue',   moq:'1,000',
+        desc:'Keeps food warm during delivery. Foil interior with kraft exterior. Ideal for delivery platforms.',
+        emoji:'🌡️' },
+      // BOWLS
+      { id:'bowl-salad',   cat:'bowls',   name:'Salad & Grain Bowl',         tag:'Eco Pick',    tagColor:'green',  moq:'1,000',
+        desc:'Wide, shallow bowl for salads, grain bowls, and poke. Kraft exterior, PLA-lined interior. Leak-proof.',
+        emoji:'🥗' },
+      { id:'bowl-soup',    cat:'bowls',   name:'Soup & Ramen Bowl',          tag:'Best Seller', tagColor:'orange', moq:'1,000',
+        desc:'Deep bowl with vented lid designed for soups, ramen, and hot broths. Double-wall for heat retention.',
+        emoji:'🍲' },
+      { id:'bowl-lid',     cat:'bowls',   name:'Bowl Lids (Flat & Vented)',  tag:'',            tagColor:'',       moq:'2,000',
+        desc:'Compostable PLA lids in flat and vented styles to fit our full bowl range.',
+        emoji:'🫙' },
+      // WRAPS
+      { id:'wrap-deli',    cat:'wraps',   name:'Deli Wrap Paper',            tag:'Eco Pick',    tagColor:'green',  moq:'2,000',
+        desc:'Greaseproof kraft deli paper in sheets or rolls. Perfect for wrapping burgers, sandwiches, and fish & chips.',
+        emoji:'📄' },
+      { id:'wrap-tissue',  cat:'wraps',   name:'Custom Tissue Paper',        tag:'New',         tagColor:'blue',   moq:'2,000',
+        desc:'Lightweight tissue paper printed with your logo or pattern. Great for lining bags and food trays.',
+        emoji:'🎁' },
+      // CUTLERY
+      { id:'cut-set',      cat:'cutlery', name:'Compostable Cutlery Set',    tag:'Eco Pick',    tagColor:'green',  moq:'1,000',
+        desc:'Fork, knife, and spoon made from CPLA (cornstarch). Wrapped individually. Heat-resistant up to 85°C.',
+        emoji:'🍴' },
+      { id:'cut-fork',     cat:'cutlery', name:'CPLA Fork',                  tag:'',            tagColor:'',       moq:'2,000',
+        desc:'Sturdy CPLA fork — compostable and stronger than standard PLA. Sold individually or in bulk.',
+        emoji:'🍴' },
+      { id:'cut-spoon',    cat:'cutlery', name:'CPLA Spoon',                 tag:'',            tagColor:'',       moq:'2,000',
+        desc:'Deep-bowl CPLA spoon, ideal for soups, desserts, and rice dishes.',
+        emoji:'🥄' },
+      { id:'cut-straw',    cat:'cutlery', name:'Paper Straws',               tag:'Eco Pick',    tagColor:'green',  moq:'2,000',
+        desc:'Food-grade paper straws. Stays firm for 2+ hours. Available in plain kraft or custom-printed.',
+        emoji:'🧃' },
+    ];
+
+    const tagStyles = {
+      green:  'bg-primary-100 text-primary-800',
+      orange: 'bg-amber-100 text-amber-800',
+      blue:   'bg-blue-100 text-blue-800',
+    };
+
+    function buildCard(p) {
+      const tag = p.tag
+        ? `<span class="absolute top-3 left-3 text-xs font-semibold px-2 py-0.5 rounded-full ${tagStyles[p.tagColor]}">${p.tag}</span>`
+        : '';
+      return `
+        <div class="product-card bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden card-hover flex flex-col" data-cat="${p.cat}">
+          <div class="relative h-44 bg-primary-50 flex items-center justify-center text-6xl select-none">
+            ${tag}
+            <span>${p.emoji}</span>
+          </div>
+          <div class="p-5 flex flex-col flex-1">
+            <h3 class="font-bold text-gray-900 mb-1">${p.name}</h3>
+            <p class="text-gray-500 text-sm leading-relaxed flex-1">${p.desc}</p>
+            <div class="mt-4 flex items-center justify-between">
+              <span class="text-xs text-gray-400">MOQ: <span class="font-semibold text-gray-600">${p.moq} units</span></span>
+              <a href="contact.html?product=${p.id}" class="text-sm font-semibold text-primary-700 hover:text-primary-900 flex items-center gap-1 transition-colors">
+                Get Quote
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+              </a>
+            </div>
+          </div>
+        </div>`;
+    }
+
+    function renderProducts(cat) {
+      const grid = document.getElementById('productGrid');
+      const empty = document.getElementById('emptyState');
+      const filtered = cat === 'all' ? products : products.filter(p => p.cat === cat);
+      if (filtered.length === 0) {
+        grid.innerHTML = '';
+        empty.classList.remove('hidden');
+      } else {
+        empty.classList.add('hidden');
+        grid.innerHTML = filtered.map(buildCard).join('');
+      }
+    }
+
+    // Filter buttons
+    document.getElementById('filterBar').addEventListener('click', e => {
+      const btn = e.target.closest('.filter-btn');
+      if (!btn) return;
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderProducts(btn.dataset.cat);
+    });
+
+    // Read ?cat= from URL
+    const urlCat = new URLSearchParams(location.search).get('cat') || 'all';
+    const matchBtn = document.querySelector(`.filter-btn[data-cat="${urlCat}"]`);
+    if (matchBtn) {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      matchBtn.classList.add('active');
+    }
+    renderProducts(urlCat);
+
+    // Mobile menu
+    document.getElementById('menuToggle').addEventListener('click', () => {
+      document.getElementById('mobileMenu').classList.toggle('hidden');
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>foodPac – Professional Takeaway Solutions</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              50:  '#f1f8e9',
+              100: '#dcedc8',
+              200: '#c5e1a5',
+              500: '#4caf50',
+              600: '#43a047',
+              700: '#388e3c',
+              800: '#2e7d32',
+              900: '#1b5e20',
+            },
+            accent: {
+              400: '#ffa726',
+              500: '#f57c00',
+              600: '#e65100',
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'ui-sans-serif', 'system-ui'],
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    html { scroll-behavior: smooth; }
+    .hero-gradient {
+      background: linear-gradient(135deg, #1b5e20 0%, #2e7d32 40%, #388e3c 70%, #1b5e20 100%);
+    }
+    .card-hover {
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .card-hover:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+    }
+    .nav-link {
+      position: relative;
+    }
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -2px; left: 0;
+      width: 0; height: 2px;
+      background: #f57c00;
+      transition: width 0.2s ease;
+    }
+    .nav-link:hover::after { width: 100%; }
+  </style>
+</head>
+<body class="font-sans text-gray-800 bg-white">
+
+  <!-- ===================== NAV ===================== -->
+  <header class="sticky top-0 z-50 bg-white shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+
+        <!-- Logo -->
+        <a href="index.html" class="flex items-center gap-2 shrink-0">
+          <!-- Replace src with real logo file: assets/logo.png -->
+          <div class="flex items-center gap-1">
+            <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+              <polygon points="18,2 32,10 32,26 18,34 4,26 4,10" fill="#2e7d32"/>
+              <polygon points="18,6 29,12 29,24 18,30 7,24 7,12" fill="#388e3c"/>
+              <path d="M12 20 L16 16 L20 19 L26 13" stroke="#f57c00" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+              <path d="M14 22 L14 17" stroke="#f57c00" stroke-width="2" stroke-linecap="round"/>
+              <path d="M17 22 L17 16" stroke="#f57c00" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <span class="text-xl font-bold">
+              <span class="text-primary-800">food</span><span class="text-primary-600">Pac</span>
+            </span>
+          </div>
+        </a>
+
+        <!-- Desktop Nav -->
+        <nav class="hidden md:flex items-center gap-8">
+          <a href="products.html" class="nav-link text-sm font-medium text-gray-700 hover:text-primary-800">Products</a>
+          <a href="#how-it-works" class="nav-link text-sm font-medium text-gray-700 hover:text-primary-800">How It Works</a>
+          <a href="#why-foodpac" class="nav-link text-sm font-medium text-gray-700 hover:text-primary-800">Why foodPac</a>
+          <a href="#restaurant-types" class="nav-link text-sm font-medium text-gray-700 hover:text-primary-800">Solutions</a>
+          <a href="about.html" class="nav-link text-sm font-medium text-gray-700 hover:text-primary-800">About</a>
+        </nav>
+
+        <!-- CTA -->
+        <div class="flex items-center gap-3">
+          <a href="contact.html" class="hidden sm:inline-flex items-center px-5 py-2.5 bg-accent-500 hover:bg-accent-600 text-white text-sm font-semibold rounded-lg transition-colors">
+            Get a Quote
+          </a>
+          <!-- Mobile menu toggle -->
+          <button id="menuToggle" class="md:hidden p-2 rounded-md text-gray-700 hover:bg-gray-100">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile Nav -->
+    <div id="mobileMenu" class="hidden md:hidden border-t border-gray-100 bg-white px-4 pb-4 pt-2">
+      <nav class="flex flex-col gap-3">
+        <a href="products.html" class="text-sm font-medium text-gray-700 py-2">Products</a>
+        <a href="#how-it-works" class="text-sm font-medium text-gray-700 py-2">How It Works</a>
+        <a href="#why-foodpac" class="text-sm font-medium text-gray-700 py-2">Why foodPac</a>
+        <a href="#restaurant-types" class="text-sm font-medium text-gray-700 py-2">Solutions</a>
+        <a href="about.html" class="text-sm font-medium text-gray-700 py-2">About</a>
+        <a href="contact.html" class="inline-flex items-center justify-center px-5 py-2.5 bg-accent-500 text-white text-sm font-semibold rounded-lg">Get a Quote</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ===================== HERO ===================== -->
+  <section class="hero-gradient text-white overflow-hidden">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-28">
+      <div class="grid lg:grid-cols-2 gap-12 items-center">
+        <div>
+          <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-4 py-1.5 mb-6">
+            <span class="w-2 h-2 rounded-full bg-accent-400 animate-pulse"></span>
+            <span class="text-sm font-medium text-white/90">Eco-Friendly · Custom-Branded · Low MOQ</span>
+          </div>
+          <h1 class="text-4xl lg:text-5xl xl:text-6xl font-extrabold leading-tight mb-6">
+            Custom Packaging<br/>
+            <span class="text-accent-400">Made Simple</span>
+          </h1>
+          <p class="text-lg text-white/80 mb-8 max-w-lg leading-relaxed">
+            Professional branded packaging for independent restaurants — AI-powered design, eco-friendly materials, and flexible low-minimum orders starting at just 1,000 units.
+          </p>
+          <div class="flex flex-wrap gap-4">
+            <a href="contact.html" class="inline-flex items-center gap-2 px-7 py-3.5 bg-accent-500 hover:bg-accent-600 text-white font-semibold rounded-lg transition-colors shadow-lg">
+              Get a Free Quote
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+              </svg>
+            </a>
+            <a href="products.html" class="inline-flex items-center gap-2 px-7 py-3.5 bg-white/10 hover:bg-white/20 text-white font-semibold rounded-lg border border-white/30 transition-colors">
+              View Products
+            </a>
+          </div>
+        </div>
+
+        <!-- Hero Visual -->
+        <div class="relative hidden lg:block">
+          <div class="grid grid-cols-2 gap-4">
+            <div class="space-y-4">
+              <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/20 card-hover">
+                <div class="w-full h-40 rounded-xl bg-primary-700 flex items-center justify-center mb-3">
+                  <!-- Takeaway box icon -->
+                  <svg class="w-20 h-20 text-white/60" viewBox="0 0 80 80" fill="none">
+                    <rect x="10" y="28" width="60" height="42" rx="4" fill="currentColor" opacity="0.4"/>
+                    <rect x="16" y="28" width="48" height="6" rx="2" fill="currentColor" opacity="0.6"/>
+                    <path d="M28 10 L52 10 L56 28 L24 28 Z" fill="currentColor" opacity="0.5"/>
+                    <rect x="32" y="14" width="16" height="4" rx="2" fill="currentColor" opacity="0.8"/>
+                  </svg>
+                </div>
+                <p class="text-white font-semibold text-sm">Takeout Boxes</p>
+                <p class="text-white/60 text-xs">Fully customized</p>
+              </div>
+              <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/20 card-hover">
+                <div class="w-full h-32 rounded-xl bg-primary-700 flex items-center justify-center mb-3">
+                  <svg class="w-16 h-16 text-white/60" viewBox="0 0 64 64" fill="none">
+                    <ellipse cx="32" cy="20" rx="14" ry="6" fill="currentColor" opacity="0.5"/>
+                    <path d="M18 20 L20 52 Q32 56 44 52 L46 20 Z" fill="currentColor" opacity="0.4"/>
+                    <path d="M24 20 Q32 18 40 20" stroke="currentColor" stroke-width="2" opacity="0.8"/>
+                  </svg>
+                </div>
+                <p class="text-white font-semibold text-sm">Custom Cups</p>
+                <p class="text-white/60 text-xs">Hot & cold options</p>
+              </div>
+            </div>
+            <div class="space-y-4 mt-8">
+              <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/20 card-hover">
+                <div class="w-full h-32 rounded-xl bg-primary-700 flex items-center justify-center mb-3">
+                  <svg class="w-16 h-16 text-white/60" viewBox="0 0 64 64" fill="none">
+                    <path d="M16 20 Q14 22 14 26 L14 52 Q14 54 16 54 L48 54 Q50 54 50 52 L50 26 Q50 22 48 20 Z" fill="currentColor" opacity="0.4"/>
+                    <path d="M20 20 L44 20 L46 14 L18 14 Z" fill="currentColor" opacity="0.5"/>
+                    <rect x="26" y="8" width="12" height="8" rx="2" fill="currentColor" opacity="0.6"/>
+                  </svg>
+                </div>
+                <p class="text-white font-semibold text-sm">Kraft Bags</p>
+                <p class="text-white/60 text-xs">Eco-friendly kraft</p>
+              </div>
+              <div class="bg-accent-500/30 backdrop-blur-sm rounded-2xl p-4 border border-accent-400/40 card-hover">
+                <div class="w-full h-40 rounded-xl bg-accent-500/20 flex items-center justify-center mb-3">
+                  <svg class="w-20 h-20 text-accent-300" viewBox="0 0 80 80" fill="none">
+                    <circle cx="40" cy="36" r="22" fill="currentColor" opacity="0.3"/>
+                    <path d="M28 36 Q32 28 40 28 Q48 28 52 36 Q56 44 40 52 Q24 44 28 36 Z" fill="currentColor" opacity="0.6"/>
+                    <path d="M34 36 Q37 32 40 32 Q43 32 46 36" stroke="white" stroke-width="2" fill="none" opacity="0.8"/>
+                  </svg>
+                </div>
+                <p class="text-accent-300 font-semibold text-sm">AI Design</p>
+                <p class="text-white/60 text-xs">Ready in 5 minutes</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== STATS BAR ===================== -->
+  <section class="bg-primary-800 text-white py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+        <div>
+          <div class="text-3xl font-extrabold text-accent-400">1,000</div>
+          <div class="text-sm text-white/70 mt-1">Units Minimum Order</div>
+        </div>
+        <div>
+          <div class="text-3xl font-extrabold text-accent-400">5 min</div>
+          <div class="text-sm text-white/70 mt-1">AI Design Generation</div>
+        </div>
+        <div>
+          <div class="text-3xl font-extrabold text-accent-400">100%</div>
+          <div class="text-sm text-white/70 mt-1">Eco-Friendly Materials</div>
+        </div>
+        <div>
+          <div class="text-3xl font-extrabold text-accent-400">60,000+</div>
+          <div class="text-sm text-white/70 mt-1">Restaurants in Canada</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== PRODUCT CATEGORIES ===================== -->
+  <section class="py-20 bg-white" id="products">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-14">
+        <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">Our Packaging Range</h2>
+        <p class="text-lg text-gray-500 max-w-xl mx-auto">Everything your restaurant needs — branded, eco-friendly, and ready for takeout.</p>
+      </div>
+
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+        <!-- Category cards -->
+        <a href="products.html?cat=boxes" class="group bg-primary-50 hover:bg-primary-100 rounded-2xl p-5 flex flex-col items-center gap-3 text-center transition-colors card-hover">
+          <div class="w-14 h-14 bg-primary-800 rounded-xl flex items-center justify-center group-hover:bg-primary-700 transition-colors">
+            <svg class="w-8 h-8 text-white" viewBox="0 0 32 32" fill="none">
+              <rect x="4" y="12" width="24" height="16" rx="2" fill="currentColor" opacity="0.6"/>
+              <rect x="6" y="12" width="20" height="4" rx="1" fill="currentColor" opacity="0.9"/>
+              <path d="M10 6 L22 6 L24 12 L8 12 Z" fill="currentColor" opacity="0.7"/>
+            </svg>
+          </div>
+          <span class="text-sm font-semibold text-primary-800">Takeout Boxes</span>
+        </a>
+
+        <a href="products.html?cat=cups" class="group bg-primary-50 hover:bg-primary-100 rounded-2xl p-5 flex flex-col items-center gap-3 text-center transition-colors card-hover">
+          <div class="w-14 h-14 bg-primary-800 rounded-xl flex items-center justify-center group-hover:bg-primary-700 transition-colors">
+            <svg class="w-8 h-8 text-white" viewBox="0 0 32 32" fill="none">
+              <ellipse cx="16" cy="10" rx="7" ry="3" fill="currentColor" opacity="0.5"/>
+              <path d="M9 10 L10 26 Q16 28 22 26 L23 10 Z" fill="currentColor" opacity="0.7"/>
+              <path d="M22 16 Q28 16 28 20 Q28 24 22 24" stroke="currentColor" stroke-width="2" fill="none" opacity="0.8"/>
+            </svg>
+          </div>
+          <span class="text-sm font-semibold text-primary-800">Cups & Lids</span>
+        </a>
+
+        <a href="products.html?cat=bags" class="group bg-primary-50 hover:bg-primary-100 rounded-2xl p-5 flex flex-col items-center gap-3 text-center transition-colors card-hover">
+          <div class="w-14 h-14 bg-primary-800 rounded-xl flex items-center justify-center group-hover:bg-primary-700 transition-colors">
+            <svg class="w-8 h-8 text-white" viewBox="0 0 32 32" fill="none">
+              <path d="M8 12 Q7 13 7 15 L7 26 Q7 27 8 27 L24 27 Q25 27 25 26 L25 15 Q25 13 24 12 Z" fill="currentColor" opacity="0.6"/>
+              <path d="M10 12 L22 12 L23 8 L9 8 Z" fill="currentColor" opacity="0.8"/>
+              <rect x="13" y="4" width="6" height="5" rx="1.5" fill="currentColor" opacity="0.9"/>
+            </svg>
+          </div>
+          <span class="text-sm font-semibold text-primary-800">Paper Bags</span>
+        </a>
+
+        <a href="products.html?cat=bowls" class="group bg-primary-50 hover:bg-primary-100 rounded-2xl p-5 flex flex-col items-center gap-3 text-center transition-colors card-hover">
+          <div class="w-14 h-14 bg-primary-800 rounded-xl flex items-center justify-center group-hover:bg-primary-700 transition-colors">
+            <svg class="w-8 h-8 text-white" viewBox="0 0 32 32" fill="none">
+              <path d="M4 12 Q4 24 16 26 Q28 24 28 12 Z" fill="currentColor" opacity="0.6"/>
+              <ellipse cx="16" cy="12" rx="12" ry="3" fill="currentColor" opacity="0.8"/>
+              <rect x="8" y="26" width="16" height="2.5" rx="1.25" fill="currentColor" opacity="0.7"/>
+            </svg>
+          </div>
+          <span class="text-sm font-semibold text-primary-800">Bowls</span>
+        </a>
+
+        <a href="products.html?cat=wraps" class="group bg-primary-50 hover:bg-primary-100 rounded-2xl p-5 flex flex-col items-center gap-3 text-center transition-colors card-hover">
+          <div class="w-14 h-14 bg-primary-800 rounded-xl flex items-center justify-center group-hover:bg-primary-700 transition-colors">
+            <svg class="w-8 h-8 text-white" viewBox="0 0 32 32" fill="none">
+              <rect x="4" y="8" width="24" height="16" rx="2" fill="currentColor" opacity="0.5"/>
+              <path d="M4 14 Q16 18 28 14" stroke="white" stroke-width="1.5" fill="none" opacity="0.7"/>
+              <path d="M4 18 Q16 22 28 18" stroke="white" stroke-width="1.5" fill="none" opacity="0.5"/>
+            </svg>
+          </div>
+          <span class="text-sm font-semibold text-primary-800">Wrapping Paper</span>
+        </a>
+
+        <a href="products.html?cat=cutlery" class="group bg-primary-50 hover:bg-primary-100 rounded-2xl p-5 flex flex-col items-center gap-3 text-center transition-colors card-hover">
+          <div class="w-14 h-14 bg-primary-800 rounded-xl flex items-center justify-center group-hover:bg-primary-700 transition-colors">
+            <svg class="w-8 h-8 text-white" viewBox="0 0 32 32" fill="none">
+              <path d="M10 4 L10 14 Q10 16 12 16 L12 28" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" fill="none" opacity="0.8"/>
+              <path d="M8 4 L8 10 M12 4 L12 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity="0.6"/>
+              <path d="M20 4 Q24 4 24 10 Q24 14 20 14 L20 28" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" fill="none" opacity="0.8"/>
+            </svg>
+          </div>
+          <span class="text-sm font-semibold text-primary-800">Cutlery Sets</span>
+        </a>
+      </div>
+
+      <div class="text-center mt-10">
+        <a href="products.html" class="inline-flex items-center gap-2 text-primary-700 font-semibold hover:text-primary-900 transition-colors">
+          Browse all products
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== WHY FOODPAC ===================== -->
+  <section class="py-20 bg-primary-50" id="why-foodpac">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-14">
+        <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">Why Restaurants Choose foodPac</h2>
+        <p class="text-lg text-gray-500 max-w-xl mx-auto">We solve the real pain points that hold small restaurants back from great packaging.</p>
+      </div>
+
+      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="bg-white rounded-2xl p-7 shadow-sm card-hover border border-primary-100">
+          <div class="w-12 h-12 bg-primary-800 rounded-xl flex items-center justify-center mb-5">
+            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+            </svg>
+          </div>
+          <h3 class="text-lg font-bold text-gray-900 mb-2">AI-Powered Design</h3>
+          <p class="text-gray-500 text-sm leading-relaxed">Upload your logo and get professional packaging designs in under 5 minutes — no designer needed, no extra cost.</p>
+        </div>
+
+        <div class="bg-white rounded-2xl p-7 shadow-sm card-hover border border-primary-100">
+          <div class="w-12 h-12 bg-primary-800 rounded-xl flex items-center justify-center mb-5">
+            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064"/>
+            </svg>
+          </div>
+          <h3 class="text-lg font-bold text-gray-900 mb-2">100% Eco-Friendly</h3>
+          <p class="text-gray-500 text-sm leading-relaxed">All materials are biodegradable and compostable, fully compliant with Canadian Single-Use Plastics regulations.</p>
+        </div>
+
+        <div class="bg-white rounded-2xl p-7 shadow-sm card-hover border border-primary-100">
+          <div class="w-12 h-12 bg-primary-800 rounded-xl flex items-center justify-center mb-5">
+            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+            </svg>
+          </div>
+          <h3 class="text-lg font-bold text-gray-900 mb-2">Low Minimum Orders</h3>
+          <p class="text-gray-500 text-sm leading-relaxed">Start from just 1,000 units — no more over-ordering. We aggregate small orders so you get bulk pricing without bulk commitment.</p>
+        </div>
+
+        <div class="bg-white rounded-2xl p-7 shadow-sm card-hover border border-primary-100">
+          <div class="w-12 h-12 bg-primary-800 rounded-xl flex items-center justify-center mb-5">
+            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+            </svg>
+          </div>
+          <h3 class="text-lg font-bold text-gray-900 mb-2">Phased Delivery</h3>
+          <p class="text-gray-500 text-sm leading-relaxed">We warehouse your stock and deliver in batches that match your usage — no storage headaches, no waste.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== HOW IT WORKS ===================== -->
+  <section class="py-20 bg-white" id="how-it-works">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-14">
+        <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">How It Works</h2>
+        <p class="text-lg text-gray-500 max-w-xl mx-auto">From logo to doorstep in four simple steps.</p>
+      </div>
+
+      <div class="relative">
+        <!-- Connector line -->
+        <div class="hidden lg:block absolute top-12 left-[16%] right-[16%] h-0.5 bg-primary-200 z-0"></div>
+
+        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 relative z-10">
+          <!-- Step 1 -->
+          <div class="flex flex-col items-center text-center">
+            <div class="w-24 h-24 bg-primary-800 rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-primary-800/20">
+              <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+              </svg>
+            </div>
+            <div class="w-7 h-7 bg-accent-500 rounded-full flex items-center justify-center text-white text-sm font-bold mb-4">1</div>
+            <h3 class="text-lg font-bold text-gray-900 mb-2">Upload Your Logo</h3>
+            <p class="text-gray-500 text-sm">Share your logo and brand colors. Our AI handles the rest.</p>
+          </div>
+
+          <!-- Step 2 -->
+          <div class="flex flex-col items-center text-center">
+            <div class="w-24 h-24 bg-primary-700 rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-primary-700/20">
+              <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+              </svg>
+            </div>
+            <div class="w-7 h-7 bg-accent-500 rounded-full flex items-center justify-center text-white text-sm font-bold mb-4">2</div>
+            <h3 class="text-lg font-bold text-gray-900 mb-2">AI Generates Designs</h3>
+            <p class="text-gray-500 text-sm">Get multiple professional design options in under 5 minutes. Pick your favourite.</p>
+          </div>
+
+          <!-- Step 3 -->
+          <div class="flex flex-col items-center text-center">
+            <div class="w-24 h-24 bg-primary-600 rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-primary-600/20">
+              <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+            </div>
+            <div class="w-7 h-7 bg-accent-500 rounded-full flex items-center justify-center text-white text-sm font-bold mb-4">3</div>
+            <h3 class="text-lg font-bold text-gray-900 mb-2">Approve & Order</h3>
+            <p class="text-gray-500 text-sm">Confirm your design, choose quantity (from 1,000 units), and place your order.</p>
+          </div>
+
+          <!-- Step 4 -->
+          <div class="flex flex-col items-center text-center">
+            <div class="w-24 h-24 bg-accent-500 rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-accent-500/20">
+              <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/>
+              </svg>
+            </div>
+            <div class="w-7 h-7 bg-accent-500 rounded-full flex items-center justify-center text-white text-sm font-bold mb-4">4</div>
+            <h3 class="text-lg font-bold text-gray-900 mb-2">Delivered in Batches</h3>
+            <p class="text-gray-500 text-sm">We store your stock and deliver as you need it — no warehouse required on your end.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== RESTAURANT TYPES ===================== -->
+  <section class="py-20 bg-gray-50" id="restaurant-types">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-14">
+        <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">Solutions for Every Restaurant</h2>
+        <p class="text-lg text-gray-500 max-w-xl mx-auto">From cozy cafes to busy fast-food counters — we've got you covered.</p>
+      </div>
+
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Cafe -->
+        <div class="bg-white rounded-2xl overflow-hidden shadow-sm card-hover group border border-gray-100">
+          <div class="h-44 bg-gradient-to-br from-amber-50 to-amber-100 flex items-center justify-center">
+            <div class="text-center">
+              <div class="text-5xl mb-2">☕</div>
+              <div class="text-sm text-amber-700 font-medium">Coffee & Cafe</div>
+            </div>
+          </div>
+          <div class="p-6">
+            <h3 class="text-lg font-bold text-gray-900 mb-2">Cafes & Coffee Shops</h3>
+            <p class="text-gray-500 text-sm mb-4">Branded cups, cup sleeves, pastry bags, and takeout boxes that tell your story with every order.</p>
+            <a href="contact.html" class="text-primary-700 font-semibold text-sm hover:text-primary-900 flex items-center gap-1">
+              Get packaging for my cafe
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+
+        <!-- Asian -->
+        <div class="bg-white rounded-2xl overflow-hidden shadow-sm card-hover group border border-gray-100">
+          <div class="h-44 bg-gradient-to-br from-red-50 to-orange-100 flex items-center justify-center">
+            <div class="text-center">
+              <div class="text-5xl mb-2">🍜</div>
+              <div class="text-sm text-red-700 font-medium">Asian Cuisine</div>
+            </div>
+          </div>
+          <div class="p-6">
+            <h3 class="text-lg font-bold text-gray-900 mb-2">Asian Restaurants</h3>
+            <p class="text-gray-500 text-sm mb-4">Noodle boxes, soup containers, sushi trays, and more — designed to keep your food fresh and your brand visible.</p>
+            <a href="contact.html" class="text-primary-700 font-semibold text-sm hover:text-primary-900 flex items-center gap-1">
+              Get packaging for my restaurant
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+
+        <!-- Fast Food -->
+        <div class="bg-white rounded-2xl overflow-hidden shadow-sm card-hover group border border-gray-100">
+          <div class="h-44 bg-gradient-to-br from-yellow-50 to-yellow-100 flex items-center justify-center">
+            <div class="text-center">
+              <div class="text-5xl mb-2">🍔</div>
+              <div class="text-sm text-yellow-700 font-medium">Fast Food & Burgers</div>
+            </div>
+          </div>
+          <div class="p-6">
+            <h3 class="text-lg font-bold text-gray-900 mb-2">Fast Food & Burgers</h3>
+            <p class="text-gray-500 text-sm mb-4">Burger wraps, fry boxes, paper bags, and drink cups built for speed, style, and sustainability.</p>
+            <a href="contact.html" class="text-primary-700 font-semibold text-sm hover:text-primary-900 flex items-center gap-1">
+              Get packaging for my restaurant
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+
+        <!-- Pizza & Italian -->
+        <div class="bg-white rounded-2xl overflow-hidden shadow-sm card-hover group border border-gray-100">
+          <div class="h-44 bg-gradient-to-br from-green-50 to-green-100 flex items-center justify-center">
+            <div class="text-center">
+              <div class="text-5xl mb-2">🍕</div>
+              <div class="text-sm text-green-700 font-medium">Pizza & Italian</div>
+            </div>
+          </div>
+          <div class="p-6">
+            <h3 class="text-lg font-bold text-gray-900 mb-2">Pizza & Italian</h3>
+            <p class="text-gray-500 text-sm mb-4">Custom pizza boxes, pasta containers, and deli paper — all branded to make your customers remember you.</p>
+            <a href="contact.html" class="text-primary-700 font-semibold text-sm hover:text-primary-900 flex items-center gap-1">
+              Get packaging for my restaurant
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+
+        <!-- Food Trucks -->
+        <div class="bg-white rounded-2xl overflow-hidden shadow-sm card-hover group border border-gray-100">
+          <div class="h-44 bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
+            <div class="text-center">
+              <div class="text-5xl mb-2">🚚</div>
+              <div class="text-sm text-blue-700 font-medium">Food Trucks</div>
+            </div>
+          </div>
+          <div class="p-6">
+            <h3 class="text-lg font-bold text-gray-900 mb-2">Food Trucks & Pop-Ups</h3>
+            <p class="text-gray-500 text-sm mb-4">Lightweight, branded packaging perfect for on-the-go operations. Low minimums mean you only order what you need.</p>
+            <a href="contact.html" class="text-primary-700 font-semibold text-sm hover:text-primary-900 flex items-center gap-1">
+              Get packaging for my business
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+
+        <!-- Healthy & Salad -->
+        <div class="bg-white rounded-2xl overflow-hidden shadow-sm card-hover group border border-gray-100">
+          <div class="h-44 bg-gradient-to-br from-primary-50 to-primary-100 flex items-center justify-center">
+            <div class="text-center">
+              <div class="text-5xl mb-2">🥗</div>
+              <div class="text-sm text-primary-700 font-medium">Healthy & Salads</div>
+            </div>
+          </div>
+          <div class="p-6">
+            <h3 class="text-lg font-bold text-gray-900 mb-2">Healthy Food & Salads</h3>
+            <p class="text-gray-500 text-sm mb-4">Eco-friendly bowls, salad containers, and kraft bags that match your sustainability values and brand image.</p>
+            <a href="contact.html" class="text-primary-700 font-semibold text-sm hover:text-primary-900 flex items-center gap-1">
+              Get packaging for my restaurant
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== ECO PROMISE ===================== -->
+  <section class="py-20 hero-gradient text-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid lg:grid-cols-2 gap-12 items-center">
+        <div>
+          <div class="inline-flex items-center gap-2 bg-white/10 border border-white/20 rounded-full px-4 py-1.5 mb-6">
+            <span class="text-xl">🌱</span>
+            <span class="text-sm font-medium">Our Eco Commitment</span>
+          </div>
+          <h2 class="text-3xl lg:text-4xl font-bold mb-6">Packaging That's Good for Your Brand <span class="text-accent-400">and the Planet</span></h2>
+          <p class="text-white/80 text-lg mb-8 leading-relaxed">
+            Every foodPac product uses biodegradable or compostable materials, fully compliant with Canada's Single-Use Plastics Prohibition Regulations. Going green has never been this affordable.
+          </p>
+          <div class="grid sm:grid-cols-3 gap-4">
+            <div class="bg-white/10 rounded-xl p-4 text-center border border-white/20">
+              <div class="text-2xl mb-2">♻️</div>
+              <div class="text-sm font-semibold">100% Compostable</div>
+            </div>
+            <div class="bg-white/10 rounded-xl p-4 text-center border border-white/20">
+              <div class="text-2xl mb-2">🏛️</div>
+              <div class="text-sm font-semibold">Regulation Compliant</div>
+            </div>
+            <div class="bg-white/10 rounded-xl p-4 text-center border border-white/20">
+              <div class="text-2xl mb-2">💚</div>
+              <div class="text-sm font-semibold">No Price Premium</div>
+            </div>
+          </div>
+        </div>
+        <div class="hidden lg:flex justify-center">
+          <div class="relative w-72 h-72">
+            <div class="absolute inset-0 rounded-full bg-primary-700/40 animate-ping" style="animation-duration: 3s;"></div>
+            <div class="absolute inset-6 rounded-full bg-primary-700/50"></div>
+            <div class="absolute inset-12 rounded-full bg-primary-600 flex items-center justify-center">
+              <div class="text-center text-white">
+                <div class="text-6xl mb-2">🌍</div>
+                <div class="text-sm font-bold">Planet First</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== CTA BANNER ===================== -->
+  <section class="py-20 bg-white">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 mb-6">
+        Ready to Give Your Restaurant<br/>a Professional Edge?
+      </h2>
+      <p class="text-lg text-gray-500 mb-10 max-w-xl mx-auto">
+        Get a free design consultation and quote. No commitment, no minimum until you're ready.
+      </p>
+      <div class="flex flex-wrap justify-center gap-4">
+        <a href="contact.html" class="inline-flex items-center gap-2 px-8 py-4 bg-primary-800 hover:bg-primary-900 text-white font-semibold rounded-xl transition-colors shadow-lg shadow-primary-800/20 text-lg">
+          Get a Free Quote
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+          </svg>
+        </a>
+        <a href="products.html" class="inline-flex items-center gap-2 px-8 py-4 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-xl transition-colors text-lg">
+          Explore Products
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== FOOTER ===================== -->
+  <footer class="bg-primary-900 text-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-10">
+        <!-- Brand -->
+        <div class="lg:col-span-1">
+          <div class="flex items-center gap-2 mb-4">
+            <span class="text-xl font-bold">
+              <span class="text-white">food</span><span class="text-accent-400">Pac</span>
+            </span>
+          </div>
+          <p class="text-white/60 text-sm leading-relaxed mb-5">Professional Takeaway Solutions for independent restaurants across Canada.</p>
+          <div class="flex gap-3">
+            <a href="#" class="w-9 h-9 bg-white/10 hover:bg-white/20 rounded-lg flex items-center justify-center transition-colors">
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+            </a>
+            <a href="#" class="w-9 h-9 bg-white/10 hover:bg-white/20 rounded-lg flex items-center justify-center transition-colors">
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+            </a>
+          </div>
+        </div>
+
+        <!-- Products -->
+        <div>
+          <h4 class="font-semibold mb-4 text-white/90">Products</h4>
+          <ul class="space-y-2 text-sm text-white/60">
+            <li><a href="products.html?cat=boxes" class="hover:text-white transition-colors">Takeout Boxes</a></li>
+            <li><a href="products.html?cat=cups" class="hover:text-white transition-colors">Cups & Lids</a></li>
+            <li><a href="products.html?cat=bags" class="hover:text-white transition-colors">Paper Bags</a></li>
+            <li><a href="products.html?cat=bowls" class="hover:text-white transition-colors">Bowls</a></li>
+            <li><a href="products.html?cat=wraps" class="hover:text-white transition-colors">Wrapping Paper</a></li>
+            <li><a href="products.html?cat=cutlery" class="hover:text-white transition-colors">Cutlery Sets</a></li>
+          </ul>
+        </div>
+
+        <!-- Solutions -->
+        <div>
+          <h4 class="font-semibold mb-4 text-white/90">Solutions</h4>
+          <ul class="space-y-2 text-sm text-white/60">
+            <li><a href="#" class="hover:text-white transition-colors">Cafes & Coffee</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">Asian Restaurants</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">Fast Food</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">Pizza & Italian</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">Food Trucks</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">Healthy & Salads</a></li>
+          </ul>
+        </div>
+
+        <!-- Contact -->
+        <div>
+          <h4 class="font-semibold mb-4 text-white/90">Contact</h4>
+          <ul class="space-y-3 text-sm text-white/60">
+            <li class="flex items-start gap-2">
+              <svg class="w-4 h-4 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+              <span>hello@foodpac.ca</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <svg class="w-4 h-4 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+              <span>Toronto, Ontario<br/>Canada</span>
+            </li>
+          </ul>
+          <a href="contact.html" class="inline-flex items-center mt-5 px-5 py-2.5 bg-accent-500 hover:bg-accent-600 text-white text-sm font-semibold rounded-lg transition-colors">
+            Get a Quote
+          </a>
+        </div>
+      </div>
+
+      <div class="border-t border-white/10 mt-12 pt-8 flex flex-col sm:flex-row justify-between items-center gap-4 text-sm text-white/40">
+        <p>© 2025 foodPac. All rights reserved.</p>
+        <div class="flex gap-6">
+          <a href="#" class="hover:text-white/70 transition-colors">Privacy Policy</a>
+          <a href="#" class="hover:text-white/70 transition-colors">Terms of Service</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Mobile menu toggle
+    document.getElementById('menuToggle').addEventListener('click', () => {
+      document.getElementById('mobileMenu').classList.toggle('hidden');
+    });
+
+    // Close mobile menu on nav link click
+    document.querySelectorAll('#mobileMenu a').forEach(link => {
+      link.addEventListener('click', () => {
+        document.getElementById('mobileMenu').classList.add('hidden');
+      });
+    });
+  </script>
+</body>
+</html>

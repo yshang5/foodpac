@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/x-icon" href="assets/images/favicon.ico">
+  <link rel="apple-touch-icon" href="assets/images/apple-touch-icon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>foodPac – Professional Takeaway Solutions</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: { 50:'#f1f8e9',100:'#dcedc8',200:'#c5e1a5',500:'#4caf50',600:'#43a047',700:'#388e3c',800:'#2e7d32',900:'#1b5e20' },
+            accent:  { 400:'#ffa726',500:'#f57c00',600:'#e65100' }
+          },
+          fontFamily: { sans: ['Inter','ui-sans-serif','system-ui'] }
+        }
+      }
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/main.css">
+</head>
+<body class="font-sans text-gray-800 bg-white">
+
+  <div id="navbar"></div>
+
+  <!-- ── HERO ──────────────────────────────────────────────── -->
+  <section class="hero-gradient text-white overflow-hidden">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-28">
+      <div class="grid lg:grid-cols-2 gap-12 items-center">
+
+        <div>
+          <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-4 py-1.5 mb-6">
+            <span class="w-2 h-2 rounded-full bg-accent-400 animate-pulse"></span>
+            <span class="text-sm font-medium text-white/90">Eco-Friendly · Custom-Branded · Low MOQ</span>
+          </div>
+          <h1 class="text-4xl lg:text-5xl xl:text-6xl font-extrabold leading-tight mb-6">
+            Custom Packaging<br/>
+            <span class="text-accent-400">Made Simple</span>
+          </h1>
+          <p class="text-lg text-white/80 mb-8 max-w-lg leading-relaxed">
+            Professional branded packaging for independent restaurants — AI-powered design, eco-friendly materials, and flexible low-minimum orders starting at just 1,000 units.
+          </p>
+          <div class="flex flex-wrap gap-4">
+            <button onclick="window.openDesignWidget && window.openDesignWidget()"
+               class="inline-flex items-center gap-2 px-7 py-3.5 bg-accent-500 hover:bg-accent-600 text-white font-semibold rounded-lg transition-colors shadow-lg">
+              ✨ Design Online
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+              </svg>
+            </button>
+            <a href="products.html"
+               class="inline-flex items-center gap-2 px-7 py-3.5 bg-white/10 hover:bg-white/20 text-white font-semibold rounded-lg border border-white/30 transition-colors">
+              View Products
+            </a>
+          </div>
+        </div>
+
+        <!-- Hero product showcase -->
+        <div class="hidden lg:grid grid-cols-2 gap-4">
+          <div class="space-y-4">
+            <div class="bg-white/10 backdrop-blur-sm rounded-2xl overflow-hidden border border-white/20 card-hover">
+              <img src="assets/images/hero-box.jpg" alt="Takeout Boxes"
+                   class="w-full h-40 object-cover"
+                   onerror="this.parentElement.classList.add('flex','items-center','justify-center'); this.style.display='none'">
+              <div class="p-4">
+                <p class="text-white font-semibold text-sm">Takeout Boxes</p>
+                <p class="text-white/60 text-xs">Fully customized</p>
+              </div>
+            </div>
+            <div class="bg-white/10 backdrop-blur-sm rounded-2xl overflow-hidden border border-white/20 card-hover">
+              <img src="assets/images/hero-cup.jpg" alt="Custom Cups"
+                   class="w-full h-32 object-cover"
+                   onerror="this.style.display='none'">
+              <div class="p-4">
+                <p class="text-white font-semibold text-sm">Custom Cups</p>
+                <p class="text-white/60 text-xs">Hot & cold options</p>
+              </div>
+            </div>
+          </div>
+          <div class="space-y-4 mt-8">
+            <div class="bg-white/10 backdrop-blur-sm rounded-2xl overflow-hidden border border-white/20 card-hover">
+              <img src="assets/images/hero-bag.jpg" alt="Kraft Bags"
+                   class="w-full h-32 object-cover"
+                   onerror="this.style.display='none'">
+              <div class="p-4">
+                <p class="text-white font-semibold text-sm">Kraft Bags</p>
+                <p class="text-white/60 text-xs">Eco-friendly kraft</p>
+              </div>
+            </div>
+            <div class="bg-accent-500/30 backdrop-blur-sm rounded-2xl overflow-hidden border border-accent-400/40 card-hover">
+              <img src="assets/images/hero-ai.jpg" alt="AI Design"
+                   class="w-full h-40 object-cover"
+                   onerror="this.style.display='none'">
+              <div class="p-4">
+                <p class="text-accent-300 font-semibold text-sm">AI Design</p>
+                <p class="text-white/60 text-xs">Ready in 5 minutes</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── STATS BAR ─────────────────────────────────────────── -->
+  <section class="bg-primary-800 text-white py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+        <div>
+          <div class="text-3xl font-extrabold text-accent-400">1,000</div>
+          <div class="text-sm text-white/70 mt-1">Units Minimum Order</div>
+        </div>
+        <div>
+          <div class="text-3xl font-extrabold text-accent-400">5 min</div>
+          <div class="text-sm text-white/70 mt-1">AI Design Generation</div>
+        </div>
+        <div>
+          <div class="text-3xl font-extrabold text-accent-400">100%</div>
+          <div class="text-sm text-white/70 mt-1">Eco-Friendly Materials</div>
+        </div>
+        <div>
+          <div class="text-3xl font-extrabold text-accent-400">60,000+</div>
+          <div class="text-sm text-white/70 mt-1">Restaurants in Canada</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── PRODUCT CATEGORIES ────────────────────────────────── -->
+  <section class="py-20 bg-white" id="products">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-14">
+        <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">Our Packaging Range</h2>
+        <p class="text-lg text-gray-500 max-w-xl mx-auto">Everything your restaurant needs — branded, eco-friendly, and ready for takeout.</p>
+      </div>
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4" id="categoryGrid">
+        <!-- Injected by JS -->
+      </div>
+      <div class="text-center mt-10">
+        <a href="products.html" class="inline-flex items-center gap-2 text-primary-700 font-semibold hover:text-primary-900 transition-colors">
+          Browse all products
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── RESTAURANT SOLUTIONS ──────────────────────────────── -->
+  <section class="py-20 bg-gray-50" id="restaurant-types">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-14">
+        <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">Solutions for Every Restaurant</h2>
+        <p class="text-lg text-gray-500 max-w-xl mx-auto">From cozy cafes to busy fast-food counters — we've got you covered.</p>
+      </div>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6" id="restaurantGrid">
+        <!-- Injected by JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ── WHY FOODPAC ───────────────────────────────────────── -->
+  <section class="py-20 bg-primary-50" id="why-foodpac">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-14">
+        <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">Why Restaurants Choose foodPac</h2>
+        <p class="text-lg text-gray-500 max-w-xl mx-auto">We solve the real pain points that hold small restaurants back from great packaging.</p>
+      </div>
+      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="bg-white rounded-2xl p-7 shadow-sm card-hover border border-primary-100">
+          <div class="w-12 h-12 bg-primary-800 rounded-xl flex items-center justify-center mb-5">
+            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+            </svg>
+          </div>
+          <h3 class="text-lg font-bold text-gray-900 mb-2">AI-Powered Design</h3>
+          <p class="text-gray-500 text-sm leading-relaxed">Upload your logo and get professional packaging designs in under 5 minutes — no designer needed, no extra cost.</p>
+        </div>
+        <div class="bg-white rounded-2xl p-7 shadow-sm card-hover border border-primary-100">
+          <div class="w-12 h-12 bg-primary-800 rounded-xl flex items-center justify-center mb-5">
+            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064"/>
+            </svg>
+          </div>
+          <h3 class="text-lg font-bold text-gray-900 mb-2">100% Eco-Friendly</h3>
+          <p class="text-gray-500 text-sm leading-relaxed">All materials are biodegradable and compostable, fully compliant with Canadian Single-Use Plastics regulations.</p>
+        </div>
+        <div class="bg-white rounded-2xl p-7 shadow-sm card-hover border border-primary-100">
+          <div class="w-12 h-12 bg-primary-800 rounded-xl flex items-center justify-center mb-5">
+            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+            </svg>
+          </div>
+          <h3 class="text-lg font-bold text-gray-900 mb-2">Low Minimum Orders</h3>
+          <p class="text-gray-500 text-sm leading-relaxed">Start from just 1,000 units. We aggregate small orders so you get bulk pricing without bulk commitment.</p>
+        </div>
+        <div class="bg-white rounded-2xl p-7 shadow-sm card-hover border border-primary-100">
+          <div class="w-12 h-12 bg-primary-800 rounded-xl flex items-center justify-center mb-5">
+            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+            </svg>
+          </div>
+          <h3 class="text-lg font-bold text-gray-900 mb-2">Phased Delivery</h3>
+          <p class="text-gray-500 text-sm leading-relaxed">We warehouse your stock and deliver in batches that match your usage — no storage headaches, no waste.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── HOW IT WORKS ──────────────────────────────────────── -->
+  <section class="py-20 bg-white" id="how-it-works">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-14">
+        <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">How It Works</h2>
+        <p class="text-lg text-gray-500 max-w-xl mx-auto">From logo to doorstep in four simple steps.</p>
+      </div>
+      <div class="relative">
+        <div class="hidden lg:block absolute top-12 left-[16%] right-[16%] h-0.5 bg-primary-200 z-0"></div>
+        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 relative z-10">
+          <div class="flex flex-col items-center text-center">
+            <div class="w-24 h-24 bg-primary-800 rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-primary-800/20">
+              <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+              </svg>
+            </div>
+            <div class="w-7 h-7 bg-accent-500 rounded-full flex items-center justify-center text-white text-sm font-bold mb-4">1</div>
+            <h3 class="text-lg font-bold text-gray-900 mb-2">Upload Your Logo</h3>
+            <p class="text-gray-500 text-sm">Share your logo and brand colors. Our AI handles the rest.</p>
+          </div>
+          <div class="flex flex-col items-center text-center">
+            <div class="w-24 h-24 bg-primary-700 rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-primary-700/20">
+              <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+              </svg>
+            </div>
+            <div class="w-7 h-7 bg-accent-500 rounded-full flex items-center justify-center text-white text-sm font-bold mb-4">2</div>
+            <h3 class="text-lg font-bold text-gray-900 mb-2">AI Generates Designs</h3>
+            <p class="text-gray-500 text-sm">Get multiple professional design options in under 5 minutes. Pick your favourite.</p>
+          </div>
+          <div class="flex flex-col items-center text-center">
+            <div class="w-24 h-24 bg-primary-600 rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-primary-600/20">
+              <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+            </div>
+            <div class="w-7 h-7 bg-accent-500 rounded-full flex items-center justify-center text-white text-sm font-bold mb-4">3</div>
+            <h3 class="text-lg font-bold text-gray-900 mb-2">Approve & Order</h3>
+            <p class="text-gray-500 text-sm">Confirm your design, choose quantity (from 1,000 units), and place your order.</p>
+          </div>
+          <div class="flex flex-col items-center text-center">
+            <div class="w-24 h-24 bg-accent-500 rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-accent-500/20">
+              <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/>
+              </svg>
+            </div>
+            <div class="w-7 h-7 bg-accent-500 rounded-full flex items-center justify-center text-white text-sm font-bold mb-4">4</div>
+            <h3 class="text-lg font-bold text-gray-900 mb-2">Delivered in Batches</h3>
+            <p class="text-gray-500 text-sm">We store your stock and deliver as you need it — no warehouse required on your end.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── ECO COMMITMENT ────────────────────────────────────── -->
+  <section class="py-20 hero-gradient text-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid lg:grid-cols-2 gap-12 items-center">
+        <div>
+          <div class="inline-flex items-center gap-2 bg-white/10 border border-white/20 rounded-full px-4 py-1.5 mb-6">
+            <span class="text-xl">🌱</span>
+            <span class="text-sm font-medium">Our Eco Commitment</span>
+          </div>
+          <h2 class="text-3xl lg:text-4xl font-bold mb-6">
+            Packaging That's Good for Your Brand
+            <span class="text-accent-400"> and the Planet</span>
+          </h2>
+          <p class="text-white/80 text-lg mb-8 leading-relaxed">
+            Every foodPac product uses biodegradable or compostable materials, fully compliant with Canada's Single-Use Plastics Prohibition Regulations. Going green has never been this affordable.
+          </p>
+          <div class="grid sm:grid-cols-3 gap-4">
+            <div class="bg-white/10 rounded-xl p-4 text-center border border-white/20">
+              <div class="text-2xl mb-2">♻️</div>
+              <div class="text-sm font-semibold">100% Compostable</div>
+            </div>
+            <div class="bg-white/10 rounded-xl p-4 text-center border border-white/20">
+              <div class="text-2xl mb-2">🏛️</div>
+              <div class="text-sm font-semibold">Regulation Compliant</div>
+            </div>
+            <div class="bg-white/10 rounded-xl p-4 text-center border border-white/20">
+              <div class="text-2xl mb-2">💚</div>
+              <div class="text-sm font-semibold">No Price Premium</div>
+            </div>
+          </div>
+        </div>
+        <div class="hidden lg:block">
+          <img src="assets/images/eco-planet.jpg"
+               alt="Eco-friendly packaging commitment"
+               class="rounded-2xl object-cover w-full h-80 opacity-90"
+               onerror="this.style.display='none'">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CTA ───────────────────────────────────────────────── -->
+  <section class="py-20 bg-white">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 mb-6">
+        Ready to Give Your Restaurant<br/>a Professional Edge?
+      </h2>
+      <p class="text-lg text-gray-500 mb-10 max-w-xl mx-auto">
+        Get a free design consultation and quote. No commitment, no minimum until you're ready.
+      </p>
+      <div class="flex flex-wrap justify-center gap-4">
+        <a href="contact.html"
+           class="inline-flex items-center gap-2 px-8 py-4 bg-primary-800 hover:bg-primary-900 text-white font-semibold rounded-xl transition-colors shadow-lg shadow-primary-800/20 text-lg">
+          Get a Free Quote
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+          </svg>
+        </a>
+        <a href="products.html"
+           class="inline-flex items-center gap-2 px-8 py-4 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-xl transition-colors text-lg">
+          Explore Products
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <div id="footer"></div>
+
+  <script type="module">
+    import { initNav, initFooter } from './js/components.js';
+    import { CATEGORIES } from './js/products.js';
+    import { initPackify } from './js/packify.js';
+
+    initNav();
+    initFooter();
+    initPackify();
+
+    // Category grid
+    const catImages = {
+      boxes:   'assets/images/cat-boxes.jpg',
+      cups:    'assets/images/cat-cups.jpg',
+      bags:    'assets/images/cat-bags.jpg',
+      bowls:   'assets/images/cat-bowls.jpg',
+      wraps:   'assets/images/cat-wraps.jpg',
+      cutlery: 'assets/images/cat-cutlery.jpg',
+    };
+
+    const catGrid = document.getElementById('categoryGrid');
+    CATEGORIES.filter(c => c.key !== 'all').forEach(({ key, label }) => {
+      catGrid.insertAdjacentHTML('beforeend', `
+        <a href="products.html?cat=${key}"
+           class="group bg-primary-50 hover:bg-primary-100 rounded-2xl overflow-hidden text-center transition-colors card-hover">
+          <img src="${catImages[key]}" alt="${label}"
+               class="w-full h-28 object-cover"
+               onerror="this.style.display='none'">
+          <div class="p-4">
+            <span class="text-sm font-semibold text-primary-800">${label}</span>
+          </div>
+        </a>
+      `);
+    });
+
+    // Restaurant types grid
+    const restaurants = [
+      { key:'cafe',      emoji:'☕', label:'Cafes & Coffee Shops',   bg:'from-amber-50 to-amber-100',  text:'text-amber-700',
+        desc:'Branded cups, cup sleeves, pastry bags, and takeout boxes that tell your story with every order.',
+        img:'assets/images/rest-cafe.jpg' },
+      { key:'asian',     emoji:'🍜', label:'Asian Restaurants',       bg:'from-red-50 to-orange-100',   text:'text-red-700',
+        desc:'Noodle boxes, soup containers, sushi trays, and more — designed to keep your food fresh and your brand visible.',
+        img:'assets/images/rest-asian.jpg' },
+      { key:'fastfood',  emoji:'🍔', label:'Fast Food & Burgers',     bg:'from-yellow-50 to-yellow-100',text:'text-yellow-700',
+        desc:'Burger wraps, fry boxes, paper bags, and drink cups built for speed, style, and sustainability.',
+        img:'assets/images/rest-fastfood.jpg' },
+      { key:'pizza',     emoji:'🍕', label:'Pizza & Italian',         bg:'from-green-50 to-green-100',  text:'text-green-700',
+        desc:'Custom pizza boxes, pasta containers, and deli paper — all branded to make your customers remember you.',
+        img:'assets/images/rest-pizza.jpg' },
+      { key:'foodtruck', emoji:'🚚', label:'Food Trucks & Pop-Ups',   bg:'from-blue-50 to-indigo-100',  text:'text-blue-700',
+        desc:'Lightweight, branded packaging for on-the-go operations. Low minimums mean you only order what you need.',
+        img:'assets/images/rest-foodtruck.jpg' },
+      { key:'healthy',   emoji:'🥗', label:'Healthy Food & Salads',   bg:'from-primary-50 to-primary-100',text:'text-primary-700',
+        desc:'Eco-friendly bowls, salad containers, and kraft bags that match your sustainability values and brand image.',
+        img:'assets/images/rest-healthy.jpg' },
+    ];
+
+    const restGrid = document.getElementById('restaurantGrid');
+    restaurants.forEach(r => {
+      restGrid.insertAdjacentHTML('beforeend', `
+        <div class="bg-white rounded-2xl overflow-hidden shadow-sm card-hover border border-gray-100">
+          <div class="relative h-44 bg-gradient-to-br ${r.bg} overflow-hidden">
+            <img src="${r.img}" alt="${r.label}"
+                 class="absolute inset-0 w-full h-full object-cover"
+                 onerror="this.style.display='none'">
+            <div class="absolute inset-0 flex items-center justify-center flex-col gap-1">
+              <div class="text-4xl drop-shadow">${r.emoji}</div>
+              <div class="text-xs ${r.text} font-medium bg-white/60 px-2 py-0.5 rounded-full">${r.label}</div>
+            </div>
+          </div>
+          <div class="p-6">
+            <h3 class="text-lg font-bold text-gray-900 mb-2">${r.label}</h3>
+            <p class="text-gray-500 text-sm mb-4">${r.desc}</p>
+            <a href="contact.html" class="text-primary-700 font-semibold text-sm hover:text-primary-900 flex items-center gap-1">
+              Get packaging for my restaurant
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+              </svg>
+            </a>
+          </div>
+        </div>
+      `);
+    });
+  </script>
+</body>
+</html>

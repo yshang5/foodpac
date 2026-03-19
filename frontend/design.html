@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/x-icon" href="assets/images/favicon.ico">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Design Your Packaging – foodPac</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: { 50:'#f1f8e9',100:'#dcedc8',200:'#c5e1a5',500:'#4caf50',600:'#43a047',700:'#388e3c',800:'#2e7d32',900:'#1b5e20' },
+            accent:  { 400:'#ffa726',500:'#f57c00',600:'#e65100' }
+          },
+          fontFamily: { sans: ['Inter','ui-sans-serif','system-ui'] }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    .chat-bubble-user { background:#2e7d32; color:#fff; border-radius:18px 18px 4px 18px; }
+    .chat-bubble-ai   { background:#f9fafb; color:#1a1a1a; border-radius:18px 18px 18px 4px; border:1px solid #e5e7eb; }
+    .typing-dot { animation:blink 1.2s infinite; }
+    .typing-dot:nth-child(2){ animation-delay:.2s }
+    .typing-dot:nth-child(3){ animation-delay:.4s }
+    @keyframes blink{0%,80%,100%{opacity:.2}40%{opacity:1}}
+    #chatMessages { scroll-behavior:smooth }
+    .design-thumb { transition:transform .15s,box-shadow .15s; cursor:pointer }
+    .design-thumb:hover { transform:scale(1.04); box-shadow:0 4px 16px rgba(0,0,0,.18) }
+    .design-thumb.selected { outline:3px solid #4caf50; outline-offset:2px }
+    /* info tag pill */
+    .info-pill { display:flex; justify-content:space-between; align-items:flex-start;
+                 padding:6px 10px; border-radius:8px; background:#f9fafb;
+                 border:1px solid #e5e7eb; font-size:11px; gap:6px; }
+    .info-pill .label { color:#9ca3af; font-weight:500; white-space:nowrap; }
+    .info-pill .value { color:#1f2937; font-weight:600; text-align:right; word-break:break-word; }
+    /* widget entrance animation */
+    @keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+    #chatWidget.open { animation:slideUp .22s ease-out }
+    /* shelf entrance */
+    @keyframes shelfIn{from{opacity:0;transform:translateX(16px)}to{opacity:1;transform:translateX(0)}}
+    #fp-design-shelf { animation:shelfIn .2s ease-out; }
+    /* scrollbar */
+    ::-webkit-scrollbar{width:4px}
+    ::-webkit-scrollbar-track{background:transparent}
+    ::-webkit-scrollbar-thumb{background:#d1d5db;border-radius:4px}
+    /* shelf thumb hover */
+    .shelf-thumb { position:relative; }
+    .shelf-thumb .shelf-thumb-actions {
+      position:absolute; inset:0; background:rgba(0,0,0,.4);
+      display:flex; flex-direction:column; align-items:center; justify-content:center;
+      gap:4px; opacity:0; transition:opacity .15s; border-radius:10px;
+    }
+    .shelf-thumb:hover .shelf-thumb-actions { opacity:1; }
+  </style>
+</head>
+<body class="font-sans bg-gray-50 min-h-screen flex flex-col">
+
+  <div id="navbar"></div>
+
+  <!-- Page hero -->
+  <main class="flex-1 flex items-center justify-center px-6 py-20 text-center">
+    <div class="max-w-xl">
+      <div class="inline-flex items-center gap-2 px-4 py-1.5 bg-primary-50 border border-primary-100 rounded-full text-primary-700 text-xs font-semibold mb-6">
+        <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+        AI-Powered Packaging Design
+      </div>
+      <h1 class="text-4xl font-bold text-gray-900 mb-4 leading-tight">Design Custom Packaging<br>for Your Restaurant</h1>
+      <p class="text-gray-500 text-lg mb-8">Chat with our AI designer to create eco-friendly, branded packaging in minutes. No design experience needed.</p>
+      <button id="heroOpenBtn"
+        class="inline-flex items-center gap-2 px-8 py-4 bg-primary-800 hover:bg-primary-900 text-white font-semibold rounded-2xl transition-colors shadow-lg text-base">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+        </svg>
+        ✨ Start Designing
+      </button>
+    </div>
+  </main>
+
+  <div id="footer"></div>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       PERSISTENT DESIGN SHELF  (right side, visible when chat closed)
+  ═══════════════════════════════════════════════════════════════════ -->
+  <div id="fp-design-shelf"
+       style="display:none;position:fixed;right:24px;top:124px;bottom:96px;width:96px;z-index:45;"
+       class="flex flex-col gap-2">
+
+    <!-- Reopen chat -->
+    <button id="fp-shelf-chat-btn"
+      class="w-full py-1.5 bg-primary-800 hover:bg-primary-900 text-white text-xs font-bold rounded-lg transition-colors shrink-0 flex items-center justify-center gap-1">
+      <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+      </svg>
+      Chat
+    </button>
+
+    <p class="text-center text-xs text-gray-400 font-medium shrink-0">Your Designs</p>
+
+    <!-- Thumbnails -->
+    <div id="fp-shelf-grid" class="flex-1 overflow-y-auto flex flex-col gap-2 min-h-0"></div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       INLINE CART MODAL (for "Add to Cart" from design shelf)
+  ═══════════════════════════════════════════════════════════════════ -->
+  <div id="fp-design-cart-modal" style="display:none"
+       class="fixed inset-0 bg-black/60 z-[99999] flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md">
+      <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+        <h3 class="text-lg font-bold text-gray-900">Add to Cart</h3>
+        <button id="fp-design-cart-close" class="text-gray-400 hover:text-gray-600 text-2xl leading-none">×</button>
+      </div>
+      <form id="fp-design-cart-form" class="px-6 py-5 space-y-4">
+        <input type="hidden" id="fp-design-cart-imageUrl">
+        <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-xl">
+          <img id="fp-design-cart-preview" src="" alt="Design"
+               class="w-16 h-16 rounded-lg object-cover border border-gray-200">
+          <p class="text-sm text-gray-500">Selected design</p>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Packaging Type <span class="text-red-500">*</span></label>
+          <select id="fp-design-cart-type" required
+                  style="width:100%;border:1px solid #d1d5db;border-radius:8px;padding:10px 12px;font-size:14px;">
+            <option value="">Select type...</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Size <span class="text-red-500">*</span></label>
+          <select id="fp-design-cart-size" required disabled
+                  style="width:100%;border:1px solid #d1d5db;border-radius:8px;padding:10px 12px;font-size:14px;background:#f9fafb;color:#9ca3af;">
+            <option value="">Select type first...</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Material</label>
+          <select id="fp-design-cart-material"
+                  style="width:100%;border:1px solid #d1d5db;border-radius:8px;padding:10px 12px;font-size:14px;">
+            <option value="">No preference</option>
+            <option value="KRAFT">Kraft Paper (Brown)</option>
+            <option value="WHITE_CARD">White Cardboard</option>
+            <option value="FOIL">Foil Lined</option>
+            <option value="PLASTIC">Plastic</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Quantity <span class="text-red-500">*</span></label>
+          <input type="number" id="fp-design-cart-qty" required min="1000" step="500" placeholder="Minimum 1,000"
+                 style="width:100%;border:1px solid #d1d5db;border-radius:8px;padding:10px 12px;font-size:14px;box-sizing:border-box;">
+          <p class="text-xs text-gray-400 mt-1">Minimum order: 1,000 units</p>
+        </div>
+        <div id="fp-design-cart-error"
+             style="display:none;color:#dc2626;background:#fef2f2;border-radius:8px;padding:8px 12px;font-size:14px;"></div>
+        <button type="submit"
+                style="width:100%;padding:12px;background:#2e7d32;color:white;font-weight:600;border:none;border-radius:12px;font-size:15px;cursor:pointer;">
+          Add to Cart
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       FLOATING CHAT WIDGET
+  ═══════════════════════════════════════════════════════════════════ -->
+
+  <!-- FAB toggle button -->
+  <button id="chatFab"
+    class="fixed bottom-6 right-6 z-50 w-14 h-14 bg-primary-800 hover:bg-primary-900 text-white
+           rounded-full shadow-2xl flex items-center justify-center transition-all duration-200
+           hover:scale-105 active:scale-95">
+    <svg id="fabIconOpen" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+    </svg>
+    <svg id="fabIconClose" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+    </svg>
+  </button>
+
+  <!-- Chat Widget Panel -->
+  <div id="chatWidget"
+    class="fixed bottom-24 right-6 z-50 hidden rounded-2xl shadow-2xl overflow-hidden border border-gray-200
+           bg-white flex flex-col"
+    style="width:min(960px, calc(100vw - 48px)); height:min(640px, calc(100vh - 140px));">
+
+    <!-- Widget Header -->
+    <div class="bg-primary-800 text-white px-5 py-3 flex items-center justify-between shrink-0">
+      <div class="flex items-center gap-3">
+        <img src="assets/images/logo-icon.png" class="w-8 h-8 rounded-full bg-white/20 object-contain p-0.5" alt="foodPac">
+        <div>
+          <p class="text-sm font-semibold">foodPac AI Designer</p>
+          <p class="text-xs text-primary-200">Custom eco-friendly packaging</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <button id="minimizeBtn" class="w-7 h-7 rounded-lg hover:bg-white/10 flex items-center justify-center transition-colors" title="Minimize">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"/>
+          </svg>
+        </button>
+        <button id="closeBtn" class="w-7 h-7 rounded-lg hover:bg-white/10 flex items-center justify-center transition-colors" title="Close">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Auth Loading -->
+    <div id="widgetAuthLoading" class="flex-1 flex items-center justify-center">
+      <div class="flex flex-col items-center gap-3 text-gray-400">
+        <svg class="w-7 h-7 animate-spin" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/>
+        </svg>
+        <span class="text-sm">Loading…</span>
+      </div>
+    </div>
+
+    <!-- Auth Required -->
+    <div id="widgetAuthRequired" class="hidden flex-1 flex items-center justify-center p-8">
+      <div class="text-center max-w-xs">
+        <div class="w-14 h-14 bg-primary-50 rounded-full flex items-center justify-center mx-auto mb-4">
+          <svg class="w-7 h-7 text-primary-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
+            <circle cx="12" cy="7" r="4" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"/>
+          </svg>
+        </div>
+        <h2 class="text-base font-semibold text-gray-900 mb-2">Sign in to Design</h2>
+        <p class="text-gray-500 text-sm mb-5">You need to be logged in to use the AI design tool.</p>
+        <button id="signInBtn"
+          class="w-full px-5 py-2.5 bg-primary-800 hover:bg-primary-900 text-white font-semibold rounded-xl transition-colors text-sm">
+          Continue with Google
+        </button>
+      </div>
+    </div>
+
+    <!-- Main App: 3-column -->
+    <div id="widgetApp" class="hidden flex-1 flex min-h-0">
+
+      <!-- ① Left: Design info + session history -->
+      <div class="w-52 bg-gray-50 border-r border-gray-100 flex flex-col shrink-0">
+        <div class="p-3 border-b border-gray-100">
+          <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2.5">Design Brief</p>
+          <div id="designInfoPanel" class="space-y-1.5">
+            <div class="info-pill"><span class="label">Product</span><span class="value text-gray-300" id="info-product">—</span></div>
+            <div class="info-pill"><span class="label">Brand</span><span class="value text-gray-300" id="info-brand">—</span></div>
+            <div class="info-pill"><span class="label">Style</span><span class="value text-gray-300" id="info-style">—</span></div>
+            <div class="info-pill"><span class="label">Colors</span><span class="value text-gray-300" id="info-colors">—</span></div>
+            <div class="info-pill"><span class="label">Logo</span><span class="value text-gray-300" id="info-logoUrl">—</span></div>
+          </div>
+        </div>
+        <div class="flex-1 flex flex-col min-h-0 p-2">
+          <p class="text-xs font-medium text-gray-400 px-1 pt-1 pb-1.5">History</p>
+          <div id="sessionList" class="flex-1 overflow-y-auto space-y-1">
+            <p class="text-xs text-gray-300 px-1">No previous chats</p>
+          </div>
+          <button id="newSessionBtn"
+            class="mt-2 w-full flex items-center justify-center gap-1.5 px-3 py-2 bg-white hover:bg-primary-50 border border-gray-200 text-primary-700 text-xs font-semibold rounded-lg transition-colors">
+            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+            </svg>
+            New Chat
+          </button>
+        </div>
+      </div>
+
+      <!-- ② Center: Chat -->
+      <div class="flex-1 flex flex-col min-w-0 min-h-0">
+        <div id="chatMessages" class="flex-1 overflow-y-auto min-h-0 py-5 px-4 space-y-4"></div>
+        <div id="generatingBanner"
+          class="hidden border-t border-accent-400/30 bg-accent-400/10 px-4 py-2 flex items-center gap-2.5 shrink-0">
+          <svg class="w-3.5 h-3.5 animate-spin text-accent-600 shrink-0" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/>
+          </svg>
+          <span class="text-xs text-accent-700 font-medium">Generating your packaging design… up to 60 sec</span>
+        </div>
+        <div class="border-t border-gray-100 px-3 py-3 shrink-0 bg-white">
+          <div class="flex items-end gap-2 bg-gray-50 border border-gray-200 rounded-xl px-3 py-2
+                      focus-within:border-primary-500 focus-within:ring-2 focus-within:ring-primary-100 transition-all">
+            <textarea id="messageInput" rows="2"
+              placeholder="Describe your brand, style, or say "help me design one"…"
+              class="flex-1 bg-transparent text-sm text-gray-900 resize-none focus:outline-none
+                     placeholder-gray-400 leading-relaxed"
+              style="min-height:44px;max-height:120px;overflow-y:auto"></textarea>
+            <div class="flex flex-col gap-1.5 shrink-0 pb-0.5">
+              <button id="sendBtn"
+                class="flex items-center gap-1 px-3 h-8 bg-primary-800 hover:bg-primary-900 text-white text-xs font-semibold rounded-lg transition-colors disabled:opacity-50 whitespace-nowrap">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
+                </svg>
+                Send
+              </button>
+              <button id="generateBtn"
+                class="flex items-center gap-1 px-3 h-8 bg-accent-500 hover:bg-accent-600 text-white text-xs font-semibold rounded-lg transition-colors disabled:opacity-50 whitespace-nowrap">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3l14 9-14 9V3z"/>
+                </svg>
+                Generate
+              </button>
+            </div>
+          </div>
+          <p class="text-center text-xs text-gray-400 mt-1.5">
+            <kbd class="px-1 py-0.5 bg-gray-100 rounded text-gray-400 font-mono text-xs">Enter</kbd> send ·
+            <kbd class="px-1 py-0.5 bg-gray-100 rounded text-gray-400 font-mono text-xs">Shift+Enter</kbd> newline
+          </p>
+        </div>
+      </div>
+
+      <!-- ③ Right: Generated designs (inside widget — synced with shelf) -->
+      <div class="w-44 bg-white border-l border-gray-100 flex flex-col shrink-0">
+        <div class="px-3 py-3 border-b border-gray-100">
+          <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide">Designs</p>
+        </div>
+        <div id="designThumbs" class="flex-1 overflow-y-auto p-2 space-y-2">
+          <p class="text-xs text-gray-300 px-1 pt-1" id="designEmptyHint">Designs appear here after generation</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script type="module">
+    import { initNav, initFooter }             from './js/components.js';
+    import { getCurrentUser, loginWithGoogle } from './js/auth.js';
+    import { API_BASE }                        from './js/api.js';
+    import { _refreshCartBadge }               from './js/components.js';
+
+    initNav();
+    initFooter();
+
+    // ── Persistent design shelf ───────────────────────────────────────────────
+    const shelf     = document.getElementById('fp-design-shelf');
+    const shelfGrid = document.getElementById('fp-shelf-grid');
+    let   shelfUrls = [];    // all generated image URLs across all sessions
+
+    /** Append new design images to the shelf (newest first) */
+    function addToShelf(urls) {
+      urls.forEach(url => {
+        if (shelfUrls.includes(url)) return;   // deduplicate
+        shelfUrls.push(url);
+        const div = document.createElement('div');
+        div.className = 'shelf-thumb shrink-0 rounded-xl overflow-hidden border-2 border-gray-100 hover:border-primary-400 transition-colors';
+        div.innerHTML = `
+          <img src="${url}" alt="Design"
+               style="width:100%;aspect-ratio:1;object-fit:cover;display:block;"
+               onerror="this.parentElement.classList.add('hidden')">
+          <div class="shelf-thumb-actions">
+            <button style="background:#f57c00;color:white;font-size:10px;font-weight:700;border:none;border-radius:6px;padding:4px 8px;cursor:pointer;white-space:nowrap;"
+                    onclick="event.stopPropagation();openDesignCartModal('${url}')">
+              + Cart
+            </button>
+          </div>
+        `;
+        shelfGrid.insertBefore(div, shelfGrid.firstChild);
+      });
+    }
+
+    function showShelf() {
+      if (shelfUrls.length === 0) return;
+      shelf.style.display = 'flex';
+    }
+
+    function hideShelf() {
+      shelf.style.display = 'none';
+    }
+
+    document.getElementById('fp-shelf-chat-btn').addEventListener('click', openWidget);
+
+    // ── Auto-load historical designs into shelf on page load ──────────────────
+    (async function preloadShelf() {
+      try {
+        const res = await fetch(`${API_BASE}/design/sessions`, { credentials: 'include' });
+        if (!res.ok) return;                        // not logged in → skip
+        const sessions = await res.json();
+        // collect all imageUrls across sessions (newest session first)
+        const allUrls = sessions.flatMap(s => s.imageUrls || []);
+        if (allUrls.length === 0) return;
+        addToShelf(allUrls);
+        showShelf();                                // show shelf immediately on page load
+      } catch { /* network error — ignore */ }
+    })();
+
+    // ── Inline cart modal (for shelf "Add to Cart") ───────────────────────────
+    const cartModal = document.getElementById('fp-design-cart-modal');
+
+    window.openDesignCartModal = function(imageUrl) {
+      document.getElementById('fp-design-cart-imageUrl').value = imageUrl;
+      document.getElementById('fp-design-cart-preview').src    = imageUrl;
+      document.getElementById('fp-design-cart-type').value     = '';
+      document.getElementById('fp-design-cart-size').innerHTML = '<option value="">Select type first...</option>';
+      document.getElementById('fp-design-cart-size').disabled  = true;
+      document.getElementById('fp-design-cart-material').value = '';
+      document.getElementById('fp-design-cart-qty').value      = '';
+      document.getElementById('fp-design-cart-error').style.display = 'none';
+      cartModal.style.display = 'flex';
+    };
+
+    document.getElementById('fp-design-cart-close').onclick = () => {
+      cartModal.style.display = 'none';
+    };
+    cartModal.addEventListener('click', e => {
+      if (e.target === cartModal) cartModal.style.display = 'none';
+    });
+
+    // Load product types for the cart modal
+    fetch(`${API_BASE}/products/types`)
+      .then(r => r.json())
+      .then(types => {
+        const sel = document.getElementById('fp-design-cart-type');
+        types.forEach(t => {
+          const opt = document.createElement('option');
+          opt.value = t.key; opt.dataset.label = t.label; opt.textContent = t.label;
+          sel.appendChild(opt);
+        });
+      }).catch(() => {});
+
+    document.getElementById('fp-design-cart-type').addEventListener('change', async function() {
+      const sizeEl = document.getElementById('fp-design-cart-size');
+      sizeEl.innerHTML = '<option value="">Loading...</option>';
+      sizeEl.disabled  = true;
+      sizeEl.style.color = '#9ca3af';
+      if (!this.value) { sizeEl.innerHTML = '<option value="">Select type first...</option>'; return; }
+      try {
+        const res  = await fetch(`${API_BASE}/products/sizes/${this.value}`);
+        const data = await res.json();
+        sizeEl.innerHTML = '<option value="">Select size...</option>';
+        data.forEach(s => {
+          const opt = document.createElement('option');
+          opt.value = s.label; opt.textContent = s.label;
+          sizeEl.appendChild(opt);
+        });
+        sizeEl.disabled = false; sizeEl.style.color = ''; sizeEl.style.background = '';
+      } catch {
+        sizeEl.innerHTML = '<option value="">Failed to load sizes</option>';
+      }
+    });
+
+    document.getElementById('fp-design-cart-form').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const errEl    = document.getElementById('fp-design-cart-error');
+      const imageUrl = document.getElementById('fp-design-cart-imageUrl').value;
+      const typeEl   = document.getElementById('fp-design-cart-type');
+      const sizeEl   = document.getElementById('fp-design-cart-size');
+      const material = document.getElementById('fp-design-cart-material').value;
+      const qty      = parseInt(document.getElementById('fp-design-cart-qty').value, 10);
+      errEl.style.display = 'none';
+
+      if (!typeEl.value || !sizeEl.value || !qty || qty < 1) {
+        errEl.textContent = 'Please fill in all required fields.';
+        errEl.style.display = 'block';
+        return;
+      }
+      const productLabel = typeEl.options[typeEl.selectedIndex].dataset.label || typeEl.value;
+      const submitBtn    = e.target.querySelector('button[type=submit]');
+      submitBtn.disabled = true; submitBtn.textContent = 'Adding...';
+
+      try {
+        const res = await fetch(`${API_BASE}/cart`, {
+          method: 'POST', credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ imageUrl, productType: typeEl.value, productLabel,
+                                 sizeSpec: sizeEl.value, material: material || null, quantity: qty })
+        });
+        if (res.status === 401) { loginWithGoogle(); return; }
+        if (!res.ok) throw new Error();
+        cartModal.style.display = 'none';
+        _refreshCartBadge();
+        _showToast('✓ Added to cart &nbsp;<a href="cart.html" style="text-decoration:underline">View cart</a>');
+      } catch {
+        errEl.textContent = 'Failed to add to cart. Please try again.';
+        errEl.style.display = 'block';
+      } finally {
+        submitBtn.disabled = false; submitBtn.textContent = 'Add to Cart';
+      }
+    });
+
+    function _showToast(html) {
+      const t = document.createElement('div');
+      t.innerHTML = html;
+      t.className = 'fixed bottom-6 left-1/2 -translate-x-1/2 bg-primary-800 text-white text-sm font-medium px-5 py-3 rounded-xl shadow-lg z-[99999] transition-opacity duration-300';
+      document.body.appendChild(t);
+      setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 300); }, 3000);
+    }
+
+    // ── Widget open/close ─────────────────────────────────────────────────────
+    const fab    = document.getElementById('chatFab');
+    const widget = document.getElementById('chatWidget');
+    const fabIconOpen  = document.getElementById('fabIconOpen');
+    const fabIconClose = document.getElementById('fabIconClose');
+    let widgetOpen     = false;
+    let appInitialized = false;
+
+    function openWidget() {
+      widgetOpen = true;
+      hideShelf();   // shelf hidden while widget is open (designs visible inside column ③)
+      widget.classList.remove('hidden');
+      widget.classList.add('open');
+      fabIconOpen.classList.add('hidden');
+      fabIconClose.classList.remove('hidden');
+      if (!appInitialized) { appInitialized = true; initApp(); }
+    }
+
+    function closeWidget() {
+      widgetOpen = false;
+      widget.classList.add('hidden');
+      fabIconOpen.classList.remove('hidden');
+      fabIconClose.classList.add('hidden');
+      showShelf();   // show shelf if designs exist
+    }
+
+    fab.addEventListener('click', () => widgetOpen ? closeWidget() : openWidget());
+    document.getElementById('closeBtn').addEventListener('click', closeWidget);
+    document.getElementById('minimizeBtn').addEventListener('click', closeWidget);
+    document.getElementById('heroOpenBtn').addEventListener('click', openWidget);
+
+    // ── App (lazy-initialized on first open) ──────────────────────────────────
+    async function initApp() {
+      let currentSessionId = null;
+      let sseConnection    = null;
+      let isGenerating     = false;
+      let currentUser      = null;
+
+      currentUser = await getCurrentUser();
+      document.getElementById('widgetAuthLoading').classList.add('hidden');
+
+      if (!currentUser) {
+        document.getElementById('widgetAuthRequired').classList.remove('hidden');
+        document.getElementById('signInBtn').addEventListener('click', loginWithGoogle);
+        return;
+      }
+
+      document.getElementById('widgetApp').classList.remove('hidden');
+      document.getElementById('widgetApp').style.display = 'flex';
+
+      // ── Avatars ────────────────────────────────────────────────────────────
+      function userAvatarHtml() {
+        if (currentUser.avatarUrl) {
+          return `<img src="${currentUser.avatarUrl}" class="w-7 h-7 rounded-full object-cover shrink-0 border border-gray-200" alt="You">`;
+        }
+        const ch = (currentUser.name || currentUser.email || 'U').charAt(0).toUpperCase();
+        return `<div class="w-7 h-7 rounded-full bg-primary-600 text-white flex items-center justify-center text-xs font-bold shrink-0">${ch}</div>`;
+      }
+      const AI_AVATAR = `<img src="assets/images/logo-icon.png" class="w-7 h-7 rounded-full object-contain bg-white border border-gray-100 shrink-0" alt="AI">`;
+
+      // ── Design Info panel ──────────────────────────────────────────────────
+      const INFO_LABELS = { product:'Product', brand:'Brand', style:'Style', colors:'Colors', logoUrl:'Logo' };
+      function updateDesignInfo(info) {
+        if (!info) return;
+        Object.entries(INFO_LABELS).forEach(([key]) => {
+          const el = document.getElementById('info-' + key);
+          if (!el) return;
+          const val = info[key];
+          if (val) {
+            el.textContent = key === 'logoUrl' ? '✓ Provided' : val;
+            el.classList.remove('text-gray-300');
+            el.classList.add('text-gray-800');
+          }
+        });
+      }
+
+      // ── Sessions ───────────────────────────────────────────────────────────
+      async function loadSessions() {
+        try {
+          const res = await fetch(`${API_BASE}/design/sessions`, { credentials:'include' });
+          if (!res.ok) return;
+          const sessions = await res.json();
+          renderSessionList(sessions);
+          if (sessions.length > 0) await openSession(sessions[0].id);
+          else await createNewSession();
+        } catch { await createNewSession(); }
+      }
+
+      function renderSessionList(sessions) {
+        const list = document.getElementById('sessionList');
+        if (!sessions.length) {
+          list.innerHTML = '<p class="text-xs text-gray-300 px-1">No previous chats</p>';
+          return;
+        }
+        list.innerHTML = sessions.map(s => {
+          const date  = new Date(s.createdAt).toLocaleDateString();
+          const thumb = s.imageUrls?.[0];
+          const dot   = s.status === 'COMPLETED'
+            ? '<span class="w-2 h-2 rounded-full bg-primary-500 shrink-0"></span>'
+            : s.status === 'GENERATING'
+            ? '<span class="w-2 h-2 rounded-full bg-accent-400 animate-pulse shrink-0"></span>'
+            : '<span class="w-2 h-2 rounded-full bg-gray-300 shrink-0"></span>';
+          return `
+            <div class="session-item flex items-center gap-2 px-2 py-1.5 rounded-lg border border-transparent
+                        cursor-pointer hover:bg-gray-100 transition-colors"
+                 data-session-id="${s.id}">
+              ${thumb
+                ? `<img src="${thumb}" class="w-7 h-7 rounded-md object-cover shrink-0">`
+                : `<div class="w-7 h-7 rounded-md bg-primary-50 flex items-center justify-center shrink-0">
+                     <svg class="w-3.5 h-3.5 text-primary-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                     </svg>
+                   </div>`}
+              <p class="text-xs text-gray-500 flex-1 truncate">${date}</p>
+              ${dot}
+            </div>`;
+        }).join('');
+        list.querySelectorAll('.session-item').forEach(el =>
+          el.addEventListener('click', () => openSession(el.dataset.sessionId)));
+      }
+
+      function highlightActiveSession(id) {
+        document.querySelectorAll('.session-item').forEach(el => {
+          el.classList.toggle('bg-primary-50', el.dataset.sessionId === id);
+          el.classList.toggle('border-primary-200', el.dataset.sessionId === id);
+        });
+      }
+
+      async function createNewSession() {
+        disconnectSse();
+        clearChat();
+        resetDesignInfo();
+        try {
+          const res = await fetch(`${API_BASE}/design/sessions`, { method:'POST', credentials:'include' });
+          if (!res.ok) throw new Error();
+          const session = await res.json();
+          currentSessionId = session.id;
+          highlightActiveSession(session.id);
+          connectSse(session.id);
+          appendAiMessage("Hi! I'm your foodPac packaging designer 🌿 What kind of food packaging are you creating today?");
+        } catch {
+          appendAiMessage("Couldn't start a new session. Please try refreshing.");
+        }
+      }
+
+      async function openSession(sessionId) {
+        if (sessionId === currentSessionId) return;
+        disconnectSse();
+        clearChat();
+        resetDesignInfo();
+        currentSessionId = sessionId;
+        highlightActiveSession(sessionId);
+        try {
+          const res = await fetch(`${API_BASE}/design/sessions/${sessionId}`, { credentials:'include' });
+          if (!res.ok) throw new Error();
+          const session = await res.json();
+          session.messages.forEach(m => {
+            if (m.role === 'user')           appendUserMessage(m.content);
+            else if (m.role === 'assistant') appendAiMessage(m.content);
+          });
+          if (session.imageUrls?.length) addDesignThumbs(session.imageUrls);
+          if (session.status === 'GENERATING') showGeneratingBanner(true);
+          connectSse(sessionId);
+          scrollToBottom();
+        } catch { appendAiMessage("Couldn't load this session."); }
+      }
+
+      // ── SSE ─────────────────────────────────────────────────────────────────
+      function connectSse(sessionId) {
+        disconnectSse();
+        sseConnection = new EventSource(`${API_BASE}/design/sessions/${sessionId}/events`, { withCredentials:true });
+        sseConnection.addEventListener('connected', () => {});
+        sseConnection.addEventListener('design_result', e => {
+          const data = JSON.parse(e.data);
+          addDesignThumbs(data.imageUrls || []);
+          showGeneratingBanner(false);
+          isGenerating = false;
+          document.getElementById('generateBtn').disabled = false;
+          appendAiMessage('✨ Your packaging design is ready! Check the designs panel on the right.');
+          refreshSessionList();
+        });
+        sseConnection.addEventListener('error', e => {
+          try {
+            const data = JSON.parse(e.data);
+            showGeneratingBanner(false);
+            isGenerating = false;
+            document.getElementById('generateBtn').disabled = false;
+            appendAiMessage(`⚠️ ${data.message || 'Generation failed. Please try again.'}`);
+          } catch {}
+        });
+        sseConnection.onerror = () => {};
+      }
+
+      function disconnectSse() {
+        if (sseConnection) { sseConnection.close(); sseConnection = null; }
+      }
+
+      // ── Chat ─────────────────────────────────────────────────────────────────
+      async function sendMessage() {
+        const input = document.getElementById('messageInput');
+        const text  = input.value.trim();
+        if (!text || !currentSessionId) return;
+        input.value = '';
+        autoResizeTextarea(input);
+        appendUserMessage(text);
+        showTypingIndicator();
+        setSendDisabled(true);
+        try {
+          const res = await fetch(`${API_BASE}/design/sessions/${currentSessionId}/messages`, {
+            method:'POST', credentials:'include',
+            headers: { 'Content-Type':'application/json', 'Accept-Language': navigator.language || 'en' },
+            body: JSON.stringify({ message: text })
+          });
+          removeTypingIndicator();
+          if (res.ok) {
+            const msg = await res.json();
+            appendAiMessage(msg.content);
+            if (msg.designInfo) updateDesignInfo(msg.designInfo);
+            if (msg.autoGenerating && !isGenerating) {
+              isGenerating = true;
+              showGeneratingBanner(true);
+              document.getElementById('generateBtn').disabled = true;
+            }
+          } else {
+            appendAiMessage('Sorry, something went wrong. Please try again.');
+          }
+        } catch {
+          removeTypingIndicator();
+          appendAiMessage('Network error. Please check your connection.');
+        } finally {
+          setSendDisabled(false);
+          scrollToBottom();
+        }
+      }
+
+      async function triggerGenerate() {
+        if (!currentSessionId || isGenerating) return;
+        isGenerating = true;
+        showGeneratingBanner(true);
+        document.getElementById('generateBtn').disabled = true;
+        try {
+          const res = await fetch(`${API_BASE}/design/sessions/${currentSessionId}/generate`, {
+            method:'POST', credentials:'include',
+            headers: { 'Content-Type':'application/json' },
+            body: JSON.stringify({})
+          });
+          if (res.ok) {
+            appendAiMessage("🎨 Submitting your design to our AI — results will appear in the right panel shortly…");
+          } else {
+            showGeneratingBanner(false); isGenerating = false;
+            document.getElementById('generateBtn').disabled = false;
+            appendAiMessage('Failed to start generation. Please try again.');
+          }
+        } catch {
+          showGeneratingBanner(false); isGenerating = false;
+          document.getElementById('generateBtn').disabled = false;
+          appendAiMessage('Network error.');
+        }
+      }
+
+      // ── UI helpers ───────────────────────────────────────────────────────────
+      function appendUserMessage(text) {
+        document.getElementById('chatMessages').insertAdjacentHTML('beforeend', `
+          <div class="flex justify-end items-end gap-2">
+            <div class="chat-bubble-user px-3.5 py-2.5 text-sm max-w-[75%] leading-relaxed">${escHtml(text)}</div>
+            ${userAvatarHtml()}
+          </div>`);
+        scrollToBottom();
+      }
+
+      function appendAiMessage(text) {
+        document.getElementById('chatMessages').insertAdjacentHTML('beforeend', `
+          <div class="flex justify-start items-end gap-2">
+            ${AI_AVATAR}
+            <div class="chat-bubble-ai px-3.5 py-2.5 text-sm max-w-[75%] leading-relaxed">${escHtml(text)}</div>
+          </div>`);
+        scrollToBottom();
+      }
+
+      function showTypingIndicator() {
+        document.getElementById('chatMessages').insertAdjacentHTML('beforeend', `
+          <div id="typingIndicator" class="flex justify-start items-end gap-2">
+            ${AI_AVATAR}
+            <div class="chat-bubble-ai px-3.5 py-2.5 flex items-center gap-1">
+              <span class="typing-dot w-2 h-2 bg-gray-400 rounded-full"></span>
+              <span class="typing-dot w-2 h-2 bg-gray-400 rounded-full"></span>
+              <span class="typing-dot w-2 h-2 bg-gray-400 rounded-full"></span>
+            </div>
+          </div>`);
+        scrollToBottom();
+      }
+
+      function removeTypingIndicator() { document.getElementById('typingIndicator')?.remove(); }
+
+      /**
+       * Add design thumbnails to:
+       *  ① column ③ inside the widget (#designThumbs)
+       *  ② the persistent shelf (#fp-shelf-grid) — stays visible when widget closes
+       */
+      function addDesignThumbs(urls) {
+        const panel = document.getElementById('designThumbs');
+        document.getElementById('designEmptyHint')?.remove();
+
+        urls.forEach((url, i) => {
+          // In-widget column ③
+          const id = `thumb-${Date.now()}-${i}`;
+          panel.insertAdjacentHTML('afterbegin', `
+            <div class="design-thumb rounded-xl overflow-hidden border-2 border-gray-100" id="${id}" data-url="${url}">
+              <img src="${url}" alt="Design" class="w-full aspect-square object-cover"
+                   onerror="this.parentElement.classList.add('hidden')">
+            </div>`);
+          document.getElementById(id).addEventListener('click', function() {
+            document.querySelectorAll('.design-thumb').forEach(t => t.classList.remove('selected'));
+            this.classList.add('selected');
+          });
+        });
+
+        // Persistent shelf (always visible even after widget closes)
+        addToShelf(urls);
+      }
+
+      function showGeneratingBanner(show) {
+        document.getElementById('generatingBanner').classList.toggle('hidden', !show);
+      }
+
+      function clearChat() {
+        document.getElementById('chatMessages').innerHTML = '';
+        showGeneratingBanner(false);
+        isGenerating = false;
+        document.getElementById('generateBtn').disabled = false;
+        document.getElementById('designThumbs').innerHTML =
+          '<p class="text-xs text-gray-300 px-1 pt-1" id="designEmptyHint">Designs appear here after generation</p>';
+        // Note: shelf is NOT cleared — designs persist across sessions
+      }
+
+      function resetDesignInfo() {
+        ['product','brand','style','colors','logoUrl'].forEach(key => {
+          const el = document.getElementById('info-' + key);
+          if (el) { el.textContent = '—'; el.className = 'value text-gray-300'; }
+        });
+      }
+
+      async function refreshSessionList() {
+        try {
+          const res = await fetch(`${API_BASE}/design/sessions`, { credentials:'include' });
+          if (res.ok) renderSessionList(await res.json());
+        } catch {}
+      }
+
+      function scrollToBottom() {
+        const el = document.getElementById('chatMessages');
+        el.scrollTop = el.scrollHeight;
+      }
+
+      function setSendDisabled(d) { document.getElementById('sendBtn').disabled = d; }
+
+      function escHtml(s) {
+        return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
+      }
+
+      function autoResizeTextarea(el) {
+        el.style.height = 'auto';
+        el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+      }
+
+      // ── Events ───────────────────────────────────────────────────────────────
+      document.getElementById('sendBtn').addEventListener('click', sendMessage);
+      document.getElementById('generateBtn').addEventListener('click', triggerGenerate);
+      document.getElementById('newSessionBtn').addEventListener('click', async () => {
+        await createNewSession(); await refreshSessionList();
+      });
+
+      const input = document.getElementById('messageInput');
+      input.addEventListener('keydown', e => {
+        if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+      });
+      input.addEventListener('input', () => autoResizeTextarea(input));
+
+      await loadSessions();
+    }
+  </script>
+</body>
+</html>

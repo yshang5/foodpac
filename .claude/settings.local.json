@@ -1,0 +1,38 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__Claude_Preview__preview_start",
+      "WebFetch(domain:www.fusenpack.com)",
+      "Bash(pandoc \"/Users/yueshang/Library/Containers/com.tencent.xinWeChat/Data/Documents/xwechat_files/sy329258276_2605/msg/file/2026-03/Business Plan of Packify.docx\" -o /tmp/packify_plan.md)",
+      "Read(//tmp/**)",
+      "Read(//Users/yueshang/Library/Application Support/Claude/local-agent-mode-sessions/skills-plugin/e1a2372f-5f97-4137-b856-63d399f1b80c/b4918844-3168-4695-af12-7ace2a48d99e/skills/docx/**)",
+      "Bash(python scripts/office/unpack.py \"/Users/yueshang/Library/Containers/com.tencent.xinWeChat/Data/Documents/xwechat_files/sy329258276_2605/msg/file/2026-03/Business Plan of Packify.docx\" /tmp/packify_unpacked/)",
+      "Bash(python3 \"/Users/yueshang/Library/Application Support/Claude/local-agent-mode-sessions/skills-plugin/e1a2372f-5f97-4137-b856-63d399f1b80c/b4918844-3168-4695-af12-7ace2a48d99e/skills/docx/scripts/office/unpack.py\" \"/Users/yueshang/Library/Containers/com.tencent.xinWeChat/Data/Documents/xwechat_files/sy329258276_2605/msg/file/2026-03/Business Plan of Packify.docx\" /tmp/packify_unpacked/)",
+      "Bash(pip3 install:*)",
+      "Bash(python3 -c \":*)",
+      "Bash(find /Users/yueshang/foodPac -name *.png -o -name logo*)",
+      "Bash(convert --version)",
+      "Bash(python3 -c \"from PIL import Image; print\\(''PIL ok''\\)\")",
+      "Bash(python3 -c \"import PIL; print\\(PIL.__version__\\)\")",
+      "Bash(pip install:*)",
+      "Bash(python3 -c \"from PIL import Image; print\\(''ok''\\)\")",
+      "Bash(python3:*)",
+      "Bash(grep -n \"initNav\" /Users/yueshang/foodPac/frontend/*.html)",
+      "Bash(ls /Users/yueshang/foodPac/.env*)",
+      "Bash(/Users/yueshang/foodPac/.gitignore:*)",
+      "Bash(/Users/yueshang/foodPac/.env:*)",
+      "Bash(docker compose:*)",
+      "Bash(open -a Docker)",
+      "Bash(xargs kill:*)",
+      "Bash(open \"http://localhost:3000\")",
+      "Bash(docker ps:*)",
+      "Bash(/Users/yueshang/foodPac/backend/src/main/java/ca/foodpac/dto/UpdateProfileRequest.java:*)",
+      "Bash(docker exec:*)",
+      "Bash(grep -l \"<meta charset\" /Users/yueshang/foodPac/frontend/*.html)",
+      "Bash(curl -si -X POST http://localhost:3000/api/v1/auth/logout -H \"Cookie: fp_token=fake_token\")",
+      "Bash(curl -si http://localhost:3000/api/v1/auth/logout)",
+      "Bash(du -sh ~/*)",
+      "Bash(brew list:*)"
+    ]
+  }
+}

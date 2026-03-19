@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Packify SDK Test</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: system-ui, sans-serif; background: #f5f5f5; padding: 40px; }
+
+    h1 { font-size: 20px; font-weight: 700; margin-bottom: 24px; color: #1a1a1a; }
+
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 20px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    }
+
+    label { font-size: 13px; font-weight: 600; color: #555; display: block; margin-bottom: 6px; }
+
+    input {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 14px;
+      margin-bottom: 16px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+    .btn:hover { opacity: 0.85; }
+    .btn-primary  { background: #2e7d32; color: white; }
+    .btn-secondary { background: #1565c0; color: white; }
+    .btn-gray     { background: #eee; color: #333; }
+
+    .btn-row { display: flex; gap: 10px; flex-wrap: wrap; }
+
+    #log {
+      background: #111;
+      color: #00ff88;
+      border-radius: 8px;
+      padding: 16px;
+      font-family: monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      min-height: 200px;
+      max-height: 400px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+
+    #resultImages {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 12px;
+    }
+    #resultImages img {
+      width: 180px;
+      height: 180px;
+      object-fit: cover;
+      border-radius: 8px;
+      border: 2px solid #ddd;
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      margin-left: 8px;
+      vertical-align: middle;
+    }
+    .tag-ok  { background: #e8f5e9; color: #2e7d32; }
+    .tag-err { background: #fce4ec; color: #c62828; }
+    .tag-info { background: #e3f2fd; color: #1565c0; }
+
+    #status { font-size: 13px; color: #888; margin-top: 8px; }
+  </style>
+</head>
+<body>
+
+<h1>🧪 Packify SDK 测试页</h1>
+
+<!-- Step 1: Init -->
+<div class="card">
+  <label>Step 1 — 初始化 SDK</label>
+  <label>App ID / API Key</label>
+  <input id="appId" value="DBoFUkjLlTIrcrXXYDghX" placeholder="your appId or api key" />
+  <label>User ID（随便填，测试用）</label>
+  <input id="userId" value="test-user-001" placeholder="userId" />
+  <div class="btn-row">
+    <button class="btn btn-primary" onclick="initSDK()">🚀 Init SDK</button>
+  </div>
+  <div id="status"></div>
+</div>
+
+<!-- Step 2: Open Design -->
+<div class="card">
+  <label>Step 2 — 打开 AI 设计弹窗</label>
+  <label>产品名称（可选）</label>
+  <input id="product" value="Eco Food Packaging" placeholder="product name" />
+  <label>品牌名称（可选）</label>
+  <input id="brand" value="foodPac" placeholder="brand name" />
+  <div class="btn-row">
+    <button class="btn btn-secondary" onclick="openDesign()">🎨 Open Design</button>
+    <button class="btn btn-gray" onclick="closeDesign()">✕ Close</button>
+    <button class="btn btn-gray" onclick="continueDesign()">↩ Reopen</button>
+  </div>
+</div>
+
+<!-- Step 3: Results -->
+<div class="card">
+  <label>Step 3 — 生成结果</label>
+  <p style="font-size:13px;color:#888;margin-bottom:12px;">设计完成后，图片自动显示在这里</p>
+  <div id="resultImages"><span style="color:#bbb;font-size:13px;">暂无结果…</span></div>
+</div>
+
+<!-- Console Log -->
+<div class="card">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+    <label style="margin:0">📋 事件日志</label>
+    <button class="btn btn-gray" style="padding:4px 12px;font-size:12px;" onclick="clearLog()">清空</button>
+  </div>
+  <div id="log">等待操作…</div>
+</div>
+
+<!-- SDK -->
+<script src="https://cdn.packify.ai/api/packify-v0.0.2.js"></script>
+
+<script>
+  let initialized = false;
+
+  function log(msg, type = 'info') {
+    const el = document.getElementById('log');
+    const time = new Date().toLocaleTimeString();
+    const colors = { info: '#00ff88', warn: '#ffcc00', err: '#ff4444', data: '#88ccff' };
+    const color = colors[type] || colors.info;
+    el.innerHTML += `<span style="color:#666">[${time}]</span> <span style="color:${color}">${msg}</span>\n`;
+    el.scrollTop = el.scrollHeight;
+  }
+
+  function setStatus(msg, ok = true) {
+    const el = document.getElementById('status');
+    el.innerHTML = `<span class="tag ${ok ? 'tag-ok' : 'tag-err'}">${ok ? '✓' : '✗'}</span> ${msg}`;
+  }
+
+  function clearLog() {
+    document.getElementById('log').textContent = '';
+  }
+
+  async function initSDK() {
+    const appId  = document.getElementById('appId').value.trim();
+    const userId = document.getElementById('userId').value.trim();
+
+    if (!appId) { log('请填写 appId', 'err'); return; }
+
+    log(`正在初始化… appId=${appId}, userId=${userId}`);
+
+    try {
+      if (typeof packify === 'undefined') {
+        log('packify SDK 未加载！检查 CDN 链接', 'err');
+        setStatus('SDK 加载失败', false);
+        return;
+      }
+
+      await packify.init({ appId, userId });
+      initialized = true;
+      log('✅ SDK 初始化成功！');
+      setStatus('SDK 已初始化');
+
+      // 注册事件监听
+      registerEvents();
+
+    } catch (err) {
+      log(`❌ 初始化失败: ${err?.message || JSON.stringify(err)}`, 'err');
+      setStatus(`初始化失败: ${err?.message}`, false);
+    }
+  }
+
+  function registerEvents() {
+    // 拿到 project ID
+    packify?.eventBus?.on('onCreateEnd', (id) => {
+      log(`📌 onCreateEnd — project_id: ${id}`, 'data');
+    });
+
+    // 拿到设计图片
+    packify?.eventBus?.on('getDesignResults', (data) => {
+      log(`🎉 getDesignResults — projectId: ${data.projectId}`, 'data');
+      log(`   images (${data.list?.length}): ${JSON.stringify(data.list)}`, 'data');
+      showImages(data.list);
+    });
+
+    // 拿到摄影图片
+    packify?.eventBus?.on('getPhotographyResults', (data) => {
+      log(`📷 getPhotographyResults — projectId: ${data.projectId}`, 'data');
+      log(`   images (${data.list?.length}): ${JSON.stringify(data.list)}`, 'data');
+      showImages(data.list);
+    });
+
+    // 弹窗状态
+    packify?.eventBus?.on('onPopupStatus', (state) => {
+      log(`🪟 onPopupStatus: ${JSON.stringify(state)}`, 'warn');
+    });
+
+    log('📡 事件监听已注册 (onCreateEnd, getDesignResults, getPhotographyResults, onPopupStatus)');
+  }
+
+  function openDesign() {
+    if (!initialized) { log('❌ 请先初始化 SDK', 'err'); return; }
+    const product = document.getElementById('product').value.trim();
+    const brand   = document.getElementById('brand').value.trim();
+
+    log(`🎨 openDesign({ product: "${product}", brand: "${brand}" })`);
+    try {
+      packify.openDesign({ product, brand });
+    } catch (err) {
+      log(`❌ openDesign 报错: ${err?.message}`, 'err');
+    }
+  }
+
+  function closeDesign() {
+    if (!initialized) { log('❌ 请先初始化 SDK', 'err'); return; }
+    log('✕ 关闭弹窗');
+    packify.onCloseDesignChatBox?.();
+  }
+
+  function continueDesign() {
+    if (!initialized) { log('❌ 请先初始化 SDK', 'err'); return; }
+    log('↩ 重新打开弹窗');
+    packify.onContinuingDesign?.();
+  }
+
+  function showImages(list) {
+    if (!list?.length) return;
+    const container = document.getElementById('resultImages');
+    container.innerHTML = '';
+    list.forEach((url, i) => {
+      const img = document.createElement('img');
+      img.src = url;
+      img.alt = `design-${i + 1}`;
+      img.onerror = () => { img.style.display = 'none'; log(`⚠ 图片加载失败: ${url}`, 'warn'); };
+      container.appendChild(img);
+    });
+  }
+
+  // 检测 SDK 是否加载
+  window.addEventListener('load', () => {
+    if (typeof packify !== 'undefined') {
+      log('✅ packify SDK 已加载（来自 CDN）');
+    } else {
+      log('❌ packify SDK 未加载，检查网络或 CDN 地址', 'err');
+    }
+  });
+</script>
+
+</body>
+</html>

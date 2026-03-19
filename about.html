@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About – foodPac</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: { 50:'#f1f8e9', 100:'#dcedc8', 200:'#c5e1a5', 500:'#4caf50', 600:'#43a047', 700:'#388e3c', 800:'#2e7d32', 900:'#1b5e20' },
+            accent:  { 400:'#ffa726', 500:'#f57c00', 600:'#e65100' }
+          },
+          fontFamily: { sans: ['Inter','ui-sans-serif','system-ui'] }
+        }
+      }
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    html { scroll-behavior: smooth; }
+    .hero-gradient { background: linear-gradient(135deg,#1b5e20 0%,#2e7d32 40%,#388e3c 70%,#1b5e20 100%); }
+    .nav-link { position: relative; }
+    .nav-link::after { content:''; position:absolute; bottom:-2px; left:0; width:0; height:2px; background:#f57c00; transition:width .2s ease; }
+    .nav-link:hover::after { width:100%; }
+  </style>
+</head>
+<body class="font-sans text-gray-800 bg-white">
+
+  <!-- NAV -->
+  <header class="sticky top-0 z-50 bg-white shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <a href="index.html" class="flex items-center gap-2 shrink-0">
+          <div class="flex items-center gap-1">
+            <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+              <polygon points="18,2 32,10 32,26 18,34 4,26 4,10" fill="#2e7d32"/>
+              <polygon points="18,6 29,12 29,24 18,30 7,24 7,12" fill="#388e3c"/>
+              <path d="M12 20 L16 16 L20 19 L26 13" stroke="#f57c00" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+              <path d="M14 22 L14 17" stroke="#f57c00" stroke-width="2" stroke-linecap="round"/>
+              <path d="M17 22 L17 16" stroke="#f57c00" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <span class="text-xl font-bold"><span class="text-primary-800">food</span><span class="text-primary-600">Pac</span></span>
+          </div>
+        </a>
+        <nav class="hidden md:flex items-center gap-8">
+          <a href="products.html" class="nav-link text-sm font-medium text-gray-700 hover:text-primary-800">Products</a>
+          <a href="index.html#how-it-works" class="nav-link text-sm font-medium text-gray-700 hover:text-primary-800">How It Works</a>
+          <a href="index.html#why-foodpac" class="nav-link text-sm font-medium text-gray-700 hover:text-primary-800">Why foodPac</a>
+          <a href="index.html#restaurant-types" class="nav-link text-sm font-medium text-gray-700 hover:text-primary-800">Solutions</a>
+          <a href="about.html" class="nav-link text-sm font-medium text-primary-800 font-semibold">About</a>
+        </nav>
+        <div class="flex items-center gap-3">
+          <a href="contact.html" class="hidden sm:inline-flex items-center px-5 py-2.5 bg-accent-500 hover:bg-accent-600 text-white text-sm font-semibold rounded-lg transition-colors">Get a Quote</a>
+          <button id="menuToggle" class="md:hidden p-2 rounded-md text-gray-700 hover:bg-gray-100">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div id="mobileMenu" class="hidden md:hidden border-t border-gray-100 bg-white px-4 pb-4 pt-2">
+      <nav class="flex flex-col gap-3">
+        <a href="products.html" class="text-sm font-medium text-gray-700 py-2">Products</a>
+        <a href="index.html#how-it-works" class="text-sm font-medium text-gray-700 py-2">How It Works</a>
+        <a href="index.html#why-foodpac" class="text-sm font-medium text-gray-700 py-2">Why foodPac</a>
+        <a href="index.html#restaurant-types" class="text-sm font-medium text-gray-700 py-2">Solutions</a>
+        <a href="about.html" class="text-sm font-medium text-gray-700 py-2">About</a>
+        <a href="contact.html" class="inline-flex items-center justify-center px-5 py-2.5 bg-accent-500 text-white text-sm font-semibold rounded-lg">Get a Quote</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero-gradient text-white py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="max-w-2xl">
+        <p class="text-primary-200 text-sm font-medium mb-3 uppercase tracking-wider">Our Story</p>
+        <h1 class="text-4xl lg:text-5xl font-extrabold mb-4">About foodPac</h1>
+        <p class="text-white/75 text-lg">We're on a mission to give every independent restaurant access to professional, eco-friendly branded packaging — at a price that makes sense.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- MISSION -->
+  <section class="py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid lg:grid-cols-2 gap-16 items-center">
+        <div>
+          <h2 class="text-3xl font-bold text-gray-900 mb-6">Why We Started foodPac</h2>
+          <div class="space-y-4 text-gray-600 leading-relaxed">
+            <p>Over 90% of independent restaurants in North America use generic, unbranded packaging — not because they don't care about their brand, but because custom packaging has historically been too expensive and complicated to access.</p>
+            <p>Professional packaging design alone can cost $500–$2,000 per project. Minimum order quantities force restaurants to over-purchase, tying up cash and creating waste. And eco-friendly options come at a premium most small businesses can't afford.</p>
+            <p>We built foodPac to change that. By combining AI-powered design with smart supply chain aggregation, we make it possible for any restaurant — regardless of size or budget — to have beautiful, branded, sustainable packaging.</p>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          <div class="bg-primary-800 rounded-2xl p-6 text-white">
+            <div class="text-4xl font-extrabold text-accent-400 mb-1">90%</div>
+            <p class="text-white/70 text-sm">of independent restaurants use generic, unbranded packaging</p>
+          </div>
+          <div class="bg-primary-50 rounded-2xl p-6">
+            <div class="text-4xl font-extrabold text-primary-800 mb-1">$0</div>
+            <p class="text-gray-500 text-sm">Cost of AI design with foodPac vs $500–$2,000 traditionally</p>
+          </div>
+          <div class="bg-primary-50 rounded-2xl p-6">
+            <div class="text-4xl font-extrabold text-primary-800 mb-1">1,000</div>
+            <p class="text-gray-500 text-sm">Minimum units — far below the industry standard of 5,000–10,000</p>
+          </div>
+          <div class="bg-accent-500 rounded-2xl p-6 text-white">
+            <div class="text-4xl font-extrabold mb-1">100%</div>
+            <p class="text-white/80 text-sm">Biodegradable and compostable materials — no price premium</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- VALUES -->
+  <section class="py-20 bg-primary-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-14">
+        <h2 class="text-3xl font-bold text-gray-900 mb-4">What We Stand For</h2>
+        <p class="text-gray-500 max-w-xl mx-auto">Three principles that guide every product and decision we make.</p>
+      </div>
+      <div class="grid md:grid-cols-3 gap-8">
+        <div class="bg-white rounded-2xl p-8 shadow-sm border border-primary-100 text-center">
+          <div class="text-5xl mb-4">🌱</div>
+          <h3 class="text-lg font-bold text-gray-900 mb-3">Sustainability First</h3>
+          <p class="text-gray-500 text-sm leading-relaxed">Every product we offer is biodegradable or fully compostable. We believe eco-friendly packaging shouldn't cost more — and with our supply chain model, it doesn't.</p>
+        </div>
+        <div class="bg-white rounded-2xl p-8 shadow-sm border border-primary-100 text-center">
+          <div class="text-5xl mb-4">🤝</div>
+          <h3 class="text-lg font-bold text-gray-900 mb-3">Small Business Champions</h3>
+          <p class="text-gray-500 text-sm leading-relaxed">We exist to serve independent restaurants — the backbone of every community. Our pricing, MOQs, and service are all designed with small businesses in mind.</p>
+        </div>
+        <div class="bg-white rounded-2xl p-8 shadow-sm border border-primary-100 text-center">
+          <div class="text-5xl mb-4">⚡</div>
+          <h3 class="text-lg font-bold text-gray-900 mb-3">Technology-Driven</h3>
+          <p class="text-gray-500 text-sm leading-relaxed">AI removes the complexity and cost of design. Smart logistics removes the burden of inventory. We use technology to solve real operational problems for restaurants.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TEAM / FOUNDER -->
+  <section class="py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-14">
+        <h2 class="text-3xl font-bold text-gray-900 mb-4">The Team Behind foodPac</h2>
+        <p class="text-gray-500 max-w-xl mx-auto">Built by entrepreneurs with deep roots in software, design, and global supply chains.</p>
+      </div>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-4xl mx-auto">
+        <!-- Team member cards — replace avatars with real photos -->
+        <div class="text-center">
+          <div class="w-24 h-24 rounded-2xl bg-primary-100 flex items-center justify-center mx-auto mb-4 text-3xl">👤</div>
+          <h4 class="font-bold text-gray-900">Xianfeng Wang</h4>
+          <p class="text-primary-700 text-sm font-medium">Co-Founder & CEO</p>
+          <p class="text-gray-400 text-xs mt-1">Founder of Pacdora · 10 yrs in software & print</p>
+        </div>
+        <div class="text-center">
+          <div class="w-24 h-24 rounded-2xl bg-primary-100 flex items-center justify-center mx-auto mb-4 text-3xl">👤</div>
+          <h4 class="font-bold text-gray-900">Nian Li</h4>
+          <p class="text-primary-700 text-sm font-medium">Co-Founder</p>
+          <p class="text-gray-400 text-xs mt-1">Operations & supply chain</p>
+        </div>
+        <div class="text-center">
+          <div class="w-24 h-24 rounded-2xl bg-primary-100 flex items-center justify-center mx-auto mb-4 text-3xl">👤</div>
+          <h4 class="font-bold text-gray-900">Minhong Yang</h4>
+          <p class="text-primary-700 text-sm font-medium">Co-Founder</p>
+          <p class="text-gray-400 text-xs mt-1">Product & design</p>
+        </div>
+        <div class="text-center">
+          <div class="w-24 h-24 rounded-2xl bg-primary-100 flex items-center justify-center mx-auto mb-4 text-3xl">👤</div>
+          <h4 class="font-bold text-gray-900">Yue Shang</h4>
+          <p class="text-primary-700 text-sm font-medium">Co-Founder</p>
+          <p class="text-gray-400 text-xs mt-1">Growth & marketing</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="hero-gradient text-white py-16">
+    <div class="max-w-3xl mx-auto px-4 text-center">
+      <h2 class="text-3xl font-bold mb-4">Ready to upgrade your packaging?</h2>
+      <p class="text-white/75 mb-8">Get a free design mockup and quote — no commitment required.</p>
+      <a href="contact.html" class="inline-flex items-center gap-2 px-8 py-4 bg-accent-500 hover:bg-accent-600 text-white font-semibold rounded-xl transition-colors shadow-lg text-lg">
+        Get a Free Quote
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+      </a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="bg-primary-900 text-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div>
+          <span class="text-xl font-bold"><span class="text-white">food</span><span class="text-accent-400">Pac</span></span>
+          <p class="text-white/60 text-sm mt-3">Professional Takeaway Solutions for independent restaurants across Canada.</p>
+        </div>
+        <div>
+          <h4 class="font-semibold mb-4 text-white/90">Products</h4>
+          <ul class="space-y-2 text-sm text-white/60">
+            <li><a href="products.html?cat=boxes"   class="hover:text-white">Takeout Boxes</a></li>
+            <li><a href="products.html?cat=cups"    class="hover:text-white">Cups & Lids</a></li>
+            <li><a href="products.html?cat=bags"    class="hover:text-white">Paper Bags</a></li>
+            <li><a href="products.html?cat=bowls"   class="hover:text-white">Bowls</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="font-semibold mb-4 text-white/90">Company</h4>
+          <ul class="space-y-2 text-sm text-white/60">
+            <li><a href="about.html" class="hover:text-white">About Us</a></li>
+            <li><a href="index.html#how-it-works" class="hover:text-white">How It Works</a></li>
+            <li><a href="contact.html" class="hover:text-white">Contact</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="font-semibold mb-4 text-white/90">Contact</h4>
+          <p class="text-sm text-white/60">hello@foodpac.ca</p>
+          <p class="text-sm text-white/60 mt-1">Toronto, Ontario, Canada</p>
+          <a href="contact.html" class="inline-flex items-center mt-5 px-5 py-2.5 bg-accent-500 hover:bg-accent-600 text-white text-sm font-semibold rounded-lg transition-colors">Get a Quote</a>
+        </div>
+      </div>
+      <div class="border-t border-white/10 mt-10 pt-6 text-sm text-white/40 flex flex-col sm:flex-row justify-between gap-3">
+        <p>© 2025 foodPac. All rights reserved.</p>
+        <div class="flex gap-6"><a href="#" class="hover:text-white/70">Privacy Policy</a><a href="#" class="hover:text-white/70">Terms</a></div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById('menuToggle').addEventListener('click', () => {
+      document.getElementById('mobileMenu').classList.toggle('hidden');
+    });
+  </script>
+</body>
+</html>

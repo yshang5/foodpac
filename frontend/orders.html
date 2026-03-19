@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/x-icon" href="assets/images/favicon.ico">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Orders – foodPac</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: { 50:'#f1f8e9',100:'#dcedc8',200:'#c5e1a5',500:'#4caf50',600:'#43a047',700:'#388e3c',800:'#2e7d32',900:'#1b5e20' },
+            accent:  { 400:'#ffa726',500:'#f57c00',600:'#e65100' }
+          },
+          fontFamily: { sans: ['Inter','ui-sans-serif','system-ui'] }
+        }
+      }
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/main.css">
+</head>
+<body class="font-sans text-gray-800 bg-gray-50 min-h-screen">
+
+  <div id="navbar"></div>
+
+  <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+
+    <div class="mb-8 flex items-center justify-between">
+      <div>
+        <h1 class="text-3xl font-bold text-gray-900">My Orders</h1>
+        <p class="text-gray-500 mt-1">Your submitted quote requests</p>
+      </div>
+      <a href="cart.html"
+         class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-primary-700 hover:text-primary-900 border border-primary-200 hover:border-primary-400 rounded-xl transition-colors bg-white shadow-sm">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
+        </svg>
+        My Cart
+      </a>
+    </div>
+
+    <!-- Not logged in -->
+    <div id="ordersLogin" class="hidden text-center py-20">
+      <div class="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-5">
+        <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
+            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+        </svg>
+      </div>
+      <h2 class="text-xl font-semibold text-gray-800 mb-2">Sign in to view your orders</h2>
+      <p class="text-gray-500 mb-6 max-w-sm mx-auto">Your order history is tied to your account.</p>
+      <button id="ordersLoginBtn"
+              class="inline-flex items-center gap-2 px-6 py-3 bg-primary-800 hover:bg-primary-900 text-white font-semibold rounded-xl transition-colors shadow-lg">
+        Sign in with Google
+      </button>
+    </div>
+
+    <!-- Loading skeleton -->
+    <div id="ordersLoading" class="space-y-4">
+      <div class="bg-white rounded-2xl border border-gray-200 p-5 animate-pulse">
+        <div class="flex items-center gap-4">
+          <div class="flex gap-1.5">
+            <div class="w-10 h-10 bg-gray-200 rounded-lg"></div>
+            <div class="w-10 h-10 bg-gray-200 rounded-lg"></div>
+          </div>
+          <div class="flex-1 space-y-2">
+            <div class="h-4 bg-gray-200 rounded w-1/3"></div>
+            <div class="h-3 bg-gray-100 rounded w-1/4"></div>
+          </div>
+        </div>
+      </div>
+      <div class="bg-white rounded-2xl border border-gray-200 p-5 animate-pulse">
+        <div class="flex items-center gap-4">
+          <div class="flex gap-1.5">
+            <div class="w-10 h-10 bg-gray-200 rounded-lg"></div>
+          </div>
+          <div class="flex-1 space-y-2">
+            <div class="h-4 bg-gray-200 rounded w-2/5"></div>
+            <div class="h-3 bg-gray-100 rounded w-1/3"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty state -->
+    <div id="ordersEmpty" class="hidden text-center py-20">
+      <div class="w-16 h-16 bg-primary-50 rounded-2xl flex items-center justify-center mx-auto mb-5">
+        <svg class="w-8 h-8 text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
+            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+        </svg>
+      </div>
+      <h2 class="text-xl font-semibold text-gray-800 mb-2">No orders yet</h2>
+      <p class="text-gray-500 mb-6 max-w-sm mx-auto">Once you submit a quote request from your cart, it will appear here.</p>
+      <a href="cart.html"
+         class="inline-flex items-center gap-2 px-6 py-3 bg-primary-800 hover:bg-primary-900 text-white font-semibold rounded-xl transition-colors shadow-lg">
+        Go to My Cart
+      </a>
+    </div>
+
+    <!-- Orders list -->
+    <div id="ordersList" class="hidden space-y-4"></div>
+
+  </main>
+
+  <div id="footer"></div>
+
+  <script type="module">
+    import { initNav, initFooter } from './js/components.js';
+    import { initOrders } from './js/orders.js';
+    initNav();
+    initFooter();
+    initOrders();
+  </script>
+</body>
+</html>

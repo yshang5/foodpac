@@ -1,0 +1,55 @@
+/* ── Global styles shared across all pages ─────────────────── */
+
+html { scroll-behavior: smooth; }
+
+/* Hero gradient — matches brand primary greens */
+.hero-gradient {
+  background: linear-gradient(135deg, #1b5e20 0%, #2e7d32 40%, #388e3c 70%, #1b5e20 100%);
+}
+
+/* Lift + shadow on hover for cards */
+.card-hover {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.card-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+}
+
+/* Animated underline for nav links */
+.nav-link {
+  position: relative;
+}
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: #f57c00;
+  transition: width 0.2s ease;
+}
+.nav-link:hover::after { width: 100%; }
+
+/* Product page filter buttons */
+.filter-btn.active {
+  background: #2e7d32;
+  color: #fff;
+  border-color: #2e7d32;
+}
+
+/* Form focus ring */
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: #2e7d32;
+  box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.15);
+}
+
+/* Product image placeholder while loading */
+.product-img {
+  background-color: #f1f8e9;
+  object-fit: cover;
+}

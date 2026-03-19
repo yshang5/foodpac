@@ -1,0 +1,53 @@
+spring:
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/foodpac}
+    username: ${DB_USER:foodpac}
+    password: ${DB_PASS:foodpac}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update          # use 'validate' in production
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET}
+            scope:
+              - email
+              - profile
+            redirect-uri: "${FRONTEND_URL:http://localhost:3000}/login/oauth2/code/google"
+
+
+app:
+  jwt:
+    secret: ${JWT_SECRET:change-me-in-production-must-be-at-least-32-chars!!}
+    expiration-ms: ${JWT_EXPIRATION_MS:604800000}   # 7 days
+  frontend-url: ${FRONTEND_URL:http://localhost:3000}
+  cookie:
+    secure: ${COOKIE_SECURE:false}
+    same-site: ${COOKIE_SAME_SITE:Lax}
+  mail:
+    from: noreply@foodpac.ai
+    notify-to: wangxianfeng.me@gmail.com
+
+openai:
+  api-key: ${OPENAI_API_KEY}
+  model: ${OPENAI_MODEL:gpt-4o-mini}
+  base-url: https://api.openai.com
+
+packify:
+  api-key: ${PACKIFY_API_KEY:DBoFUkjLlTIrcrXXYDghX}
+  base-url: https://www.packify.ai
+  webhook-base-url: ${WEBHOOK_BASE_URL:http://localhost:8080}
+
+server:
+  port: 8080

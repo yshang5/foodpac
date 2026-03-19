@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/x-icon" href="assets/images/favicon.ico">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Cart – foodPac</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: { 50:'#f1f8e9',100:'#dcedc8',200:'#c5e1a5',500:'#4caf50',600:'#43a047',700:'#388e3c',800:'#2e7d32',900:'#1b5e20' },
+            accent:  { 400:'#ffa726',500:'#f57c00',600:'#e65100' }
+          },
+          fontFamily: { sans: ['Inter','ui-sans-serif','system-ui'] }
+        }
+      }
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/main.css">
+</head>
+<body class="font-sans text-gray-800 bg-gray-50 min-h-screen">
+
+  <div id="navbar"></div>
+
+  <main class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+
+    <div class="mb-8">
+      <h1 class="text-3xl font-bold text-gray-900">My Cart</h1>
+      <p class="text-gray-500 mt-1">Your saved packaging designs</p>
+    </div>
+
+    <!-- Not logged in -->
+    <div id="cartLogin" class="hidden text-center py-20">
+      <div class="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-5">
+        <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
+            d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
+        </svg>
+      </div>
+      <h2 class="text-xl font-semibold text-gray-800 mb-2">Sign in to view your cart</h2>
+      <p class="text-gray-500 mb-6 max-w-sm mx-auto">Your saved designs are tied to your account.</p>
+      <button id="cartLoginBtn"
+              class="inline-flex items-center gap-2 px-6 py-3 bg-primary-800 hover:bg-primary-900 text-white font-semibold rounded-xl transition-colors shadow-lg">
+        Sign in with Google
+      </button>
+    </div>
+
+    <!-- Empty cart -->
+    <div id="cartEmpty" class="hidden text-center py-20">
+      <div class="w-16 h-16 bg-primary-50 rounded-2xl flex items-center justify-center mx-auto mb-5">
+        <svg class="w-8 h-8 text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
+            d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
+        </svg>
+      </div>
+      <h2 class="text-xl font-semibold text-gray-800 mb-2">Your cart is empty</h2>
+      <p class="text-gray-500 mb-6 max-w-sm mx-auto">Design your custom packaging and add designs here to request a quote.</p>
+      <button onclick="window.location.href='index.html'"
+              class="inline-flex items-center gap-2 px-6 py-3 bg-accent-500 hover:bg-accent-600 text-white font-semibold rounded-xl transition-colors shadow-lg">
+        ✨ Start Designing
+      </button>
+    </div>
+
+    <!-- Cart items -->
+    <div id="cartList" class="hidden">
+      <!-- Toolbar -->
+      <div class="flex items-center justify-between mb-4">
+        <div class="flex items-center gap-3">
+          <label class="flex items-center gap-2 cursor-pointer select-none">
+            <input id="selectAllCb" type="checkbox"
+                   class="w-4 h-4 rounded accent-primary-700 cursor-pointer">
+            <span class="text-sm text-gray-500 font-medium">Select all</span>
+          </label>
+          <!-- Selection count badge — hidden until items selected -->
+          <span id="selectionBar" class="hidden items-center gap-1.5 px-2.5 py-0.5 bg-primary-100 text-primary-800 text-xs font-semibold rounded-full">
+            <span id="selectionCount"></span>
+          </span>
+        </div>
+        <div class="flex items-center gap-3">
+          <span id="cartCount" class="text-sm font-medium text-gray-500"></span>
+          <a href="index.html"
+             class="inline-flex items-center gap-1.5 text-sm text-primary-700 hover:text-primary-900 font-medium">
+            + Add more designs
+          </a>
+        </div>
+      </div>
+
+      <div id="cartGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+
+      <!-- CTA -->
+      <div class="mt-10 bg-white rounded-2xl border border-gray-200 p-6 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm">
+        <div>
+          <p class="font-semibold text-gray-900">Ready to order?</p>
+          <p class="text-sm text-gray-500 mt-0.5">Select items above (or leave all unselected to include everything). We'll prepare a custom quote within 24 hours.</p>
+        </div>
+        <button id="requestQuoteBtn"
+                style="background:#2e7d32;color:white;font-weight:600;padding:12px 24px;border:none;border-radius:12px;font-size:14px;cursor:pointer;white-space:nowrap;display:inline-flex;align-items:center;gap:8px;">
+          Request a Quote
+          <svg style="width:16px;height:16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ── Quote Request Modal ──────────────────────────────────────────── -->
+  <div id="quoteModal" style="display:none"
+       class="fixed inset-0 bg-black/60 z-[9999] flex items-start justify-center p-4 overflow-y-auto">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg my-8">
+
+      <!-- Header -->
+      <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+        <div>
+          <h3 class="text-lg font-bold text-gray-900">Request a Quote</h3>
+          <p class="text-sm text-gray-500 mt-0.5">We'll get back to you within 24 hours</p>
+        </div>
+        <button id="quoteModalClose" class="text-gray-400 hover:text-gray-600 text-2xl leading-none">×</button>
+      </div>
+
+      <div class="px-6 py-5 space-y-5">
+
+        <!-- Items summary -->
+        <div>
+          <p class="text-sm font-semibold text-gray-700 mb-2">Your Designs</p>
+          <div id="quoteSummary" class="space-y-2 max-h-48 overflow-y-auto"></div>
+        </div>
+
+        <hr class="border-gray-100">
+
+        <!-- Contact info -->
+        <div>
+          <p class="text-sm font-semibold text-gray-700 mb-3">Contact Information</p>
+          <div class="space-y-3">
+
+            <div>
+              <label class="block text-sm text-gray-600 mb-1">Name</label>
+              <input id="q-name" type="text" placeholder="Your name"
+                     style="width:100%;border:1px solid #d1d5db;border-radius:8px;padding:10px 12px;font-size:14px;box-sizing:border-box;">
+            </div>
+
+            <div>
+              <label class="block text-sm text-gray-600 mb-1">Email <span class="text-gray-400 text-xs">(from your account)</span></label>
+              <input id="q-email" type="email" readonly
+                     style="width:100%;border:1px solid #e5e7eb;border-radius:8px;padding:10px 12px;font-size:14px;box-sizing:border-box;background:#f9fafb;color:#6b7280;">
+            </div>
+
+            <div>
+              <label class="block text-sm text-gray-600 mb-1">Phone <span class="text-red-500">*</span></label>
+              <input id="q-phone" type="tel" placeholder="e.g. +1 416 555 0100" required
+                     style="width:100%;border:1px solid #d1d5db;border-radius:8px;padding:10px 12px;font-size:14px;box-sizing:border-box;">
+            </div>
+
+            <div>
+              <label class="block text-sm text-gray-600 mb-1">Business / Restaurant Name</label>
+              <input id="q-company" type="text" placeholder="Optional"
+                     style="width:100%;border:1px solid #d1d5db;border-radius:8px;padding:10px 12px;font-size:14px;box-sizing:border-box;">
+            </div>
+
+            <div>
+              <label class="block text-sm text-gray-600 mb-1">Notes</label>
+              <textarea id="q-notes" rows="3" placeholder="Any special requirements, questions..."
+                        style="width:100%;border:1px solid #d1d5db;border-radius:8px;padding:10px 12px;font-size:14px;box-sizing:border-box;resize:vertical;"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div id="quoteError" style="display:none;color:#dc2626;background:#fef2f2;border-radius:8px;padding:8px 12px;font-size:14px;"></div>
+
+        <button id="quoteSubmitBtn"
+                style="width:100%;padding:14px;background:#2e7d32;color:white;font-weight:700;border:none;border-radius:12px;font-size:15px;cursor:pointer;">
+          Submit Quote Request
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Quote Success Modal ──────────────────────────────────────────── -->
+  <div id="quoteSuccess" style="display:none"
+       class="fixed inset-0 bg-black/60 z-[9999] flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-8 text-center">
+      <div class="w-16 h-16 bg-primary-50 rounded-full flex items-center justify-center mx-auto mb-4">
+        <svg class="w-8 h-8 text-primary-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+        </svg>
+      </div>
+      <h3 class="text-xl font-bold text-gray-900 mb-2">Quote Request Submitted!</h3>
+      <p class="text-gray-500 mb-2">We've received your request and will send you a detailed quote within 24 hours.</p>
+      <p class="text-sm text-gray-400 mb-6">The items you selected have been moved out of your cart. You can track your request in <strong class="text-gray-600">My Orders</strong>.</p>
+      <div class="flex flex-col sm:flex-row gap-3 justify-center">
+        <a href="orders.html"
+           style="padding:10px 24px;background:#2e7d32;color:white;font-weight:600;border-radius:10px;font-size:14px;text-decoration:none;display:inline-flex;align-items:center;gap:6px;">
+          View My Orders
+          <svg style="width:14px;height:14px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+          </svg>
+        </a>
+        <button onclick="document.getElementById('quoteSuccess').style.display='none'"
+                style="padding:10px 24px;background:#f3f4f6;color:#374151;font-weight:600;border:none;border-radius:10px;font-size:14px;cursor:pointer;">
+          Stay in Cart
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div id="footer"></div>
+
+  <script type="module">
+    import { initNav, initFooter } from './js/components.js';
+    import { initCart } from './js/cart.js';
+    initNav();
+    initFooter();
+    initCart();
+  </script>
+</body>
+</html>

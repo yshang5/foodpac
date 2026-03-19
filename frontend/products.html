@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/x-icon" href="assets/images/favicon.ico">
+  <link rel="apple-touch-icon" href="assets/images/apple-touch-icon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Products – foodPac</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: { 50:'#f1f8e9',100:'#dcedc8',200:'#c5e1a5',500:'#4caf50',600:'#43a047',700:'#388e3c',800:'#2e7d32',900:'#1b5e20' },
+            accent:  { 400:'#ffa726',500:'#f57c00',600:'#e65100' }
+          },
+          fontFamily: { sans: ['Inter','ui-sans-serif','system-ui'] }
+        }
+      }
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/main.css">
+</head>
+<body class="font-sans text-gray-800 bg-white">
+
+  <div id="navbar"></div>
+
+  <!-- PAGE HERO -->
+  <section class="hero-gradient text-white py-14">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="max-w-2xl">
+        <p class="text-primary-200 text-sm font-medium mb-3 uppercase tracking-wider">Our Range</p>
+        <h1 class="text-4xl lg:text-5xl font-extrabold mb-4">Packaging Products</h1>
+        <p class="text-white/75 text-lg">Eco-friendly, custom-branded packaging for every part of your operation. All products available from 1,000 units.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FILTER + GRID -->
+  <section class="py-12 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-wrap gap-2 mb-10" id="filterBar"></div>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" id="productGrid"></div>
+      <div id="emptyState" class="hidden text-center py-20 text-gray-400">
+        <svg class="w-12 h-12 mx-auto mb-4 opacity-40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+        </svg>
+        <p class="text-lg font-medium">No products in this category yet.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA STRIP -->
+  <section class="bg-primary-50 border-t border-primary-100 py-14">
+    <div class="max-w-4xl mx-auto px-4 text-center">
+      <h2 class="text-2xl lg:text-3xl font-bold text-gray-900 mb-3">Don't see exactly what you need?</h2>
+      <p class="text-gray-500 mb-7">We handle custom requests. Tell us your requirements and we'll find the perfect solution.</p>
+      <a href="contact.html"
+         class="inline-flex items-center gap-2 px-7 py-3.5 bg-primary-800 hover:bg-primary-900 text-white font-semibold rounded-lg transition-colors shadow-lg shadow-primary-800/20">
+        Talk to Our Team
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+        </svg>
+      </a>
+    </div>
+  </section>
+
+  <div id="footer"></div>
+
+  <script type="module">
+    import { initNav, initFooter } from './js/components.js';
+    import { fetchProducts, submitQuote } from './js/api.js';
+    import { CATEGORIES } from './js/products.js';
+    import { initDesignWidget } from './js/design-widget.js';
+
+    initNav('products');
+    initFooter();
+    initDesignWidget();
+
+    const TAG_STYLES = {
+      green:  'bg-primary-100 text-primary-800',
+      orange: 'bg-amber-100 text-amber-800',
+      blue:   'bg-blue-100 text-blue-800',
+    };
+
+    function buildCard(p) {
+      const tag = p.tag
+        ? `<span class="absolute top-3 left-3 text-xs font-semibold px-2 py-0.5 rounded-full ${TAG_STYLES[p.tagStyle]}">${p.tag}</span>`
+        : '';
+      return `
+        <div class="product-card bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden card-hover flex flex-col" data-cat="${p.category}">
+          <div class="relative h-48 bg-primary-50 overflow-hidden">
+            ${tag}
+            <img src="${p.image}" alt="${p.name}" class="product-img w-full h-full object-cover"
+                 onerror="this.style.display='none'">
+          </div>
+          <div class="p-5 flex flex-col flex-1">
+            <h3 class="font-bold text-gray-900 mb-1">${p.name}</h3>
+            <p class="text-gray-500 text-sm leading-relaxed flex-1">${p.description}</p>
+            <div class="mt-4 flex items-center justify-between">
+              <span class="text-xs text-gray-400">MOQ: <span class="font-semibold text-gray-600">${p.moq} units</span></span>
+              <a href="contact.html?product=${p.id}"
+                 class="text-sm font-semibold text-primary-700 hover:text-primary-900 flex items-center gap-1 transition-colors">
+                Get Quote
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                </svg>
+              </a>
+            </div>
+          </div>
+        </div>`;
+    }
+
+    async function renderProducts(cat) {
+      const grid  = document.getElementById('productGrid');
+      const empty = document.getElementById('emptyState');
+      const items = await fetchProducts(cat);
+      if (items.length === 0) {
+        grid.innerHTML = '';
+        empty.classList.remove('hidden');
+      } else {
+        empty.classList.add('hidden');
+        grid.innerHTML = items.map(buildCard).join('');
+      }
+    }
+
+    // Build filter bar from categories
+    const filterBar = document.getElementById('filterBar');
+    CATEGORIES.forEach(({ key, label }) => {
+      const btn = document.createElement('button');
+      btn.dataset.cat = key;
+      btn.className = 'filter-btn px-4 py-2 rounded-full text-sm font-medium border border-gray-200 text-gray-700 hover:border-primary-700 hover:text-primary-800 transition-colors';
+      btn.textContent = label;
+      filterBar.appendChild(btn);
+    });
+
+    filterBar.addEventListener('click', e => {
+      const btn = e.target.closest('.filter-btn');
+      if (!btn) return;
+      filterBar.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderProducts(btn.dataset.cat);
+    });
+
+    // Activate category from URL or default to 'all'
+    const urlCat = new URLSearchParams(location.search).get('cat') || 'all';
+    const activeBtn = filterBar.querySelector(`[data-cat="${urlCat}"]`);
+    if (activeBtn) activeBtn.classList.add('active');
+    renderProducts(urlCat);
+  </script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "foodPac",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["serve", "frontend"],
+      "port": 3000,
+      "autoPort": true
+    }
+  ]
+}

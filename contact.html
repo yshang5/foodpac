@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Get a Quote – foodPac</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: { 50:'#f1f8e9', 100:'#dcedc8', 200:'#c5e1a5', 500:'#4caf50', 600:'#43a047', 700:'#388e3c', 800:'#2e7d32', 900:'#1b5e20' },
+            accent:  { 400:'#ffa726', 500:'#f57c00', 600:'#e65100' }
+          },
+          fontFamily: { sans: ['Inter','ui-sans-serif','system-ui'] }
+        }
+      }
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    html { scroll-behavior: smooth; }
+    .hero-gradient { background: linear-gradient(135deg,#1b5e20 0%,#2e7d32 40%,#388e3c 70%,#1b5e20 100%); }
+    .nav-link { position: relative; }
+    .nav-link::after { content:''; position:absolute; bottom:-2px; left:0; width:0; height:2px; background:#f57c00; transition:width .2s ease; }
+    .nav-link:hover::after { width:100%; }
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: #2e7d32;
+      box-shadow: 0 0 0 3px rgba(46,125,50,0.15);
+    }
+  </style>
+</head>
+<body class="font-sans text-gray-800 bg-white">
+
+  <!-- NAV -->
+  <header class="sticky top-0 z-50 bg-white shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <a href="index.html" class="flex items-center gap-2 shrink-0">
+          <div class="flex items-center gap-1">
+            <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+              <polygon points="18,2 32,10 32,26 18,34 4,26 4,10" fill="#2e7d32"/>
+              <polygon points="18,6 29,12 29,24 18,30 7,24 7,12" fill="#388e3c"/>
+              <path d="M12 20 L16 16 L20 19 L26 13" stroke="#f57c00" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+              <path d="M14 22 L14 17" stroke="#f57c00" stroke-width="2" stroke-linecap="round"/>
+              <path d="M17 22 L17 16" stroke="#f57c00" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <span class="text-xl font-bold"><span class="text-primary-800">food</span><span class="text-primary-600">Pac</span></span>
+          </div>
+        </a>
+        <nav class="hidden md:flex items-center gap-8">
+          <a href="products.html" class="nav-link text-sm font-medium text-gray-700 hover:text-primary-800">Products</a>
+          <a href="index.html#how-it-works" class="nav-link text-sm font-medium text-gray-700 hover:text-primary-800">How It Works</a>
+          <a href="index.html#why-foodpac" class="nav-link text-sm font-medium text-gray-700 hover:text-primary-800">Why foodPac</a>
+          <a href="index.html#restaurant-types" class="nav-link text-sm font-medium text-gray-700 hover:text-primary-800">Solutions</a>
+          <a href="about.html" class="nav-link text-sm font-medium text-gray-700 hover:text-primary-800">About</a>
+        </nav>
+        <div class="flex items-center gap-3">
+          <a href="contact.html" class="hidden sm:inline-flex items-center px-5 py-2.5 bg-accent-500 hover:bg-accent-600 text-white text-sm font-semibold rounded-lg transition-colors">Get a Quote</a>
+          <button id="menuToggle" class="md:hidden p-2 rounded-md text-gray-700 hover:bg-gray-100">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div id="mobileMenu" class="hidden md:hidden border-t border-gray-100 bg-white px-4 pb-4 pt-2">
+      <nav class="flex flex-col gap-3">
+        <a href="products.html" class="text-sm font-medium text-gray-700 py-2">Products</a>
+        <a href="index.html#how-it-works" class="text-sm font-medium text-gray-700 py-2">How It Works</a>
+        <a href="index.html#why-foodpac" class="text-sm font-medium text-gray-700 py-2">Why foodPac</a>
+        <a href="index.html#restaurant-types" class="text-sm font-medium text-gray-700 py-2">Solutions</a>
+        <a href="about.html" class="text-sm font-medium text-gray-700 py-2">About</a>
+        <a href="contact.html" class="inline-flex items-center justify-center px-5 py-2.5 bg-accent-500 text-white text-sm font-semibold rounded-lg">Get a Quote</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- PAGE HERO -->
+  <section class="hero-gradient text-white py-14">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="max-w-2xl">
+        <p class="text-primary-200 text-sm font-medium mb-3 uppercase tracking-wider">Free Consultation</p>
+        <h1 class="text-4xl lg:text-5xl font-extrabold mb-4">Get a Free Quote</h1>
+        <p class="text-white/75 text-lg">Tell us about your restaurant and packaging needs. Our team will get back to you within 24 hours.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FORM + INFO -->
+  <section class="py-16 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid lg:grid-cols-3 gap-12">
+
+        <!-- LEFT: Info -->
+        <div class="lg:col-span-1 space-y-8">
+          <div>
+            <h2 class="text-xl font-bold text-gray-900 mb-5">Why request a quote?</h2>
+            <ul class="space-y-4">
+              <li class="flex gap-3">
+                <div class="w-8 h-8 bg-primary-100 rounded-lg flex items-center justify-center shrink-0 mt-0.5">
+                  <svg class="w-4 h-4 text-primary-800" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </div>
+                <div>
+                  <p class="font-semibold text-gray-900 text-sm">Free AI design mockup</p>
+                  <p class="text-gray-500 text-sm">We'll generate packaging designs using your logo at no cost.</p>
+                </div>
+              </li>
+              <li class="flex gap-3">
+                <div class="w-8 h-8 bg-primary-100 rounded-lg flex items-center justify-center shrink-0 mt-0.5">
+                  <svg class="w-4 h-4 text-primary-800" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </div>
+                <div>
+                  <p class="font-semibold text-gray-900 text-sm">Transparent pricing</p>
+                  <p class="text-gray-500 text-sm">No hidden fees. We match the cost of generic packaging.</p>
+                </div>
+              </li>
+              <li class="flex gap-3">
+                <div class="w-8 h-8 bg-primary-100 rounded-lg flex items-center justify-center shrink-0 mt-0.5">
+                  <svg class="w-4 h-4 text-primary-800" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                </div>
+                <div>
+                  <p class="font-semibold text-gray-900 text-sm">Fast turnaround</p>
+                  <p class="text-gray-500 text-sm">Quote and design samples within 24 hours. Production in 2–3 weeks.</p>
+                </div>
+              </li>
+              <li class="flex gap-3">
+                <div class="w-8 h-8 bg-primary-100 rounded-lg flex items-center justify-center shrink-0 mt-0.5">
+                  <svg class="w-4 h-4 text-primary-800" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064"/></svg>
+                </div>
+                <div>
+                  <p class="font-semibold text-gray-900 text-sm">100% eco-friendly</p>
+                  <p class="text-gray-500 text-sm">All products are compostable or recyclable — compliant with Canadian regulations.</p>
+                </div>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Contact details -->
+          <div class="bg-primary-50 rounded-2xl p-6 border border-primary-100">
+            <h3 class="font-bold text-gray-900 mb-4">Contact Us Directly</h3>
+            <ul class="space-y-3 text-sm text-gray-600">
+              <li class="flex items-center gap-3">
+                <svg class="w-4 h-4 text-primary-700 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                <span>hello@foodpac.ca</span>
+              </li>
+              <li class="flex items-center gap-3">
+                <svg class="w-4 h-4 text-primary-700 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/></svg>
+                <span>Toronto, Ontario, Canada</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- RIGHT: Form -->
+        <div class="lg:col-span-2">
+          <div class="bg-white border border-gray-200 rounded-2xl p-8 shadow-sm">
+
+            <!-- Success state (hidden by default) -->
+            <div id="successMsg" class="hidden text-center py-12">
+              <div class="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg class="w-8 h-8 text-primary-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              </div>
+              <h3 class="text-2xl font-bold text-gray-900 mb-2">Thanks! We'll be in touch.</h3>
+              <p class="text-gray-500">Our team will review your request and get back to you within 24 hours with a free design mockup and pricing.</p>
+              <a href="products.html" class="inline-flex mt-6 items-center gap-2 text-primary-700 font-semibold hover:text-primary-900">
+                Explore more products
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+              </a>
+            </div>
+
+            <form id="quoteForm" class="space-y-6">
+              <h2 class="text-xl font-bold text-gray-900 mb-1">Tell us about your needs</h2>
+              <p class="text-gray-500 text-sm mb-6">All fields marked * are required.</p>
+
+              <!-- Business info -->
+              <div class="grid sm:grid-cols-2 gap-5">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1.5">Restaurant / Business Name *</label>
+                  <input type="text" name="business_name" required placeholder="e.g. Green Garden Café"
+                    class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm transition-all">
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1.5">Contact Name *</label>
+                  <input type="text" name="contact_name" required placeholder="Your full name"
+                    class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm transition-all">
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1.5">Email Address *</label>
+                  <input type="email" name="email" required placeholder="you@yourrestaurant.com"
+                    class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm transition-all">
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1.5">Phone Number</label>
+                  <input type="tel" name="phone" placeholder="+1 (416) 000-0000"
+                    class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm transition-all">
+                </div>
+              </div>
+
+              <div class="grid sm:grid-cols-2 gap-5">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1.5">City *</label>
+                  <input type="text" name="city" required placeholder="e.g. Toronto"
+                    class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm transition-all">
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1.5">Restaurant Type</label>
+                  <select name="restaurant_type" class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm transition-all bg-white">
+                    <option value="">Select type…</option>
+                    <option>Cafe / Coffee Shop</option>
+                    <option>Asian Restaurant</option>
+                    <option>Fast Food / Burgers</option>
+                    <option>Pizza / Italian</option>
+                    <option>Healthy / Salads</option>
+                    <option>Food Truck / Pop-Up</option>
+                    <option>Other</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Divider -->
+              <hr class="border-gray-100">
+
+              <!-- Packaging needs -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-3">Products I'm interested in</label>
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-2" id="productChecks">
+                  <label class="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
+                    <input type="checkbox" name="products" value="Takeout Boxes" class="accent-primary-700 w-4 h-4"> Takeout Boxes
+                  </label>
+                  <label class="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
+                    <input type="checkbox" name="products" value="Cups & Lids" class="accent-primary-700 w-4 h-4"> Cups & Lids
+                  </label>
+                  <label class="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
+                    <input type="checkbox" name="products" value="Paper Bags" class="accent-primary-700 w-4 h-4"> Paper Bags
+                  </label>
+                  <label class="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
+                    <input type="checkbox" name="products" value="Bowls" class="accent-primary-700 w-4 h-4"> Bowls
+                  </label>
+                  <label class="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
+                    <input type="checkbox" name="products" value="Wrapping Paper" class="accent-primary-700 w-4 h-4"> Wrapping Paper
+                  </label>
+                  <label class="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
+                    <input type="checkbox" name="products" value="Cutlery" class="accent-primary-700 w-4 h-4"> Cutlery
+                  </label>
+                </div>
+              </div>
+
+              <div class="grid sm:grid-cols-2 gap-5">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1.5">Estimated Monthly Quantity *</label>
+                  <select name="quantity" required class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm transition-all bg-white">
+                    <option value="">Select range…</option>
+                    <option>1,000 – 2,000 units</option>
+                    <option>2,000 – 5,000 units</option>
+                    <option>5,000 – 10,000 units</option>
+                    <option>10,000+ units</option>
+                    <option>Not sure yet</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1.5">Do you have a logo/brand assets?</label>
+                  <select name="has_logo" class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm transition-all bg-white">
+                    <option value="">Select…</option>
+                    <option>Yes — I have a logo ready</option>
+                    <option>Partially — I have some assets</option>
+                    <option>No — I need help with branding</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1.5">Additional notes or requirements</label>
+                <textarea name="notes" rows="4" placeholder="E.g. specific sizes, colours, eco certifications needed, delivery schedule…"
+                  class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm transition-all resize-none"></textarea>
+              </div>
+
+              <div class="flex items-start gap-3">
+                <input type="checkbox" id="consent" name="consent" required class="accent-primary-700 w-4 h-4 mt-0.5">
+                <label for="consent" class="text-sm text-gray-500">I agree to be contacted by foodPac regarding this quote request. We respect your privacy and will never share your information.</label>
+              </div>
+
+              <button type="submit"
+                class="w-full py-3.5 bg-primary-800 hover:bg-primary-900 text-white font-semibold rounded-xl transition-colors shadow-lg shadow-primary-800/20 flex items-center justify-center gap-2">
+                Submit Quote Request
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="bg-primary-900 text-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div>
+          <span class="text-xl font-bold"><span class="text-white">food</span><span class="text-accent-400">Pac</span></span>
+          <p class="text-white/60 text-sm mt-3">Professional Takeaway Solutions for independent restaurants across Canada.</p>
+        </div>
+        <div>
+          <h4 class="font-semibold mb-4 text-white/90">Products</h4>
+          <ul class="space-y-2 text-sm text-white/60">
+            <li><a href="products.html?cat=boxes"   class="hover:text-white">Takeout Boxes</a></li>
+            <li><a href="products.html?cat=cups"    class="hover:text-white">Cups & Lids</a></li>
+            <li><a href="products.html?cat=bags"    class="hover:text-white">Paper Bags</a></li>
+            <li><a href="products.html?cat=bowls"   class="hover:text-white">Bowls</a></li>
+            <li><a href="products.html?cat=wraps"   class="hover:text-white">Wrapping Paper</a></li>
+            <li><a href="products.html?cat=cutlery" class="hover:text-white">Cutlery Sets</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="font-semibold mb-4 text-white/90">Company</h4>
+          <ul class="space-y-2 text-sm text-white/60">
+            <li><a href="about.html" class="hover:text-white">About Us</a></li>
+            <li><a href="index.html#how-it-works" class="hover:text-white">How It Works</a></li>
+            <li><a href="contact.html" class="hover:text-white">Contact</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="font-semibold mb-4 text-white/90">Contact</h4>
+          <p class="text-sm text-white/60">hello@foodpac.ca</p>
+          <p class="text-sm text-white/60 mt-1">Toronto, Ontario, Canada</p>
+        </div>
+      </div>
+      <div class="border-t border-white/10 mt-10 pt-6 text-sm text-white/40 flex flex-col sm:flex-row justify-between gap-3">
+        <p>© 2025 foodPac. All rights reserved.</p>
+        <div class="flex gap-6"><a href="#" class="hover:text-white/70">Privacy Policy</a><a href="#" class="hover:text-white/70">Terms</a></div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Pre-select product from URL ?product=xxx
+    const urlProduct = new URLSearchParams(location.search).get('product');
+    if (urlProduct) {
+      const productMap = {
+        'box-kraft':'Takeout Boxes','box-hinged':'Takeout Boxes','box-noodle':'Takeout Boxes','box-window':'Takeout Boxes',
+        'cup-hot':'Cups & Lids','cup-cold':'Cups & Lids','cup-sleeve':'Cups & Lids','cup-lid':'Cups & Lids',
+        'bag-kraft-sm':'Paper Bags','bag-kraft-lg':'Paper Bags','bag-foil':'Paper Bags',
+        'bowl-salad':'Bowls','bowl-soup':'Bowls','bowl-lid':'Bowls',
+        'wrap-deli':'Wrapping Paper','wrap-tissue':'Wrapping Paper',
+        'cut-set':'Cutlery','cut-fork':'Cutlery','cut-spoon':'Cutlery','cut-straw':'Cutlery',
+      };
+      const cat = productMap[urlProduct];
+      if (cat) {
+        document.querySelectorAll('input[name="products"]').forEach(cb => {
+          if (cb.value === cat) cb.checked = true;
+        });
+      }
+    }
+
+    // Form submit — currently shows success UI; wire to backend later
+    document.getElementById('quoteForm').addEventListener('submit', e => {
+      e.preventDefault();
+      document.getElementById('quoteForm').classList.add('hidden');
+      document.getElementById('successMsg').classList.remove('hidden');
+      // TODO: POST form data to backend API endpoint, e.g.:
+      // const data = Object.fromEntries(new FormData(e.target));
+      // fetch('/api/quote', { method:'POST', body: JSON.stringify(data) })
+    });
+
+    // Mobile menu
+    document.getElementById('menuToggle').addEventListener('click', () => {
+      document.getElementById('mobileMenu').classList.toggle('hidden');
+    });
+  </script>
+</body>
+</html>
