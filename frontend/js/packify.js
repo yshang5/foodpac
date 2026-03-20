@@ -349,19 +349,10 @@ export function openDesign(opts = {}) {
 // ── Init ──────────────────────────────────────────────────────────────────────
 export async function initPackify() {
   await loadSDK();
-  await window.packify?.init({
-    appId:    PACKIFY_APP_ID,
-    language: navigator.language?.startsWith('zh') ? 'zh' : 'en',
-    packifyConfig: {
-      themeColor:    '#2e7d32',
-      enterpriseLogo: window.location.origin + '/assets/images/logo-icon.png',
-      numberOfDesignImages: 4
-    }
-  });
 
+  // Inject UI immediately — don't wait for init() to resolve/reject
   injectResultsPanel();
   _watchEditorBars();
-
   injectFAB();
 
   // Wire all "Design Online" buttons/links on the page
@@ -370,6 +361,20 @@ export async function initPackify() {
   });
   // Also support legacy onclick="openDesignWidget && openDesignWidget()"
   window.openDesignWidget = openDesign;
+
+  // Init SDK in background with 5s timeout guard — UI above is already live
+  await Promise.race([
+    window.packify?.init({
+      appId:    PACKIFY_APP_ID,
+      language: navigator.language?.startsWith('zh') ? 'zh' : 'en',
+      packifyConfig: {
+        themeColor:    '#2e7d32',
+        enterpriseLogo: window.location.origin + '/assets/images/logo-icon.png',
+        numberOfDesignImages: 4
+      }
+    }),
+    new Promise(resolve => setTimeout(resolve, 5000))
+  ]);
 
   // Re-open Packify if user was redirected here after login while trying to add to cart
   if (sessionStorage.getItem(REOPEN_DESIGN_KEY)) {
