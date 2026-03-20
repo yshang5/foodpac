@@ -19,3 +19,6 @@ Thumbs.db
 
 # Node (dev tooling)
 node_modules/
+
+# Deploy script (contains server info, keep local only)
+deploy.sh
