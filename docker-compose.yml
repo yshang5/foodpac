@@ -16,6 +16,13 @@ services:
       - backend
     networks:
       - foodpac-net
+    deploy:
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: 128M
+        reservations:
+          memory: 64M
 
   # ── Backend (Spring Boot) ──────────────────────────────────────────
   backend:
@@ -36,6 +43,7 @@ services:
       OPENAI_API_KEY:     ${OPENAI_API_KEY}
       PACKIFY_API_KEY:    ${PACKIFY_API_KEY}
       RESEND_API_KEY:     ${RESEND_API_KEY}
+      JAVA_OPTS:          "-Xms256m -Xmx512m -XX:+UseContainerSupport"
     expose:
       - "8080"             # only reachable from within Docker network (via Nginx)
     depends_on:
@@ -43,6 +51,13 @@ services:
         condition: service_healthy
     networks:
       - foodpac-net
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 700M
+        reservations:
+          memory: 400M
 
   # ── Database (PostgreSQL) ──────────────────────────────────────────
   db:
@@ -53,8 +68,6 @@ services:
       POSTGRES_DB:       foodpac
       POSTGRES_USER:     ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
-    ports:
-      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -64,6 +77,13 @@ services:
       retries: 5
     networks:
       - foodpac-net
+    deploy:
+      resources:
+        limits:
+          cpus: '0.75'
+          memory: 512M
+        reservations:
+          memory: 256M
 
 volumes:
   postgres_data:
