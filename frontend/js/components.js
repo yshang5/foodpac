@@ -91,12 +91,12 @@ export async function initNav(activePage = '') {
             🌱 Canada's Eco-Friendly Packaging Partner — Custom branded, low MOQ, fast delivery
           </span>
           <div class="flex items-center gap-5 ml-auto text-white/80">
-            <a href="mailto:hello@foodpac.ca" class="flex items-center gap-1.5 hover:text-white transition-colors">
+            <a href="mailto:hi@foodpac.ai" class="flex items-center gap-1.5 hover:text-white transition-colors">
               <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
               </svg>
-              hello@foodpac.ca
+              hi@foodpac.ai
             </a>
             <span class="hidden md:flex items-center gap-1.5">
               <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -319,6 +319,14 @@ function _renderUserMenu(user) {
               </svg>
               My Orders
             </a>
+            <a href="design-history.html"
+               class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-800 transition-colors">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+              </svg>
+              My Design History
+            </a>
           </div>
           <div class="border-t border-gray-100 py-1">
             <button id="logoutBtn"
@@ -344,6 +352,7 @@ function _renderUserMenu(user) {
       </div>
       <a href="profile.html" class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-primary-50 rounded-lg">My Profile</a>
       <a href="orders.html" class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-primary-50 rounded-lg">My Orders</a>
+      <a href="design-history.html" class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-primary-50 rounded-lg">My Design History</a>
       <button id="logoutBtnMobile" class="w-full text-left flex items-center gap-3 px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 rounded-lg">Sign out</button>`;
 
     document.getElementById('logoutBtn')?.addEventListener('click', logout);
@@ -421,7 +430,7 @@ export function initFooter() {
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
                 </svg>
-                <span>hello@foodpac.ca</span>
+                <span>hi@foodpac.ai</span>
               </li>
               <li class="flex items-start gap-2">
                 <svg class="w-4 h-4 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
