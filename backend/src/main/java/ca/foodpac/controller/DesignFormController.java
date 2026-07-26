@@ -110,7 +110,8 @@ public class DesignFormController {
                 "productId", i.getProductId(),
                 "productLabel", i.getProductLabel(),
                 "productType", i.getProductType(),
-                "imageUrl", i.getImageUrl())).toList()));
+                "imageUrl", i.getImageUrl(),
+                "createdAt", i.getCreatedAt())).toList()));
     }
 
     // ── Claim guest history after login (idempotent) ──────────────────────────

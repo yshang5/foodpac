@@ -1160,6 +1160,9 @@
         } catch {}
       }
     })();
+
+    // Deep link from design-history "Redesign": index.html?design=1 opens the modal
+    if (new URLSearchParams(location.search).has('design')) fpOpenDesign();
   </script>
 
   <script type="module">

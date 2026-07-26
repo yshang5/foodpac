@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="robots" content="noindex,nofollow" />
+  <link rel="icon" type="image/x-icon" href="assets/images/favicon.ico?v=2">
+  <link rel="apple-touch-icon" href="assets/images/apple-touch-icon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Design History – foodPac</title>
+  <link rel="stylesheet" href="css/tailwind.css?v=20260726bb">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/main.css">
+</head>
+<body class="font-sans text-gray-800 bg-gray-50 antialiased">
+
+  <div id="navbar"></div>
+
+  <!-- ── PAGE HERO ─────────────────────────────────────────── -->
+  <section class="hero-gradient text-white py-14">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <p class="text-primary-200 text-sm font-medium mb-3 uppercase tracking-wider">My Account</p>
+      <h1 class="text-4xl lg:text-5xl font-extrabold mb-4">My Design History</h1>
+      <p class="text-white/75 text-lg">Every AI design you've generated — pick up where you left off, or order straight away.</p>
+    </div>
+  </section>
+
+  <!-- ── CONTENT ───────────────────────────────────────────── -->
+  <section class="py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+      <!-- Loading -->
+      <div id="dh-loading" class="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div class="bg-white rounded-2xl border border-gray-100 overflow-hidden"><div class="aspect-[4/3] bg-gray-100 animate-pulse"></div><div class="p-4"><div class="h-4 w-32 bg-gray-100 rounded animate-pulse"></div></div></div>
+        <div class="bg-white rounded-2xl border border-gray-100 overflow-hidden"><div class="aspect-[4/3] bg-gray-100 animate-pulse"></div><div class="p-4"><div class="h-4 w-32 bg-gray-100 rounded animate-pulse"></div></div></div>
+        <div class="bg-white rounded-2xl border border-gray-100 overflow-hidden"><div class="aspect-[4/3] bg-gray-100 animate-pulse"></div><div class="p-4"><div class="h-4 w-32 bg-gray-100 rounded animate-pulse"></div></div></div>
+        <div class="bg-white rounded-2xl border border-gray-100 overflow-hidden"><div class="aspect-[4/3] bg-gray-100 animate-pulse"></div><div class="p-4"><div class="h-4 w-32 bg-gray-100 rounded animate-pulse"></div></div></div>
+      </div>
+
+      <!-- Not signed in -->
+      <div id="dh-login" class="hidden max-w-md mx-auto bg-white rounded-2xl border border-gray-200 p-10 text-center">
+        <div class="w-14 h-14 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <svg class="w-7 h-7 text-primary-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
+            <circle cx="12" cy="7" r="4" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"/>
+          </svg>
+        </div>
+        <h2 class="text-xl font-bold text-gray-900 mb-2">Sign in to see your designs</h2>
+        <p class="text-gray-500 text-sm mb-6">Your design history is saved to your account. Sign in with Google to view it.</p>
+        <button id="dh-login-btn" class="w-full py-3 bg-primary-800 hover:bg-primary-900 text-white font-bold rounded-xl transition-colors">
+          Sign in with Google
+        </button>
+      </div>
+
+      <!-- Empty -->
+      <div id="dh-empty" class="hidden max-w-md mx-auto bg-white rounded-2xl border border-gray-200 p-10 text-center">
+        <div class="text-4xl mb-4">🎨</div>
+        <h2 class="text-xl font-bold text-gray-900 mb-2">No designs yet</h2>
+        <p class="text-gray-500 text-sm mb-6">Generate your first AI packaging design in under 5 minutes — free, unlimited revisions.</p>
+        <a href="index.html?design=1" class="inline-flex items-center gap-2 px-6 py-3 bg-accent-500 hover:bg-accent-600 text-white font-bold rounded-xl transition-colors">
+          ✨ Start Designing
+        </a>
+      </div>
+
+      <!-- Grid -->
+      <div id="dh-grid" class="hidden grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"></div>
+    </div>
+  </section>
+
+  <div id="footer"></div>
+
+  <!-- ── ORDER MODAL（与首页一致：选规格 → 加购）──────────── -->
+  <div id="fp-order-modal" class="hidden fixed inset-0 bg-black/60 z-[9992] flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md max-h-[92vh] flex flex-col overflow-hidden">
+      <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between shrink-0">
+        <h3 class="text-lg font-bold text-gray-900">Order This Design</h3>
+        <button onclick="document.getElementById('fp-order-modal').classList.add('hidden')" class="text-gray-400 hover:text-gray-600 text-2xl leading-none">×</button>
+      </div>
+      <form id="fp-order-form" class="px-6 py-5 space-y-4 overflow-y-auto">
+        <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-xl">
+          <img id="fpo-preview" src="" alt="Design" class="w-16 h-16 rounded-lg object-cover border border-gray-200">
+          <div>
+            <p id="fpo-label" class="text-sm font-bold text-gray-900"></p>
+            <p class="text-xs text-gray-500">Selected design</p>
+          </div>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Size <span class="text-red-500">*</span></label>
+          <select id="fpo-size" required class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm bg-white">
+            <option value="">Loading sizes…</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Quantity <span class="text-red-500">*</span></label>
+          <input type="number" id="fpo-qty" required min="1000" step="500" placeholder="Minimum 1,000"
+                 class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm">
+          <p class="text-xs text-gray-400 mt-1">Minimum order: 1,000 units</p>
+        </div>
+        <div id="fpo-error" class="hidden text-sm text-red-700 bg-red-50 border border-red-200 rounded-lg px-4 py-2.5"></div>
+        <button type="submit" id="fpo-submit"
+                class="w-full py-3 bg-primary-800 hover:bg-primary-900 text-white font-bold rounded-xl transition-colors disabled:opacity-60">
+          Add to Cart
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initNav, initFooter, _refreshCartBadge } from './js/components.js?v=20260726c';
+    import { getCurrentUser, loginWithGoogle } from './js/auth.js?v=20260726c';
+    import { API_BASE } from './js/api.js?v=20260726b';
+
+    initNav();
+    initFooter();
+    document.getElementById('dh-login-btn')?.addEventListener('click', loginWithGoogle);
+
+    const $ = (id) => document.getElementById(id);
+    const show = (id) => { ['dh-loading','dh-login','dh-empty','dh-grid'].forEach(x => $(x).classList.toggle('hidden', x !== id)); };
+
+    function fmtTime(iso) {
+      if (!iso) return '';
+      const d = new Date(iso);
+      return d.toLocaleString('en-CA', { year:'numeric', month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' });
+    }
+
+    function card(r) {
+      const orderBtn = r.productType === 'HERO' ? '' : `
+        <button data-order='${JSON.stringify(r).replace(/'/g, '&#39;')}'
+          class="dh-order flex-1 py-2.5 bg-accent-500 hover:bg-accent-600 text-white text-sm font-bold rounded-lg transition-colors">
+          Order
+        </button>`;
+      return `
+        <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden card-hover flex flex-col">
+          <div class="aspect-[4/3] bg-gray-50 overflow-hidden">
+            <img src="${r.imageUrl}" alt="${r.productLabel}" loading="lazy" class="w-full h-full object-cover">
+          </div>
+          <div class="p-4 flex flex-col flex-1">
+            <p class="font-bold text-gray-900 text-sm truncate">${r.productLabel}</p>
+            <p class="text-xs text-gray-400 mt-1 mb-4 flex items-center gap-1.5">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+              ${fmtTime(r.createdAt)}
+            </p>
+            <div class="mt-auto flex gap-2">
+              <a href="index.html?design=1"
+                 class="flex-1 py-2.5 text-center border border-primary-300 text-primary-800 hover:bg-primary-50 text-sm font-bold rounded-lg transition-colors">
+                Redesign
+              </a>
+              ${orderBtn}
+            </div>
+          </div>
+        </div>`;
+    }
+
+    async function load() {
+      const user = await getCurrentUser();
+      try {
+        const res = await fetch(`${API_BASE}/design/my-designs`, { credentials: 'include' });
+        if (!res.ok) throw new Error();
+        const { items } = await res.json();
+        if (items.length === 0) {
+          show(user ? 'dh-empty' : 'dh-login');
+          return;
+        }
+        $('dh-grid').innerHTML = items.map(card).join('');
+        show('dh-grid');
+      } catch {
+        show(user ? 'dh-empty' : 'dh-login');
+      }
+    }
+    load();
+
+    // ── Order flow (same as homepage) ──
+    let orderCtx = null;
+    document.getElementById('dh-grid').addEventListener('click', async (e) => {
+      const btn = e.target.closest('.dh-order');
+      if (!btn) return;
+      orderCtx = JSON.parse(btn.dataset.order);
+      $('fpo-preview').src = orderCtx.imageUrl;
+      $('fpo-label').textContent = orderCtx.productLabel;
+      $('fpo-qty').value = '';
+      $('fpo-error').classList.add('hidden');
+      $('fp-order-modal').classList.remove('hidden');
+      const sizeEl = $('fpo-size');
+      sizeEl.innerHTML = '<option value="">Loading sizes…</option>';
+      try {
+        const res = await fetch(`${API_BASE}/products/sizes/${orderCtx.productType}`);
+        const sizes = await res.json();
+        sizeEl.innerHTML = '<option value="">Select size…</option>' +
+          sizes.map(s => `<option value="${s.label}">${s.label}</option>`).join('');
+      } catch {
+        sizeEl.innerHTML = '<option value="">Failed to load sizes</option>';
+      }
+    });
+
+    document.getElementById('fp-order-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!orderCtx) return;
+      const err = $('fpo-error');
+      const btn = $('fpo-submit');
+      const size = $('fpo-size').value;
+      const qty = parseInt($('fpo-qty').value, 10);
+      err.classList.add('hidden');
+      if (!size || !qty || qty < 1000) {
+        err.textContent = 'Please choose a size and a quantity of at least 1,000.';
+        err.classList.remove('hidden');
+        return;
+      }
+      btn.disabled = true; btn.textContent = 'Adding…';
+      try {
+        const res = await fetch(`${API_BASE}/cart`, {
+          method: 'POST', credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            imageUrl: orderCtx.imageUrl,
+            productType: orderCtx.productType,
+            productLabel: orderCtx.productLabel,
+            sizeSpec: size, material: null, quantity: qty
+          })
+        });
+        if (res.status === 401) {
+          $('fp-order-modal').classList.add('hidden');
+          loginWithGoogle();
+          return;
+        }
+        if (!res.ok) throw new Error();
+        $('fp-order-modal').classList.add('hidden');
+        _refreshCartBadge();
+        const t = document.createElement('div');
+        t.innerHTML = '✓ Added to cart &nbsp;<a href="cart.html" style="text-decoration:underline">View cart</a>';
+        t.className = 'fixed bottom-6 left-1/2 -translate-x-1/2 bg-primary-800 text-white text-sm font-medium px-5 py-3 rounded-xl shadow-lg z-[99999]';
+        document.body.appendChild(t);
+        setTimeout(() => t.remove(), 3500);
+      } catch {
+        err.textContent = 'Failed to add to cart. Please try again.';
+        err.classList.remove('hidden');
+      } finally {
+        btn.disabled = false; btn.textContent = 'Add to Cart';
+      }
+    });
+  </script>
+</body>
+</html>
