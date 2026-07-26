@@ -809,8 +809,8 @@
         </div>
 
         <div id="fpd-error" class="hidden text-sm text-red-700 bg-red-50 border border-red-200 rounded-lg px-4 py-2.5"></div>
-        <button type="submit" id="fpd-submit"
-                class="w-full py-3.5 bg-accent-500 hover:bg-accent-600 text-white font-bold rounded-xl transition-colors shadow-lg shadow-accent-500/25 disabled:opacity-60 disabled:cursor-not-allowed">
+        <button type="submit" id="fpd-submit" disabled
+                class="w-full py-3.5 bg-accent-500 hover:bg-accent-600 text-white font-bold rounded-xl transition-colors shadow-lg shadow-accent-500/25 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-accent-500">
           ✨ Generate My Designs
         </button>
       </form>
@@ -905,9 +905,15 @@
     let fpSeen = new Set();
 
     let fpModalMode = 'form';   // 'form' = Design Online 入口, 'hero' = 首屏光点入口
+    const fpSyncSubmit = () => {
+      document.getElementById('fpd-submit').disabled =
+        !document.getElementById('fpd-brand').value.trim();
+    };
+    document.getElementById('fpd-brand').addEventListener('input', fpSyncSubmit);
     window.fpOpenDesign = (mode = 'form') => {
       fpModalMode = mode;
       document.getElementById('fp-design-modal').classList.remove('hidden');
+      fpSyncSubmit();
       setTimeout(() => document.getElementById('fpd-brand').focus(), 50);
     };
     // More Options 折叠
@@ -1036,7 +1042,8 @@
         err.textContent = 'Something went wrong. Please try again.';
         err.classList.remove('hidden');
       } finally {
-        btn.disabled = false; btn.textContent = '✨ Generate My Designs';
+        btn.textContent = '✨ Generate My Designs';
+        fpSyncSubmit();
       }
     });
 
