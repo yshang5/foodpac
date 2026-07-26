@@ -57,9 +57,9 @@
         <div class="text-4xl mb-4">🎨</div>
         <h2 class="text-xl font-bold text-gray-900 mb-2">No designs yet</h2>
         <p class="text-gray-500 text-sm mb-6">Generate your first AI packaging design in under 5 minutes — free, unlimited revisions.</p>
-        <a href="index.html?design=1" class="inline-flex items-center gap-2 px-6 py-3 bg-accent-500 hover:bg-accent-600 text-white font-bold rounded-xl transition-colors">
+        <button onclick="fpOpenDesign()" class="inline-flex items-center gap-2 px-6 py-3 bg-accent-500 hover:bg-accent-600 text-white font-bold rounded-xl transition-colors">
           ✨ Start Designing
-        </a>
+        </button>
       </div>
 
       <!-- Grid -->
@@ -69,49 +69,16 @@
 
   <div id="footer"></div>
 
-  <!-- ── ORDER MODAL（与首页一致：选规格 → 加购）──────────── -->
-  <div id="fp-order-modal" class="hidden fixed inset-0 bg-black/60 z-[9992] flex items-center justify-center p-4">
-    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md max-h-[92vh] flex flex-col overflow-hidden">
-      <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between shrink-0">
-        <h3 class="text-lg font-bold text-gray-900">Order This Design</h3>
-        <button onclick="document.getElementById('fp-order-modal').classList.add('hidden')" class="text-gray-400 hover:text-gray-600 text-2xl leading-none">×</button>
-      </div>
-      <form id="fp-order-form" class="px-6 py-5 space-y-4 overflow-y-auto">
-        <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-xl">
-          <img id="fpo-preview" src="" alt="Design" class="w-16 h-16 rounded-lg object-cover border border-gray-200">
-          <div>
-            <p id="fpo-label" class="text-sm font-bold text-gray-900"></p>
-            <p class="text-xs text-gray-500">Selected design</p>
-          </div>
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Size <span class="text-red-500">*</span></label>
-          <select id="fpo-size" required class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm bg-white">
-            <option value="">Loading sizes…</option>
-          </select>
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Quantity <span class="text-red-500">*</span></label>
-          <input type="number" id="fpo-qty" required min="1000" step="500" placeholder="Minimum 1,000"
-                 class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm">
-          <p class="text-xs text-gray-400 mt-1">Minimum order: 1,000 units</p>
-        </div>
-        <div id="fpo-error" class="hidden text-sm text-red-700 bg-red-50 border border-red-200 rounded-lg px-4 py-2.5"></div>
-        <button type="submit" id="fpo-submit"
-                class="w-full py-3 bg-primary-800 hover:bg-primary-900 text-white font-bold rounded-xl transition-colors disabled:opacity-60">
-          Add to Cart
-        </button>
-      </form>
-    </div>
-  </div>
 
   <script type="module">
-    import { initNav, initFooter, _refreshCartBadge } from './js/components.js?v=20260726d';
+    import { initNav, initFooter } from './js/components.js?v=20260726d';
     import { getCurrentUser, loginWithGoogle } from './js/auth.js?v=20260726d';
     import { API_BASE } from './js/api.js?v=20260726d';
+    import { initDesignWidget } from './js/design-widget.js?v=20260726d';
 
     initNav();
     initFooter();
+    initDesignWidget();
     document.getElementById('dh-login-btn')?.addEventListener('click', loginWithGoogle);
 
     const $ = (id) => document.getElementById(id);
@@ -143,10 +110,10 @@
               ${fmtTime(r.createdAt)}
             </p>
             <div class="mt-auto flex gap-2">
-              <a href="index.html?design=1"
+              <button onclick="fpOpenDesign()"
                  class="flex-1 py-2.5 text-center border border-primary-300 text-primary-800 hover:bg-primary-50 text-sm font-bold rounded-lg transition-colors">
                 Redesign
-              </a>
+              </button>
               ${orderBtn}
             </div>
           </div>
@@ -171,73 +138,11 @@
     }
     load();
 
-    // ── Order flow (same as homepage) ──
-    let orderCtx = null;
-    document.getElementById('dh-grid').addEventListener('click', async (e) => {
+    // ── Order: delegate to the shared design-modal order flow ──
+    document.getElementById('dh-grid').addEventListener('click', (e) => {
       const btn = e.target.closest('.dh-order');
       if (!btn) return;
-      orderCtx = JSON.parse(btn.dataset.order);
-      $('fpo-preview').src = orderCtx.imageUrl;
-      $('fpo-label').textContent = orderCtx.productLabel;
-      $('fpo-qty').value = '';
-      $('fpo-error').classList.add('hidden');
-      $('fp-order-modal').classList.remove('hidden');
-      const sizeEl = $('fpo-size');
-      sizeEl.innerHTML = '<option value="">Loading sizes…</option>';
-      try {
-        const res = await fetch(`${API_BASE}/products/sizes/${orderCtx.productType}`);
-        const sizes = await res.json();
-        sizeEl.innerHTML = '<option value="">Select size…</option>' +
-          sizes.map(s => `<option value="${s.label}">${s.label}</option>`).join('');
-      } catch {
-        sizeEl.innerHTML = '<option value="">Failed to load sizes</option>';
-      }
-    });
-
-    document.getElementById('fp-order-form').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      if (!orderCtx) return;
-      const err = $('fpo-error');
-      const btn = $('fpo-submit');
-      const size = $('fpo-size').value;
-      const qty = parseInt($('fpo-qty').value, 10);
-      err.classList.add('hidden');
-      if (!size || !qty || qty < 1000) {
-        err.textContent = 'Please choose a size and a quantity of at least 1,000.';
-        err.classList.remove('hidden');
-        return;
-      }
-      btn.disabled = true; btn.textContent = 'Adding…';
-      try {
-        const res = await fetch(`${API_BASE}/cart`, {
-          method: 'POST', credentials: 'include',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            imageUrl: orderCtx.imageUrl,
-            productType: orderCtx.productType,
-            productLabel: orderCtx.productLabel,
-            sizeSpec: size, material: null, quantity: qty
-          })
-        });
-        if (res.status === 401) {
-          $('fp-order-modal').classList.add('hidden');
-          loginWithGoogle();
-          return;
-        }
-        if (!res.ok) throw new Error();
-        $('fp-order-modal').classList.add('hidden');
-        _refreshCartBadge();
-        const t = document.createElement('div');
-        t.innerHTML = '✓ Added to cart &nbsp;<a href="cart.html" style="text-decoration:underline">View cart</a>';
-        t.className = 'fixed bottom-6 left-1/2 -translate-x-1/2 bg-primary-800 text-white text-sm font-medium px-5 py-3 rounded-xl shadow-lg z-[99999]';
-        document.body.appendChild(t);
-        setTimeout(() => t.remove(), 3500);
-      } catch {
-        err.textContent = 'Failed to add to cart. Please try again.';
-        err.classList.remove('hidden');
-      } finally {
-        btn.disabled = false; btn.textContent = 'Add to Cart';
-      }
+      window.fpOrder(JSON.parse(btn.dataset.order));
     });
   </script>
 </body>
