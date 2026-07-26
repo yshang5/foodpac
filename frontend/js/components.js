@@ -11,9 +11,9 @@
  *   </script>
  */
 
-import { getCurrentUser, loginWithGoogle, logout } from './auth.js?v=20260726d';
-import { avatarHtml } from './avatar.js?v=20260726d';
-import { API_BASE } from './api.js?v=20260726d';
+import { getCurrentUser, loginWithGoogle, logout } from './auth.js?v=20260726f';
+import { avatarHtml } from './avatar.js?v=20260726f';
+import { API_BASE } from './api.js?v=20260726f';
 
 const CART_PENDING_KEY = '_fp_pendingCart';
 
@@ -75,6 +75,10 @@ export async function initNav(activePage = '') {
   const el = document.getElementById('navbar');
   if (!el) return;
 
+  // sticky 必须落在页面直属的 #navbar 容器上——注入的 <header> 的
+  // sticky 会被只有自身高度的父容器困住而失效
+  el.classList.add('sticky', 'top-0', 'z-50');
+
   _fixTailwindResponsive();
 
   // Products — mega dropdown with category cards.
@@ -102,7 +106,7 @@ export async function initNav(activePage = '') {
         </svg>
       </a>
       <div class="invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-150
-                  fixed left-1/2 -translate-x-1/2 top-[116px] z-[60] w-[min(960px,94vw)]
+                  fixed left-1/2 -translate-x-1/2 top-[117px] z-[60] w-[min(960px,94vw)]
                   bg-white rounded-2xl shadow-2xl border border-gray-100 p-5">
         <div class="grid grid-cols-3 lg:grid-cols-6 gap-4">
           ${dropdownCards}

@@ -13,8 +13,8 @@
  *   window.fpChipBusy(on)     — toggle the chip generating animation
  */
 
-import { loginWithGoogle } from './auth.js?v=20260726d';
-import { _refreshCartBadge } from './components.js?v=20260726d';
+import { loginWithGoogle } from './auth.js?v=20260726f';
+import { _refreshCartBadge } from './components.js?v=20260726f';
 
 const FP_CSS = `
   .fp-swatch.sel { outline: 3px solid #1b5e20; outline-offset: 2px; }
