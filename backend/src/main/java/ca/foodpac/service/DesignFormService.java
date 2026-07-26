@@ -204,13 +204,16 @@ public class DesignFormService {
             Files.createDirectories(STORAGE_DIR);
 
             String prompt = ("The input image is a product photo of kraft food packaging printed with "
-                    + "the brand \"Lunat\" (a dark lettering logo, some pieces with small red accents and "
-                    + "sub-text). Recreate this EXACT photo — identical products, camera angle, composition, "
-                    + "lighting, shadows, background, kraft material and textures — changing ONLY the printed "
-                    + "brand logo: replace \"Lunat\" and its accompanying small logo text with \"%s\" printed "
-                    + "in the color %s, using a similar typographic style, the same size and the same placement "
-                    + "on the packaging. Spell \"%s\" exactly. Change NOTHING else in the image: no new objects, "
-                    + "no color changes to the packaging material or background, no layout changes.")
+                    + "the brand \"Lunat\" (logo plus small sub-text and decorative marks). Recreate this "
+                    + "EXACT photo — identical products, camera angle, composition, lighting, shadows, "
+                    + "background, kraft material and textures — changing ONLY the printed ink layer on the "
+                    + "packaging: replace the brand name \"Lunat\" with \"%s\" (same size, same placement, "
+                    + "similar typographic style), and reprint ALL printed elements — the logo, every piece "
+                    + "of small sub-text, taglines, rules and decorative marks — in a cohesive brand color "
+                    + "scheme built from %s (use darker and lighter tints of that same hue for hierarchy; "
+                    + "no leftover colors from the original print). Spell \"%s\" exactly. The packaging "
+                    + "material color, background, products and layout must stay untouched: no new objects, "
+                    + "no recoloring of the kraft paper itself, only the printed ink changes.")
                     .formatted(job.getBrandText(), job.getBrandColor(), job.getBrandText());
 
             var futures = HERO_TEMPLATES.stream()
