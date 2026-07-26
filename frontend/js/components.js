@@ -28,7 +28,7 @@ const NAV_LINKS = [
 const NAV_CATEGORIES = [
   { key: 'boxes',   label: 'Takeout Boxes',  img: 'cat-boxes.jpg' },
   { key: 'cups',    label: 'Cups & Lids',    img: 'cat-cups.jpg' },
-  { key: 'bags',    label: 'Paper Bags',     img: 'cat-bags.jpg' },
+  { key: 'bags',    label: 'Bags',           img: 'cat-bags.jpg' },
   { key: 'bowls',   label: 'Bowls',          img: 'cat-bowls.jpg' },
   { key: 'wraps',   label: 'Wrapping Paper', img: 'cat-wraps.jpg' },
   { key: 'cutlery', label: 'Cutlery',        img: 'cat-cutlery.jpg' },
@@ -468,7 +468,7 @@ export function initFooter() {
             <ul class="space-y-2 text-sm text-white/60">
               <li><a href="products.html?cat=boxes"   class="hover:text-white transition-colors">Takeout Boxes</a></li>
               <li><a href="products.html?cat=cups"    class="hover:text-white transition-colors">Cups & Lids</a></li>
-              <li><a href="products.html?cat=bags"    class="hover:text-white transition-colors">Paper Bags</a></li>
+              <li><a href="products.html?cat=bags"    class="hover:text-white transition-colors">Bags</a></li>
               <li><a href="products.html?cat=bowls"   class="hover:text-white transition-colors">Bowls</a></li>
               <li><a href="products.html?cat=wraps"   class="hover:text-white transition-colors">Wrapping Paper</a></li>
               <li><a href="products.html?cat=cutlery" class="hover:text-white transition-colors">Cutlery Sets</a></li>
