@@ -15,13 +15,13 @@
             primary: { 50:'#f1f8e9',100:'#dcedc8',200:'#c5e1a5',300:'#aed581',500:'#4caf50',600:'#43a047',700:'#388e3c',800:'#2e7d32',900:'#1b5e20',950:'#0d3311' },
             accent:  { 400:'#ffa726',500:'#f57c00',600:'#e65100' }
           },
-          fontFamily: { sans: ['Inter','ui-sans-serif','system-ui'] }
+          fontFamily: { sans: ['Space Grotesk','Inter','ui-sans-serif','system-ui'] }
         }
       }
     }
   </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     html { scroll-behavior: smooth; }
     .hero-gradient { background: linear-gradient(135deg, #0d3311 0%, #1b5e20 45%, #2e7d32 100%); }
@@ -86,7 +86,57 @@
           </a>
 
           <nav class="hidden md:flex items-center gap-0">
-            <a href="#categories" class="nav-link px-5 py-7 text-[15px] font-medium transition-colors inline-flex items-center text-gray-700 hover:text-primary-800">Products</a>
+            <div class="group">
+              <a href="#categories" class="nav-link px-5 py-7 text-[15px] font-medium transition-colors inline-flex items-center gap-1 text-gray-700 hover:text-primary-800">
+                Products
+                <svg class="w-3.5 h-3.5 transition-transform group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                </svg>
+              </a>
+              <!-- Mega dropdown：6 个分类卡 -->
+              <div class="invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-150
+                          fixed left-1/2 -translate-x-1/2 top-[116px] z-[60] w-[min(960px,94vw)]
+                          bg-white rounded-2xl shadow-2xl border border-gray-100 p-5">
+                <div class="grid grid-cols-3 lg:grid-cols-6 gap-4">
+                  <a href="#categories" onclick="fpGoCat('boxes');return false" class="group/card text-center">
+                    <div class="rounded-xl overflow-hidden bg-gray-50 border border-gray-100 mb-2">
+                      <img src="assets/images/cat-boxes.jpg?v=2" alt="Takeout Boxes" loading="lazy" class="w-full h-24 object-cover group-hover/card:scale-105 transition-transform duration-300">
+                    </div>
+                    <span class="text-sm font-semibold text-gray-800 group-hover/card:text-primary-800 inline-flex items-center gap-1">Takeout Boxes <span aria-hidden="true" class="text-primary-700">›</span></span>
+                  </a>
+                  <a href="#categories" onclick="fpGoCat('cups');return false" class="group/card text-center">
+                    <div class="rounded-xl overflow-hidden bg-gray-50 border border-gray-100 mb-2">
+                      <img src="assets/images/cat-cups.jpg?v=2" alt="Cups & Lids" loading="lazy" class="w-full h-24 object-cover group-hover/card:scale-105 transition-transform duration-300">
+                    </div>
+                    <span class="text-sm font-semibold text-gray-800 group-hover/card:text-primary-800 inline-flex items-center gap-1">Cups &amp; Lids <span aria-hidden="true" class="text-primary-700">›</span></span>
+                  </a>
+                  <a href="#categories" onclick="fpGoCat('bags');return false" class="group/card text-center">
+                    <div class="rounded-xl overflow-hidden bg-gray-50 border border-gray-100 mb-2">
+                      <img src="assets/images/cat-bags.jpg?v=2" alt="Paper Bags" loading="lazy" class="w-full h-24 object-cover group-hover/card:scale-105 transition-transform duration-300">
+                    </div>
+                    <span class="text-sm font-semibold text-gray-800 group-hover/card:text-primary-800 inline-flex items-center gap-1">Paper Bags <span aria-hidden="true" class="text-primary-700">›</span></span>
+                  </a>
+                  <a href="#categories" onclick="fpGoCat('bowls');return false" class="group/card text-center">
+                    <div class="rounded-xl overflow-hidden bg-gray-50 border border-gray-100 mb-2">
+                      <img src="assets/images/cat-bowls.jpg?v=2" alt="Bowls" loading="lazy" class="w-full h-24 object-cover group-hover/card:scale-105 transition-transform duration-300">
+                    </div>
+                    <span class="text-sm font-semibold text-gray-800 group-hover/card:text-primary-800 inline-flex items-center gap-1">Bowls <span aria-hidden="true" class="text-primary-700">›</span></span>
+                  </a>
+                  <a href="#categories" onclick="fpGoCat('wraps');return false" class="group/card text-center">
+                    <div class="rounded-xl overflow-hidden bg-gray-50 border border-gray-100 mb-2">
+                      <img src="assets/images/cat-wraps.jpg?v=2" alt="Wrapping Paper" loading="lazy" class="w-full h-24 object-cover group-hover/card:scale-105 transition-transform duration-300">
+                    </div>
+                    <span class="text-sm font-semibold text-gray-800 group-hover/card:text-primary-800 inline-flex items-center gap-1">Wrapping Paper <span aria-hidden="true" class="text-primary-700">›</span></span>
+                  </a>
+                  <a href="#categories" onclick="fpGoCat('cutlery');return false" class="group/card text-center">
+                    <div class="rounded-xl overflow-hidden bg-gray-50 border border-gray-100 mb-2">
+                      <img src="assets/images/cat-cutlery.jpg?v=2" alt="Cutlery" loading="lazy" class="w-full h-24 object-cover group-hover/card:scale-105 transition-transform duration-300">
+                    </div>
+                    <span class="text-sm font-semibold text-gray-800 group-hover/card:text-primary-800 inline-flex items-center gap-1">Cutlery <span aria-hidden="true" class="text-primary-700">›</span></span>
+                  </a>
+                </div>
+              </div>
+            </div>
             <a href="#restaurant-types" class="nav-link px-5 py-7 text-[15px] font-medium transition-colors inline-flex items-center text-gray-700 hover:text-primary-800">Solutions</a>
             <a href="#how-it-works" class="nav-link px-5 py-7 text-[15px] font-medium transition-colors inline-flex items-center text-gray-700 hover:text-primary-800">Why foodPac</a>
             <a href="#ai-design" class="nav-link px-5 py-7 text-[15px] font-medium transition-colors inline-flex items-center text-gray-700 hover:text-primary-800">How It Works</a>
@@ -140,6 +190,14 @@
       </div>
       <nav class="flex flex-col gap-1 mb-4">
         <a href="#categories" class="px-4 py-3 text-[15px] font-medium text-gray-700 hover:text-primary-800 hover:bg-primary-50 rounded-lg transition-colors block">Products</a>
+        <div class="grid grid-cols-2 gap-1 pl-6 pb-1">
+          <a href="#categories" onclick="fpGoCat('boxes')" class="px-3 py-2 text-sm text-gray-500 hover:text-primary-800 hover:bg-primary-50 rounded-lg">Takeout Boxes</a>
+          <a href="#categories" onclick="fpGoCat('cups')" class="px-3 py-2 text-sm text-gray-500 hover:text-primary-800 hover:bg-primary-50 rounded-lg">Cups &amp; Lids</a>
+          <a href="#categories" onclick="fpGoCat('bags')" class="px-3 py-2 text-sm text-gray-500 hover:text-primary-800 hover:bg-primary-50 rounded-lg">Paper Bags</a>
+          <a href="#categories" onclick="fpGoCat('bowls')" class="px-3 py-2 text-sm text-gray-500 hover:text-primary-800 hover:bg-primary-50 rounded-lg">Bowls</a>
+          <a href="#categories" onclick="fpGoCat('wraps')" class="px-3 py-2 text-sm text-gray-500 hover:text-primary-800 hover:bg-primary-50 rounded-lg">Wrapping Paper</a>
+          <a href="#categories" onclick="fpGoCat('cutlery')" class="px-3 py-2 text-sm text-gray-500 hover:text-primary-800 hover:bg-primary-50 rounded-lg">Cutlery</a>
+        </div>
         <a href="#restaurant-types" class="px-4 py-3 text-[15px] font-medium text-gray-700 hover:text-primary-800 hover:bg-primary-50 rounded-lg transition-colors block">Solutions</a>
         <a href="#how-it-works" class="px-4 py-3 text-[15px] font-medium text-gray-700 hover:text-primary-800 hover:bg-primary-50 rounded-lg transition-colors block">Why foodPac</a>
         <a href="#ai-design" class="px-4 py-3 text-[15px] font-medium text-gray-700 hover:text-primary-800 hover:bg-primary-50 rounded-lg transition-colors block">How It Works</a>
@@ -583,7 +641,7 @@
       <div class="flex items-center justify-between px-6 py-4 bg-primary-800 text-white shrink-0">
         <div>
           <p class="font-bold">✨ Design Your Packaging</p>
-          <p class="text-primary-200 text-xs mt-0.5">Free · 6 mockups in about 30 seconds</p>
+          <p class="text-primary-200 text-xs mt-0.5">Free · 6 AI mockups in 1–2 minutes</p>
         </div>
         <button onclick="fpCloseDesign()" class="text-white/70 hover:text-white text-2xl leading-none">×</button>
       </div>
@@ -1040,6 +1098,15 @@
         </a>
       `).join('');
     }
+    // 导航下拉 → 首页内切换分类 tab 并滚动到产品列表
+    // （正式版 components.js 里：非首页跳转 products.html?cat=xxx）
+    window.fpGoCat = (cat) => {
+      const btn = document.querySelector(`.cat-tab[data-cat="${cat}"]`);
+      if (btn) btn.click();
+      document.getElementById('categories')?.scrollIntoView({ behavior: 'smooth' });
+      document.getElementById('mobileMenu')?.classList.add('hidden');
+    };
+
     // Mobile menu toggle（与 components.js 行为一致）
     document.getElementById('menuToggle')?.addEventListener('click', () => {
       document.getElementById('mobileMenu')?.classList.toggle('hidden');

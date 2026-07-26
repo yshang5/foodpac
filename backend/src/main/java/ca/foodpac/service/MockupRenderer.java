@@ -43,7 +43,7 @@ public class MockupRenderer {
     public byte[] render(Product p, BrandSpec spec, byte[] logoBytes, String brandText,
                          String slogan, String address, String phone, byte[] qrBytes) throws IOException {
         BufferedImage base;
-        try (InputStream in = getClass().getResourceAsStream("/mockups/" + p.baseImage())) {
+        try (InputStream in = getClass().getResourceAsStream("/mockups/default/" + p.baseImage())) {
             if (in == null) throw new IOException("Missing mockup base: " + p.baseImage());
             base = ImageIO.read(in);
         }
