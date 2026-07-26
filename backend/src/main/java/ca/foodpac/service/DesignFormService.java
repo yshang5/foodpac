@@ -73,27 +73,32 @@ public class DesignFormService {
 
     // ── Guest limit ────────────────────────────────────────────────────────────
 
-    /** Guests get one free full-form generation; after that login is required. */
+    /** Guests get two free generations in total (hero or form); then login is required. */
     public boolean guestLimitReached(String anonToken) {
-        return anonToken != null && jobRepo.countByAnonTokenAndKind(anonToken, "FORM") >= 1;
+        return anonToken != null && jobRepo.countByAnonToken(anonToken) >= 2;
     }
 
-    /** The homepage hero teaser is cheaper — guests get two tries. */
-    public boolean heroGuestLimitReached(String anonToken) {
-        return anonToken != null && jobRepo.countByAnonTokenAndKind(anonToken, "HERO") >= 2;
+    /** Attach all of a guest's jobs to the now-logged-in user. Returns merged count. */
+    public int claimGuestJobs(User user, String anonToken) {
+        if (user == null || anonToken == null) return 0;
+        var jobs = jobRepo.findByAnonToken(anonToken);
+        jobs.forEach(j -> { j.setUser(user); j.setAnonToken(null); });
+        jobRepo.saveAll(jobs);
+        return jobs.size();
     }
 
     // ── Job lifecycle ──────────────────────────────────────────────────────────
 
     public DesignJob createJob(User user, String anonToken, String brandText, String logoFile,
                                String restaurantType, String slogan, String address,
-                               String phone, String qrFile) {
+                               String phone, String qrFile, String brandColor) {
         DesignJob job = DesignJob.builder()
                 .user(user)
                 .anonToken(user == null ? anonToken : null)
                 .brandText(brandText).logoFile(logoFile)
                 .restaurantType(restaurantType).slogan(slogan)
                 .address(address).phone(phone).qrFile(qrFile)
+                .brandColor(brandColor)
                 .status(DesignJob.Status.PENDING)
                 .build();
         job = jobRepo.save(job);
@@ -112,8 +117,12 @@ public class DesignFormService {
             byte[] logo = readStored(job.getLogoFile());
             byte[] qr = readStored(job.getQrFile());
 
-            var spec = brandSpecService.generate(logo, job.getBrandText(),
+            var aiSpec = brandSpecService.generate(logo, job.getBrandText(),
                     job.getRestaurantType(), job.getSlogan());
+            // User-chosen brand color overrides the AI-picked primary
+            final var spec = job.getBrandColor() == null ? aiSpec
+                    : new BrandSpecService.BrandSpec(job.getBrandColor(), aiSpec.secondary(),
+                            aiSpec.panelBg(), aiSpec.textColor(), aiSpec.styleName());
             job.setBrandSpec(mapper.writeValueAsString(Map.of(
                     "primary", spec.primary(), "secondary", spec.secondary(),
                     "panelBg", spec.panelBg(), "textColor", spec.textColor(),
@@ -173,12 +182,12 @@ public class DesignFormService {
 
     // ── Homepage hero brand-swap (logo-only re-render of the 4 hero photos) ───
 
-    public record HeroTemplate(String id, String file) {}
+    public record HeroTemplate(String id, String file, String label, String cartType) {}
     public static final java.util.List<HeroTemplate> HERO_TEMPLATES = java.util.List.of(
-            new HeroTemplate("hero-box", "hero-box.jpg"),
-            new HeroTemplate("hero-cup", "hero-cup.jpg"),
-            new HeroTemplate("hero-bag", "hero-bag.jpg"),
-            new HeroTemplate("hero-ai",  "hero-ai.jpg"));
+            new HeroTemplate("hero-box", "hero-box.jpg", "Kraft Takeout Box", "BOX"),
+            new HeroTemplate("hero-cup", "hero-cup.jpg", "Hot Drink Cup",     "CUP"),
+            new HeroTemplate("hero-bag", "hero-bag.jpg", "Kraft Paper Bag",   "BAG"),
+            new HeroTemplate("hero-ai",  "hero-ai.jpg",  "Brand Scene",       "HERO"));
 
     public DesignJob createHeroJob(User user, String anonToken, String brandText, String color) {
         DesignJob job = DesignJob.builder()
@@ -230,8 +239,8 @@ public class DesignFormService {
                             itemRepo.save(DesignJobItem.builder()
                                     .job(job)
                                     .productId(t.id())
-                                    .productLabel(t.id())
-                                    .productType("HERO")
+                                    .productLabel(t.label())
+                                    .productType(t.cartType())
                                     .imageUrl("/api/v1/design/files/" + name)
                                     .build());
                         } catch (Exception e) {

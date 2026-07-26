@@ -58,7 +58,8 @@ public class DesignFormController {
     // ── Generate ──────────────────────────────────────────────────────────────
 
     public record GenerateRequest(String brandText, String logoFile, String restaurantType,
-                                  String slogan, String address, String phone, String qrFile) {}
+                                  String slogan, String address, String phone, String qrFile,
+                                  String brandColor) {}
 
     @PostMapping("/generate")
     public ResponseEntity<?> generate(@AuthenticationPrincipal User user,
@@ -84,10 +85,41 @@ public class DesignFormController {
             }
         }
 
+        String color = req.brandColor() != null && req.brandColor().matches("#[0-9a-fA-F]{6}")
+                ? req.brandColor().toLowerCase() : null;
         DesignJob job = service.createJob(user, anonToken,
                 trim(req.brandText()), trim(req.logoFile()), trim(req.restaurantType()),
-                trim(req.slogan()), trim(req.address()), trim(req.phone()), trim(req.qrFile()));
+                trim(req.slogan()), trim(req.address()), trim(req.phone()), trim(req.qrFile()), color);
         return ResponseEntity.ok(Map.of("jobId", job.getId(), "status", job.getStatus().name()));
+    }
+
+    // ── My Designs: full history for the current user / guest ─────────────────
+
+    @GetMapping("/my-designs")
+    public ResponseEntity<?> myDesigns(@AuthenticationPrincipal User user, HttpServletRequest httpReq) {
+        List<ca.foodpac.entity.DesignJobItem> items;
+        if (user != null) {
+            items = itemRepo.findByJob_User_IdAndDeletedFalseOrderByCreatedAtDesc(user.getId());
+        } else {
+            String anonToken = readCookie(httpReq);
+            items = anonToken == null ? List.of()
+                    : itemRepo.findByJob_AnonTokenAndDeletedFalseOrderByCreatedAtDesc(anonToken);
+        }
+        return ResponseEntity.ok(Map.of("items", items.stream().map(i -> Map.of(
+                "id", i.getId(),
+                "productId", i.getProductId(),
+                "productLabel", i.getProductLabel(),
+                "productType", i.getProductType(),
+                "imageUrl", i.getImageUrl())).toList()));
+    }
+
+    // ── Claim guest history after login (idempotent) ──────────────────────────
+
+    @PostMapping("/claim")
+    public ResponseEntity<?> claim(@AuthenticationPrincipal User user, HttpServletRequest httpReq) {
+        if (user == null) return ResponseEntity.status(401).body(Map.of("error", "Unauthorized"));
+        int merged = service.claimGuestJobs(user, readCookie(httpReq));
+        return ResponseEntity.ok(Map.of("merged", merged));
     }
 
     // ── Homepage hero brand-swap (logo-only, cheap teaser) ────────────────────
@@ -107,7 +139,7 @@ public class DesignFormController {
         String anonToken = null;
         if (user == null) {
             anonToken = readCookie(httpReq);
-            if (anonToken != null && service.heroGuestLimitReached(anonToken))
+            if (anonToken != null && service.guestLimitReached(anonToken))
                 return ResponseEntity.status(401).body(Map.of("error", "LOGIN_REQUIRED",
                         "message", "Sign in to keep trying brands."));
             if (anonToken == null) {

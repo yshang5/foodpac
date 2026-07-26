@@ -723,106 +723,95 @@
       </div>
       <form id="fp-design-form" class="px-6 py-5 space-y-4 overflow-y-auto">
         <div>
-          <label class="block text-sm font-bold text-gray-800 mb-1.5">Your logo or brand name <span class="text-red-500">*</span></label>
-          <input type="text" id="fpd-brand" placeholder="e.g. Golden Dragon Kitchen"
-                 class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm mb-2">
-          <label id="fpd-logo-drop" class="flex items-center gap-3 border-2 border-dashed border-gray-200 hover:border-primary-400 rounded-lg px-4 py-3 cursor-pointer transition-colors">
-            <svg class="w-5 h-5 text-gray-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4 16l4-4a3 3 0 014 0l4 4m-2-2l1-1a3 3 0 014 0l1 1M4 20h16M4 4h16v12H4z"/>
-            </svg>
-            <span id="fpd-logo-label" class="text-sm text-gray-500">…or upload your logo (PNG / JPG, max 5MB)</span>
-            <img id="fpd-logo-preview" class="hidden w-10 h-10 rounded object-contain border border-gray-200 ml-auto" alt="">
-            <input type="file" id="fpd-logo" accept="image/*" class="hidden">
-          </label>
-          <p class="text-xs text-gray-400 mt-1">Fill in either one — both is even better.</p>
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1.5">Restaurant type <span class="text-gray-400 font-normal">(optional)</span></label>
-          <select id="fpd-type" class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm bg-white">
-            <option value="">Select type…</option>
-            <option>Chinese</option><option>Cantonese / Dim Sum</option><option>Sichuan / Hunan</option>
-            <option>Hot Pot</option><option>Japanese / Sushi</option><option>Ramen</option>
-            <option>Korean</option><option>Thai</option><option>Vietnamese / Pho</option>
-            <option>Indian</option><option>Middle Eastern</option><option>Mediterranean / Greek</option>
-            <option>Mexican</option><option>Italian / Pizza</option><option>Burgers / Fast Food</option>
-            <option>Fried Chicken</option><option>BBQ / Grill</option><option>Seafood / Fish &amp; Chips</option>
-            <option>Cafe / Coffee Shop</option><option>Bakery / Desserts</option><option>Bubble Tea / Juice</option>
-            <option>Ice Cream</option><option>Salad / Healthy</option><option>Poke Bowl</option>
-            <option>Brunch / Breakfast</option><option>Food Truck</option><option>Other</option>
-          </select>
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1.5">Slogan <span class="text-gray-400 font-normal">(optional)</span></label>
-          <input type="text" id="fpd-slogan" placeholder="e.g. Fresh wok, every day"
-                 class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm">
-        </div>
-        <div class="grid sm:grid-cols-2 gap-4">
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1.5">Address <span class="text-gray-400 font-normal">(optional)</span></label>
-            <input type="text" id="fpd-address" placeholder="123 Main St, Toronto"
-                   class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm">
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1.5">Phone <span class="text-gray-400 font-normal">(optional)</span></label>
-            <input type="tel" id="fpd-phone" placeholder="+1 (416) 000-0000"
-                   class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm">
-          </div>
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1.5">Ordering QR code <span class="text-gray-400 font-normal">(optional)</span></label>
-          <label class="flex items-center gap-3 border-2 border-dashed border-gray-200 hover:border-primary-400 rounded-lg px-4 py-3 cursor-pointer transition-colors">
-            <svg class="w-5 h-5 text-gray-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h3v3h-3zM20 17v3h-3"/>
-            </svg>
-            <span id="fpd-qr-label" class="text-sm text-gray-500">Upload the QR customers scan to order</span>
-            <img id="fpd-qr-preview" class="hidden w-10 h-10 rounded object-contain border border-gray-200 ml-auto" alt="">
-            <input type="file" id="fpd-qr" accept="image/*" class="hidden">
-          </label>
-        </div>
-        <div id="fpd-error" class="hidden text-sm text-red-700 bg-red-50 border border-red-200 rounded-lg px-4 py-2.5"></div>
-        <button type="submit" id="fpd-submit"
-                class="w-full py-3.5 bg-accent-500 hover:bg-accent-600 text-white font-bold rounded-xl transition-colors shadow-lg shadow-accent-500/25 disabled:opacity-60 disabled:cursor-not-allowed">
-          ✨ Generate My Designs
-        </button>
-      </form>
-    </div>
-  </div>
-
-  <!-- ══════════ Hero 品牌试穿弹窗 ══════════ -->
-  <div id="fp-hero-modal" class="hidden fixed inset-0 bg-black/60 z-[9991] flex items-center justify-center p-4">
-    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden">
-      <div class="flex items-center justify-between px-6 py-4 bg-primary-800 text-white">
-        <div>
-          <p class="font-bold">✨ Try Your Brand</p>
-          <p class="text-primary-200 text-xs mt-0.5">AI repaints these 4 photos with your logo</p>
-        </div>
-        <button onclick="document.getElementById('fp-hero-modal').classList.add('hidden')" class="text-white/70 hover:text-white text-2xl leading-none">×</button>
-      </div>
-      <form id="fp-hero-form" class="px-6 py-5 space-y-4">
-        <div>
           <label class="block text-sm font-bold text-gray-800 mb-1.5">Your brand name <span class="text-red-500">*</span></label>
-          <input type="text" id="fp-hero-brand" required maxlength="24" placeholder="e.g. Kongfu"
+          <input type="text" id="fpd-brand" required maxlength="30" placeholder="e.g. Golden Dragon Kitchen"
                  class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm">
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-2">Brand color</label>
-          <div class="flex items-center gap-3" id="fp-hero-swatches">
+          <div class="flex items-center gap-3" id="fpd-swatches">
             <button type="button" data-c="#2e7d32" class="fp-swatch sel w-9 h-9 rounded-lg" style="background:#2e7d32" title="Green (default)"></button>
             <button type="button" data-c="#f57c00" class="fp-swatch w-9 h-9 rounded-lg" style="background:#f57c00" title="Orange"></button>
             <button type="button" data-c="#c62828" class="fp-swatch w-9 h-9 rounded-lg" style="background:#c62828" title="Red"></button>
             <button type="button" data-c="#1565c0" class="fp-swatch w-9 h-9 rounded-lg" style="background:#1565c0" title="Blue"></button>
             <button type="button" data-c="#212121" class="fp-swatch w-9 h-9 rounded-lg" style="background:#212121" title="Black"></button>
             <label class="fp-swatch h-9 px-3 rounded-lg cursor-pointer border border-gray-300 bg-white hover:bg-gray-50 flex items-center gap-2 relative transition-colors" title="Custom color">
-              <span id="fp-hero-custom-view" class="w-4 h-4 rounded border border-gray-200" style="background:#2e7d32"></span>
+              <span id="fpd-custom-view" class="w-4 h-4 rounded border border-gray-200" style="background:#2e7d32"></span>
               <span class="text-xs font-semibold text-gray-600">Custom</span>
-              <input type="color" id="fp-hero-custom" value="#2e7d32" class="absolute inset-0 opacity-0 cursor-pointer">
+              <input type="color" id="fpd-custom" value="#2e7d32" class="absolute inset-0 opacity-0 cursor-pointer">
             </label>
           </div>
         </div>
-        <div id="fp-hero-error" class="hidden text-sm text-red-700 bg-red-50 border border-red-200 rounded-lg px-4 py-2.5"></div>
-        <button type="submit" id="fp-hero-submit"
-                class="w-full py-3 bg-accent-500 hover:bg-accent-600 text-white font-bold rounded-xl transition-colors shadow-lg shadow-accent-500/25 disabled:opacity-60">
-          ✨ Repaint My Brand
+
+        <button type="button" id="fpd-more-toggle"
+                class="w-full flex items-center justify-between px-4 py-2.5 text-sm font-semibold text-primary-800 bg-primary-50 hover:bg-primary-100 rounded-lg transition-colors">
+          More Options
+          <svg id="fpd-more-chevron" class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+          </svg>
+        </button>
+
+        <div id="fpd-more" class="hidden space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1.5">Logo <span class="text-gray-400 font-normal">(optional)</span></label>
+            <label id="fpd-logo-drop" class="flex items-center gap-3 border-2 border-dashed border-gray-200 hover:border-primary-400 rounded-lg px-4 py-3 cursor-pointer transition-colors">
+              <svg class="w-5 h-5 text-gray-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4 16l4-4a3 3 0 014 0l4 4m-2-2l1-1a3 3 0 014 0l1 1M4 20h16M4 4h16v12H4z"/>
+              </svg>
+              <span id="fpd-logo-label" class="text-sm text-gray-500">Upload your logo (PNG / JPG, max 5MB)</span>
+              <img id="fpd-logo-preview" class="hidden w-10 h-10 rounded object-contain border border-gray-200 ml-auto" alt="">
+              <input type="file" id="fpd-logo" accept="image/*" class="hidden">
+            </label>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1.5">Restaurant type <span class="text-gray-400 font-normal">(optional)</span></label>
+            <select id="fpd-type" class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm bg-white">
+              <option value="">Select type…</option>
+              <option>Chinese</option><option>Cantonese / Dim Sum</option><option>Sichuan / Hunan</option>
+              <option>Hot Pot</option><option>Japanese / Sushi</option><option>Ramen</option>
+              <option>Korean</option><option>Thai</option><option>Vietnamese / Pho</option>
+              <option>Indian</option><option>Middle Eastern</option><option>Mediterranean / Greek</option>
+              <option>Mexican</option><option>Italian / Pizza</option><option>Burgers / Fast Food</option>
+              <option>Fried Chicken</option><option>BBQ / Grill</option><option>Seafood / Fish &amp; Chips</option>
+              <option>Cafe / Coffee Shop</option><option>Bakery / Desserts</option><option>Bubble Tea / Juice</option>
+              <option>Ice Cream</option><option>Salad / Healthy</option><option>Poke Bowl</option>
+              <option>Brunch / Breakfast</option><option>Food Truck</option><option>Other</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1.5">Slogan <span class="text-gray-400 font-normal">(optional)</span></label>
+            <input type="text" id="fpd-slogan" placeholder="e.g. Fresh wok, every day"
+                   class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm">
+          </div>
+          <div class="grid sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1.5">Address <span class="text-gray-400 font-normal">(optional)</span></label>
+              <input type="text" id="fpd-address" placeholder="123 Main St, Toronto"
+                     class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm">
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1.5">Phone <span class="text-gray-400 font-normal">(optional)</span></label>
+              <input type="tel" id="fpd-phone" placeholder="+1 (416) 000-0000"
+                     class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm">
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1.5">Ordering QR code <span class="text-gray-400 font-normal">(optional)</span></label>
+            <label class="flex items-center gap-3 border-2 border-dashed border-gray-200 hover:border-primary-400 rounded-lg px-4 py-3 cursor-pointer transition-colors">
+              <svg class="w-5 h-5 text-gray-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h3v3h-3zM20 17v3h-3"/>
+              </svg>
+              <span id="fpd-qr-label" class="text-sm text-gray-500">Upload the QR customers scan to order</span>
+              <img id="fpd-qr-preview" class="hidden w-10 h-10 rounded object-contain border border-gray-200 ml-auto" alt="">
+              <input type="file" id="fpd-qr" accept="image/*" class="hidden">
+            </label>
+          </div>
+        </div>
+
+        <div id="fpd-error" class="hidden text-sm text-red-700 bg-red-50 border border-red-200 rounded-lg px-4 py-2.5"></div>
+        <button type="submit" id="fpd-submit"
+                class="w-full py-3.5 bg-accent-500 hover:bg-accent-600 text-white font-bold rounded-xl transition-colors shadow-lg shadow-accent-500/25 disabled:opacity-60 disabled:cursor-not-allowed">
+          ✨ Generate My Designs
         </button>
       </form>
     </div>
@@ -838,7 +827,7 @@
         </svg>
       </div>
       <h3 class="text-xl font-bold text-gray-900 mb-2">Sign in to keep designing</h3>
-      <p class="text-gray-500 text-sm mb-6">Your first design set is free as a guest. Sign in with Google to generate unlimited designs and save them to your account.</p>
+      <p class="text-gray-500 text-sm mb-6">You've used your 2 free generations. Sign in with Google for unlimited designs — everything you've already created will be merged into your account.</p>
       <button onclick="window.location.href='/oauth2/authorization/google'"
               class="w-full py-3 bg-primary-800 hover:bg-primary-900 text-white font-bold rounded-xl transition-colors mb-3">
         Sign in with Google
@@ -915,9 +904,33 @@
     let fpPollTimer = null;
     let fpSeen = new Set();
 
-    window.fpOpenDesign = () => {
+    let fpModalMode = 'form';   // 'form' = Design Online 入口, 'hero' = 首屏光点入口
+    window.fpOpenDesign = (mode = 'form') => {
+      fpModalMode = mode;
       document.getElementById('fp-design-modal').classList.remove('hidden');
+      setTimeout(() => document.getElementById('fpd-brand').focus(), 50);
     };
+    // More Options 折叠
+    document.getElementById('fpd-more-toggle').addEventListener('click', () => {
+      const more = document.getElementById('fpd-more');
+      const open = more.classList.toggle('hidden');
+      document.getElementById('fpd-more-chevron').style.transform = open ? '' : 'rotate(180deg)';
+    });
+    // 颜色选择
+    let fpColor = '#2e7d32';
+    document.querySelectorAll('#fpd-swatches .fp-swatch[data-c]').forEach(b => {
+      b.addEventListener('click', () => {
+        document.querySelectorAll('#fpd-swatches .fp-swatch').forEach(s => s.classList.remove('sel'));
+        b.classList.add('sel');
+        fpColor = b.dataset.c;
+      });
+    });
+    document.getElementById('fpd-custom').addEventListener('input', (e) => {
+      fpColor = e.target.value;
+      document.querySelectorAll('#fpd-swatches .fp-swatch').forEach(s => s.classList.remove('sel'));
+      e.target.closest('.fp-swatch').classList.add('sel');
+      document.getElementById('fpd-custom-view').style.background = fpColor;
+    });
     window.fpCloseDesign = () => {
       document.getElementById('fp-design-modal').classList.add('hidden');
     };
@@ -958,48 +971,67 @@
       err.classList.add('hidden');
       const brand = document.getElementById('fpd-brand').value.trim();
       const logoInput = document.getElementById('fpd-logo');
-      if (!brand && !logoInput.files[0]) {
-        err.textContent = 'Please enter your brand name or upload a logo.';
+      if (!brand) {
+        err.textContent = 'Please enter your brand name.';
         err.classList.remove('hidden');
         return;
       }
-      btn.disabled = true; btn.textContent = 'Uploading…';
+      btn.disabled = true; btn.textContent = 'Starting…';
       try {
-        let logoFile = null, qrFile = null;
-        if (logoInput.files[0]) logoFile = await fpUpload(logoInput.files[0]);
-        const qrInput = document.getElementById('fpd-qr');
-        if (qrInput.files[0]) qrFile = await fpUpload(qrInput.files[0]);
-
-        btn.textContent = 'Starting generation…';
-        const res = await fetch(`${FP_API}/design/generate`, {
-          method: 'POST', credentials: 'include',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            brandText: brand || null, logoFile,
-            restaurantType: document.getElementById('fpd-type').value || null,
-            slogan: document.getElementById('fpd-slogan').value.trim() || null,
-            address: document.getElementById('fpd-address').value.trim() || null,
-            phone: document.getElementById('fpd-phone').value.trim() || null,
-            qrFile
-          })
-        });
+        let res;
+        if (fpModalMode === 'hero') {
+          // 首屏品牌试穿：只重绘 4 张 hero 图（快）
+          res = await fetch(`${FP_API}/design/hero-swap`, {
+            method: 'POST', credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ brandText: brand, color: fpColor })
+          });
+        } else {
+          // 完整设计：6 个产品 mockup
+          btn.textContent = 'Uploading…';
+          let logoFile = null, qrFile = null;
+          if (logoInput.files[0]) logoFile = await fpUpload(logoInput.files[0]);
+          const qrInput = document.getElementById('fpd-qr');
+          if (qrInput.files[0]) qrFile = await fpUpload(qrInput.files[0]);
+          btn.textContent = 'Starting generation…';
+          res = await fetch(`${FP_API}/design/generate`, {
+            method: 'POST', credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              brandText: brand, brandColor: fpColor, logoFile,
+              restaurantType: document.getElementById('fpd-type').value || null,
+              slogan: document.getElementById('fpd-slogan').value.trim() || null,
+              address: document.getElementById('fpd-address').value.trim() || null,
+              phone: document.getElementById('fpd-phone').value.trim() || null,
+              qrFile
+            })
+          });
+        }
         if (res.status === 401) {
           const data = await res.json().catch(() => ({}));
-          if (data.error === 'LOGIN_REQUIRED') {
+          if (data.error === 'LOGIN_REQUIRED' || data.error === 'Unauthorized') {
             fpCloseDesign();
             document.getElementById('fp-login-modal').classList.remove('hidden');
             return;
           }
         }
-        if (!res.ok) throw new Error('generate failed');
+        if (!res.ok) throw new Error();
         const { jobId } = await res.json();
-        fpJobId = jobId;
-        localStorage.setItem('fp_last_job', jobId);
-        fpSeen = new Set();
-        document.getElementById('fp-dock-grid').innerHTML = fpSkeletons(6);
         fpCloseDesign();
-        fpToggleDock(true);
-        fpStartPolling();
+        if (fpModalMode === 'hero') {
+          // 毛玻璃 + Designing 徽章 + 轮询换图（结果同时进 My Designs）
+          fpHeroSeen = new Set();
+          document.querySelectorAll('.fp-hero-cell').forEach(c => c.classList.add('designing'));
+          fpHeroBadge(true);
+          clearInterval(fpHeroTimer);
+          fpHeroTimer = setInterval(() => fpHeroPoll(jobId), 2000);
+        } else {
+          fpJobId = jobId;
+          localStorage.setItem('fp_last_job', jobId);
+          document.getElementById('fp-dock-grid').insertAdjacentHTML('afterbegin', fpSkeletons(6));
+          fpToggleDock(true);
+          fpStartPolling();
+        }
       } catch (ex) {
         err.textContent = 'Something went wrong. Please try again.';
         err.classList.remove('hidden');
@@ -1063,8 +1095,8 @@
           </div>
           <div class="flex items-center justify-between mt-2 gap-2">
             <p class="text-xs font-semibold text-gray-700 truncate">${r.productLabel}</p>
-            <button onclick='fpOrder(${JSON.stringify(r)})'
-              class="shrink-0 text-xs font-bold text-white bg-accent-500 hover:bg-accent-600 rounded-lg px-3 py-1.5 transition-colors">Order</button>
+            ${r.productType === 'HERO' ? '' : `<button onclick='fpOrder(${JSON.stringify(r)})'
+              class="shrink-0 text-xs font-bold text-white bg-accent-500 hover:bg-accent-600 rounded-lg px-3 py-1.5 transition-colors">Order</button>`}
           </div>
         </div>`;
     }
@@ -1144,29 +1176,11 @@
     });
 
     // ══════════ Hero 品牌试穿（logo-only 重绘）══════════
-    let fpHeroColor = '#2e7d32';
     let fpHeroTimer = null;
     let fpHeroSeen = new Set();
 
-    window.fpHeroOpen = () => {
-      document.getElementById('fp-hero-modal').classList.remove('hidden');
-      setTimeout(() => document.getElementById('fp-hero-brand').focus(), 50);
-    };
+    window.fpHeroOpen = () => fpOpenDesign('hero');
 
-    document.querySelectorAll('#fp-hero-swatches .fp-swatch[data-c]').forEach(b => {
-      b.addEventListener('click', () => {
-        document.querySelectorAll('#fp-hero-swatches .fp-swatch').forEach(s => s.classList.remove('sel'));
-        b.classList.add('sel');
-        fpHeroColor = b.dataset.c;
-      });
-    });
-    document.getElementById('fp-hero-custom').addEventListener('input', (e) => {
-      fpHeroColor = e.target.value;
-      document.querySelectorAll('#fp-hero-swatches .fp-swatch').forEach(s => s.classList.remove('sel'));
-      const label = e.target.closest('.fp-swatch');
-      label.classList.add('sel');
-      document.getElementById('fp-hero-custom-view').style.background = fpHeroColor;
-    });
 
     function fpHeroBadge(designing) {
       const icon = document.getElementById('fp-hero-badge-icon');
@@ -1183,41 +1197,6 @@
       }
     }
 
-    document.getElementById('fp-hero-form').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const err = document.getElementById('fp-hero-error');
-      const btn = document.getElementById('fp-hero-submit');
-      const brand = document.getElementById('fp-hero-brand').value.trim();
-      if (!brand) return;
-      err.classList.add('hidden');
-      btn.disabled = true; btn.textContent = 'Starting…';
-      try {
-        const res = await fetch(`${FP_API}/design/hero-swap`, {
-          method: 'POST', credentials: 'include',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ brandText: brand, color: fpHeroColor })
-        });
-        if (res.status === 401) {
-          document.getElementById('fp-hero-modal').classList.add('hidden');
-          document.getElementById('fp-login-modal').classList.remove('hidden');
-          return;
-        }
-        if (!res.ok) throw new Error();
-        const { jobId } = await res.json();
-        document.getElementById('fp-hero-modal').classList.add('hidden');
-        // 进入毛玻璃 + Designing 状态
-        fpHeroSeen = new Set();
-        document.querySelectorAll('.fp-hero-cell').forEach(c => c.classList.add('designing'));
-        fpHeroBadge(true);
-        clearInterval(fpHeroTimer);
-        fpHeroTimer = setInterval(() => fpHeroPoll(jobId), 2000);
-      } catch {
-        err.textContent = 'Something went wrong. Please try again.';
-        err.classList.remove('hidden');
-      } finally {
-        btn.disabled = false; btn.textContent = '✨ Repaint My Brand';
-      }
-    });
 
     async function fpHeroPoll(jobId) {
       try {
@@ -1227,6 +1206,17 @@
         job.results.forEach(r => {
           if (fpHeroSeen.has(r.productId)) return;
           fpHeroSeen.add(r.productId);
+          // 同步进 My Designs
+          if (!fpSeen.has(r.id)) {
+            fpSeen.add(r.id);
+            document.getElementById('fp-dock-grid').insertAdjacentHTML('afterbegin', fpCard(r));
+            document.getElementById('fp-dock-count').textContent = `(${fpSeen.size})`;
+            document.getElementById('fp-chip-count').textContent = fpSeen.size;
+            const chip = document.getElementById('fp-dock-chip');
+            if (document.getElementById('fp-dock').classList.contains('hidden')) {
+              chip.classList.remove('hidden'); chip.classList.add('flex');
+            }
+          }
           const cell = document.querySelector(`.fp-hero-cell[data-hero="${r.productId}"]`);
           if (!cell) return;
           const img = cell.querySelector('img');
@@ -1250,24 +1240,43 @@
       }, 600);
     }
 
-    // 页面加载时恢复上一次的设计结果
-    if (fpJobId) {
-      fpSeen = new Set();
-      fetch(`${FP_API}/design/jobs/${fpJobId}`, { credentials: 'include' })
-        .then(r => r.ok ? r.json() : null)
-        .then(job => {
-          if (!job || !job.results.length) return;
+    // 页面加载：登录用户先合并游客历史，然后加载完整 My Designs
+    (async () => {
+      try {
+        const me = await fetch(`${FP_API}/auth/me`, { credentials: 'include' });
+        if (me.ok) await fetch(`${FP_API}/design/claim`, { method: 'POST', credentials: 'include' }).catch(() => {});
+      } catch {}
+      try {
+        const res = await fetch(`${FP_API}/design/my-designs`, { credentials: 'include' });
+        if (res.ok) {
+          const { items } = await res.json();
           const grid = document.getElementById('fp-dock-grid');
-          job.results.forEach(r => { fpSeen.add(r.id); grid.insertAdjacentHTML('beforeend', fpCard(r)); });
-          document.getElementById('fp-dock-count').textContent = `(${fpSeen.size})`;
-          document.getElementById('fp-chip-count').textContent = fpSeen.size;
-          document.getElementById('fp-dock-status').textContent = 'Your saved designs';
-          const chip = document.getElementById('fp-dock-chip');
-          chip.classList.remove('hidden');
-          chip.classList.add('flex');
-          if (job.status === 'RUNNING' || job.status === 'PENDING') { fpToggleDock(true); fpStartPolling(); }
-        }).catch(() => {});
-    }
+          items.forEach(r => {
+            if (fpSeen.has(r.id)) return;
+            fpSeen.add(r.id);
+            grid.insertAdjacentHTML('beforeend', fpCard(r));
+          });
+          if (fpSeen.size > 0) {
+            document.getElementById('fp-dock-count').textContent = `(${fpSeen.size})`;
+            document.getElementById('fp-chip-count').textContent = fpSeen.size;
+            document.getElementById('fp-dock-status').textContent = 'Your saved designs';
+            const chip = document.getElementById('fp-dock-chip');
+            chip.classList.remove('hidden');
+            chip.classList.add('flex');
+          }
+        }
+      } catch {}
+      // 上一个任务还在生成中则继续轮询
+      if (fpJobId) {
+        try {
+          const res = await fetch(`${FP_API}/design/jobs/${fpJobId}`, { credentials: 'include' });
+          if (res.ok) {
+            const job = await res.json();
+            if (job.status === 'RUNNING' || job.status === 'PENDING') { fpToggleDock(true); fpStartPolling(); }
+          }
+        } catch {}
+      }
+    })();
   </script>
 
   <script>

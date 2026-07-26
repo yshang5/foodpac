@@ -5,5 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface DesignJobRepository extends JpaRepository<DesignJob, String> {
     long countByAnonToken(String anonToken);
-    long countByAnonTokenAndKind(String anonToken, String kind);
+    java.util.List<DesignJob> findByAnonToken(String anonToken);
 }
