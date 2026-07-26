@@ -99,10 +99,18 @@
         </div>
 
         <!-- CTA -->
-        <button id="p-quote-btn"
-                class="w-full py-4 bg-accent-500 hover:bg-accent-600 text-white font-bold text-lg rounded-xl transition-colors shadow-lg shadow-accent-500/25 mb-2">
-          Start Custom Quote
-        </button>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-2">
+          <button id="p-cart-btn"
+                  class="py-4 bg-primary-800 hover:bg-primary-900 text-white font-bold text-base lg:text-lg rounded-xl transition-colors flex items-center justify-center gap-2.5 disabled:opacity-60">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.3 4.6a1 1 0 00.9 1.4H19"/><circle cx="9" cy="20" r="1"/><circle cx="17" cy="20" r="1"/></svg>
+            Add to Cart
+          </button>
+          <button id="p-quote-btn"
+                  class="py-4 bg-accent-500 hover:bg-accent-600 text-white font-bold text-base lg:text-lg rounded-xl transition-colors shadow-lg shadow-accent-500/25">
+            Start Custom Quote
+          </button>
+        </div>
+        <p id="p-cta-error" class="hidden text-sm text-red-700 bg-red-50 border border-red-200 rounded-lg px-4 py-2.5 mb-2"></p>
         <p class="text-center text-sm text-gray-400">Get a <span class="text-gray-600 font-medium">quote + free branded mockups</span> within 24 hrs</p>
       </div>
     </div>
@@ -246,7 +254,7 @@
   </style>
 
   <script type="module">
-    import { initNav, initFooter } from './js/components.js?v=20260727c';
+    import { initNav, initFooter, _refreshCartBadge } from './js/components.js?v=20260727c';
     import { getProducts } from './js/products.js?v=20260727c';
     import { initDesignModal } from './js/design-modal.js?v=20260727c';
 
@@ -357,6 +365,55 @@
       document.getElementById('p-picker').classList.add('hidden');
       window.fpOpenDesign('form');
     };
+
+    // ── Add to Cart（左键：规格+设计直接进购物车）──
+    const ctaErr = document.getElementById('p-cta-error');
+    document.getElementById('p-cart-btn').addEventListener('click', async () => {
+      ctaErr.classList.add('hidden');
+      const size = document.getElementById('p-size').value;
+      const qty = parseInt(document.getElementById('p-qty').value, 10);
+      const minQty = parseInt(String(p.moq).replace(/\D/g, ''), 10) || 500;
+      if (!size) {
+        ctaErr.textContent = 'Please choose a size first.';
+        ctaErr.classList.remove('hidden');
+        return;
+      }
+      if (!qty || qty < minQty) {
+        ctaErr.textContent = `Please enter a quantity of at least ${minQty.toLocaleString()}.`;
+        ctaErr.classList.remove('hidden');
+        return;
+      }
+      const btn = document.getElementById('p-cart-btn');
+      btn.disabled = true;
+      try {
+        const res = await fetch(`${FP_API}/cart`, {
+          method: 'POST', credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            imageUrl: selectedDesign ? selectedDesign.imageUrl : p.image,
+            productType: cat.type,
+            productLabel: p.name,
+            sizeSpec: size, material: null, quantity: qty
+          })
+        });
+        if (res.status === 401) {
+          document.getElementById('fp-login-modal').classList.remove('hidden');
+          return;
+        }
+        if (!res.ok) throw new Error();
+        _refreshCartBadge();
+        const t = document.createElement('div');
+        t.innerHTML = '✓ Added to cart &nbsp;<a href="cart.html" style="text-decoration:underline">View cart</a>';
+        t.className = 'fixed bottom-6 left-1/2 -translate-x-1/2 bg-primary-800 text-white text-sm font-medium px-5 py-3 rounded-xl shadow-lg z-[99999]';
+        document.body.appendChild(t);
+        setTimeout(() => t.remove(), 3500);
+      } catch {
+        ctaErr.textContent = 'Failed to add to cart. Please try again.';
+        ctaErr.classList.remove('hidden');
+      } finally {
+        btn.disabled = false;
+      }
+    });
 
     // ── Quote 提交 ──
     document.getElementById('p-quote-btn').addEventListener('click', () => {
