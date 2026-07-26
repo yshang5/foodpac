@@ -100,6 +100,31 @@ const PRODUCTS = [
     image: 'assets/images/prod-cut-set.jpg?v=2',
     description: 'Fork, knife, and spoon made from CPLA (cornstarch). Wrapped individually. Heat-resistant up to 85°C.' },
 
+  { id: 'cut-set4',    category: 'cutlery', name: 'Cutlery Set (Fork, Knife, Spoon, Napkin)',
+    tag: 'New',         tagStyle: 'blue',   moq: '1,000',
+    image: 'assets/images/prod-cut-set4.jpg',
+    description: '4-in-1 sealed packet: CPLA fork, knife, spoon and a napkin in one custom-printed sleeve. One packet per order — faster for staff.' },
+
+  { id: 'cut-set-asian', category: 'cutlery', name: 'Cutlery Set (Chopsticks, Spoon, Napkin)',
+    tag: 'New',         tagStyle: 'blue',   moq: '1,000',
+    image: 'assets/images/prod-cut-set-asian.jpg',
+    description: 'Bamboo chopsticks, CPLA spoon and napkin in a sealed kraft sleeve. Ideal for noodle, rice and sushi restaurants.' },
+
+  { id: 'cut-chopsticks', category: 'cutlery', name: 'Chopsticks w/ Paper Wrapping',
+    tag: '',            tagStyle: '',       moq: '2,000',
+    image: 'assets/images/prod-cut-chopsticks.jpg',
+    description: 'Hygienic bamboo chopsticks in a custom-printed paper sleeve. Smooth finish, no splinters.' },
+
+  { id: 'cut-napkin',  category: 'cutlery', name: '2-Ply Beverage Napkin',
+    tag: '',            tagStyle: '',       moq: '5,000',
+    image: 'assets/images/prod-cut-napkin.jpg',
+    description: 'Soft 2-ply napkins printed with your logo. The lowest-cost branding touchpoint on every table and tray.' },
+
+  { id: 'cut-wipe',    category: 'cutlery', name: 'Wet Wipe Pack',
+    tag: 'New',         tagStyle: 'blue',   moq: '2,000',
+    image: 'assets/images/prod-cut-wipe.jpg',
+    description: 'Individually sealed refreshing wet wipes with custom printing. A thoughtful finish for BBQ, seafood and fried chicken.' },
+
   { id: 'cut-fork',    category: 'cutlery', name: 'CPLA Fork',
     tag: '',            tagStyle: '',       moq: '2,000',
     image: 'assets/images/prod-cut-fork.jpg?v=2',
