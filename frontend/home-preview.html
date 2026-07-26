@@ -59,11 +59,13 @@
       100% { transform: scale(2.1); opacity: 0; }
     }
     .fp-try-btn {
-      position: absolute; z-index: 21; transform: translate(-50%, 10px);
+      position: absolute; z-index: 30;   /* 始终高于毛玻璃层 */
+      transform: translate(-50%, 10px);
       white-space: nowrap; opacity: 0; pointer-events: none;
       transition: opacity .18s ease, transform .18s ease;
     }
-    .fp-hero-cell:hover .fp-try-btn, .fp-try-btn:hover {
+    .fp-hero-cell:hover .fp-try-btn, .fp-try-btn:hover,
+    .fp-hero-cell.designing .fp-try-btn {
       opacity: 1; pointer-events: auto; transform: translate(-50%, 0);
     }
     /* 毛玻璃生成态 */
