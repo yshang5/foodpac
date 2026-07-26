@@ -69,6 +69,21 @@ const PRODUCTS = [
     tag: '',            tagStyle: '',       moq: '1,000',
     image: 'assets/images/prod-box-lunat-bento.svg',
     description: 'Slim tuck-top box for sushi, bento and lunch sets. Clean lines and a premium unboxing feel.' },
+  { id: 'box-taco', price: '0.35',     category: 'boxes',   name: '3-Slot Taco Holder w/ Lid',
+    tag: 'New',         tagStyle: 'blue',   moq: '2,000',
+    image: 'assets/images/prod-box-taco.jpg',
+    description: 'Compostable fibre tray that keeps three tacos upright, with a clear lid for grab-and-go.' },
+
+  { id: 'box-clamshell', price: '0.33', category: 'boxes',  name: 'Compostable Clamshell Container',
+    tag: 'Eco Pick',    tagStyle: 'green',  moq: '2,000',
+    image: 'assets/images/prod-box-clamshell.jpg',
+    description: 'All-purpose bagasse clamshell for mains and combos. Cut-resistant, microwave-safe, home-compostable.' },
+
+  { id: 'box-comp3', price: '0.34',    category: 'boxes',   name: '3-Compartment Tray w/ Lid',
+    tag: 'Eco Pick',    tagStyle: 'green',  moq: '2,000',
+    image: 'assets/images/prod-box-comp3.jpg',
+    description: 'Fibre tray with three compartments and a snap lid — keeps mains and sides neatly separated.' },
+
 
   // ── Cups & Lids ────────────────────────────────────────────
   { id: 'cup-hot', price: '0.14',     category: 'cups',    name: 'Hot Drink Cup (8/12/16 oz)',
@@ -90,6 +105,46 @@ const PRODUCTS = [
     tag: 'Eco Pick',    tagStyle: 'green',  moq: '2,000',
     image: 'assets/images/prod-cup-lid.jpg?v=2',
     description: 'PLA flat and dome lids to pair with our hot and cold cups. Fully compostable.' },
+  { id: 'cup-boba', price: '0.18',     category: 'cups',    name: 'Premium Boba Cup (16/22 oz)',
+    tag: 'New',         tagStyle: 'blue',   moq: '2,000',
+    image: 'assets/images/prod-cup-boba.jpg',
+    description: 'Ultra-clear premium cup made for bubble tea and iced drinks. Crystal clarity that shows off every layer.' },
+
+  { id: 'cup-boba-u', price: '0.14',   category: 'cups',    name: 'U-Shaped Cold Cup',
+    tag: 'New',         tagStyle: 'blue',   moq: '2,000',
+    image: 'assets/images/prod-cup-boba-u.jpg',
+    description: 'Trendy U-shaped clear cup for smoothies, boba and fruit teas. Rounded base fits standard sealing film and lids.' },
+
+  { id: 'cup-kraft-hot', price: '0.10', category: 'cups',   name: 'Kraft Paper Hot Cup',
+    tag: '',            tagStyle: '',       moq: '2,000',
+    image: 'assets/images/prod-cup-kraft-hot.jpg',
+    description: 'Natural kraft hot cup with an earthy, artisanal look. Pairs beautifully with minimal one-color printing.' },
+
+  { id: 'cup-dwall', price: '0.15',    category: 'cups',    name: 'Double-Wall Hot Cup',
+    tag: '',            tagStyle: '',       moq: '2,000',
+    image: 'assets/images/prod-cup-dwall.jpg',
+    description: 'Insulated double-wall construction — no sleeve needed. Keeps drinks hot and hands comfortable.' },
+
+  { id: 'cup-icecream', price: '0.11', category: 'cups',    name: 'Paper Ice Cream Cup',
+    tag: '',            tagStyle: '',       moq: '2,000',
+    image: 'assets/images/prod-cup-icecream.jpg',
+    description: 'Sturdy leak-resistant cup for ice cream, gelato and frozen yogurt. Matching lids available.' },
+
+  { id: 'cup-charcuterie', price: '0.10', category: 'cups', name: 'Paper Charcuterie Cup',
+    tag: 'Economical',  tagStyle: 'gray',   moq: '2,000',
+    image: 'assets/images/prod-cup-charcuterie.jpg',
+    description: 'Cone-style snack cup for fries, skewers and grab-and-go bites. Grease-resistant kraft board.' },
+
+  { id: 'cup-can', price: '0.70',      category: 'cups',    name: 'Clear Can w/ Lid',
+    tag: 'New',         tagStyle: 'blue',   moq: '2,000',
+    image: 'assets/images/prod-cup-can.jpg',
+    description: 'Can-style clear drink cup with a resealable lid — an eye-catching format for cold brews and fruit teas.' },
+
+  { id: 'cup-carrier4', price: '0.75', category: 'cups',    name: '4-Cup Drink Carrier w/ Handle',
+    tag: '',            tagStyle: '',       moq: '1,000',
+    image: 'assets/images/prod-cup-carrier4.jpg',
+    description: 'Sturdy kraft carrier with handle for up to four cups. Stress-free carry-out for group orders.' },
+
 
   // ── Paper Bags ─────────────────────────────────────────────
   { id: 'bag-sm', price: '0.18',      category: 'bags',    name: 'Kraft Paper Bag (Small)',
@@ -157,6 +212,26 @@ const PRODUCTS = [
     tag: '',            tagStyle: '',       moq: '2,000',
     image: 'assets/images/prod-bowl-lid.jpg?v=2',
     description: 'Compostable PLA lids in flat and vented styles to fit our full bowl range.' },
+  { id: 'bowl-mealprep', price: '0.22', category: 'bowls',  name: 'Paper Meal Prep Container',
+    tag: 'New',         tagStyle: 'blue',   moq: '2,000',
+    image: 'assets/images/prod-bowl-mealprep.jpg',
+    description: 'Rectangular paper container with clear snap-on lid. Ideal for meal prep, pasta and rice mains.' },
+
+  { id: 'bowl-acai', price: '0.17',    category: 'bowls',   name: 'Clear Acai Bowl w/ Lid',
+    tag: '',            tagStyle: '',       moq: '2,000',
+    image: 'assets/images/prod-bowl-acai.jpg',
+    description: 'Show-stopping clear bowl for acai, parfaits and fruit bowls. Dome lid protects toppings in transit.' },
+
+  { id: 'bowl-kraft', price: '0.11',   category: 'bowls',   name: 'Kraft Paper Bowl',
+    tag: 'Economical',  tagStyle: 'gray',   moq: '1,000',
+    image: 'assets/images/prod-bowl-kraft.jpg',
+    description: 'The everyday workhorse bowl in natural kraft. Multiple sizes for soups, sides and mains.' },
+
+  { id: 'bowl-fiber', price: '0.27',   category: 'bowls',   name: 'Bagasse Fiber Bowl',
+    tag: 'Eco Pick',    tagStyle: 'green',  moq: '2,000',
+    image: 'assets/images/prod-bowl-fiber.jpg',
+    description: 'Molded sugarcane-fiber bowl — sturdy, microwave-safe and home-compostable. Peak eco credentials.' },
+
 
   // ── Wrapping Paper ─────────────────────────────────────────
   { id: 'wrap-deli', price: '0.05',   category: 'wraps',   name: 'Deli Wrap Paper',
