@@ -10,25 +10,65 @@
 
 const PRODUCTS = [
   // ── Takeout Boxes ──────────────────────────────────────────
-  { id: 'box-kraft',   category: 'boxes',   name: 'Kraft Takeout Box',
-    tag: 'Eco Pick',    tagStyle: 'green',  moq: '1,000',
-    image: 'assets/images/prod-box-kraft.jpg?v=2',
-    description: 'Classic kraft paperboard box. Grease-resistant liner, microwave-safe. Perfect for burgers, rice bowls, and more.' },
-
-  { id: 'box-hinged',  category: 'boxes',   name: 'Hinged-Lid Clamshell',
+  { id: 'box-takeout', category: 'boxes',   name: 'Kraft Take-Out Box',
     tag: 'Best Seller', tagStyle: 'orange', moq: '1,000',
-    image: 'assets/images/prod-box-hinged.jpg?v=2',
-    description: 'One-piece fold-over design. No assembly needed. Great for sandwiches, salads, and hot entrées.' },
+    image: 'assets/images/prod-box-lunat-takeout.svg',
+    description: 'Classic folding kraft box with a grease-resistant liner. The all-purpose choice for rice bowls, mains and combo meals.' },
 
-  { id: 'box-noodle',  category: 'boxes',   name: 'Noodle & Rice Box',
-    tag: '',            tagStyle: '',       moq: '1,000',
-    image: 'assets/images/prod-box-noodle.jpg?v=2',
-    description: 'Tall, sturdy paperboard box designed for noodles, fried rice, and deep-filled dishes. Leak-resistant.' },
+  { id: 'box-chinese', category: 'boxes',   name: 'Chinese Take-Out Box',
+    tag: 'Eco Pick',    tagStyle: 'green',  moq: '1,000',
+    image: 'assets/images/prod-box-lunat-chinese.svg',
+    description: 'The iconic fold-top pail for noodles, fried rice and stir-fries. Leak-resistant paperboard, no assembly needed.' },
 
-  { id: 'box-window',  category: 'boxes',   name: 'Window Pastry Box',
+  { id: 'box-burger',  category: 'boxes',   name: 'Compostable Burger Box',
+    tag: 'Eco Pick',    tagStyle: 'green',  moq: '1,000',
+    image: 'assets/images/prod-box-lunat-burger.svg',
+    description: 'Hinged clamshell in compostable fibre. Vented lid keeps buns crisp — fully compliant with Canada\'s plastics rules.' },
+
+  { id: 'box-fry',     category: 'boxes',   name: 'French Fry Holder',
+    tag: 'Economical',  tagStyle: 'gray',   moq: '2,000',
+    image: 'assets/images/prod-box-lunat-fry.svg',
+    description: 'Open-top scoop for fries and hot sides. Quick to fill during the rush, printed edge-to-edge with your brand.' },
+
+  { id: 'box-hotdog',  category: 'boxes',   name: 'Hot Dog Box',
+    tag: '',            tagStyle: '',       moq: '2,000',
+    image: 'assets/images/prod-box-lunat-hotdog.svg',
+    description: 'Long tray-style box sized for hot dogs, sausages and wraps. Sturdy walls keep toppings in place in transit.' },
+
+  { id: 'box-chicken', category: 'boxes',   name: 'Fried Chicken Box',
     tag: 'New',         tagStyle: 'blue',   moq: '1,000',
-    image: 'assets/images/prod-box-window.jpg?v=2',
-    description: 'Kraft box with a clear PLA window. Ideal for pastries, cakes, and baked goods. Showcases your product.' },
+    image: 'assets/images/prod-box-lunat-chicken.svg',
+    description: 'Tuck-top box with an auto-locking bottom and steam vents — fried chicken stays crispy, never soggy.' },
+
+  { id: 'box-dessert', category: 'boxes',   name: 'Dessert Box w/ Clear Lid',
+    tag: 'New',         tagStyle: 'blue',   moq: '1,000',
+    image: 'assets/images/prod-box-lunat-dessert.svg',
+    description: 'White paperboard base with a crystal-clear PLA lid. Showcases cakes, cookies and desserts at the counter.' },
+
+  { id: 'box-donut',   category: 'boxes',   name: 'Donut Box w/ Window',
+    tag: '',            tagStyle: '',       moq: '1,000',
+    image: 'assets/images/prod-box-lunat-donut.svg',
+    description: 'Wide flat box with a clear window for donuts and pastries. Grease-resistant board that prints beautifully.' },
+
+  { id: 'box-pizza',   category: 'boxes',   name: 'Kraft Corrugated Pizza Box',
+    tag: 'Best Seller', tagStyle: 'orange', moq: '1,000',
+    image: 'assets/images/prod-box-lunat-pizza.svg',
+    description: 'Greaseproof corrugated kraft keeps pizza hot and crisp on delivery. Available in 10″ to 16″ sizes.' },
+
+  { id: 'box-gable',   category: 'boxes',   name: 'Paper Gable Box',
+    tag: '',            tagStyle: '',       moq: '1,000',
+    image: 'assets/images/prod-box-lunat-gable.svg',
+    description: 'Carry-handle box for combo meals, cupcakes and catering. Ships and stores flat, folds up in seconds.' },
+
+  { id: 'box-tray',    category: 'boxes',   name: 'Paper Food Tray',
+    tag: 'Economical',  tagStyle: 'gray',   moq: '2,000',
+    image: 'assets/images/prod-box-lunat-tray.svg',
+    description: 'Open boat tray for appetizers, spring rolls and snacks. The lowest-cost way to brand every serving.' },
+
+  { id: 'box-bento',   category: 'boxes',   name: 'Tuck-Top Bento Box',
+    tag: '',            tagStyle: '',       moq: '1,000',
+    image: 'assets/images/prod-box-lunat-bento.svg',
+    description: 'Slim tuck-top box for sushi, bento and lunch sets. Clean lines and a premium unboxing feel.' },
 
   // ── Cups & Lids ────────────────────────────────────────────
   { id: 'cup-hot',     category: 'cups',    name: 'Hot Drink Cup (8/12/16 oz)',

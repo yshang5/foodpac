@@ -18,11 +18,20 @@ import { API_BASE } from './api.js';
 const CART_PENDING_KEY = '_fp_pendingCart';
 
 const NAV_LINKS = [
-  { key: 'products',  label: 'Products',     href: 'products.html' },
   { key: 'solutions', label: 'Solutions',    href: 'index.html#restaurant-types' },
-  { key: 'why',       label: 'Why foodPac',  href: 'index.html#why-foodpac' },
-  { key: 'how',       label: 'How It Works', href: 'index.html#how-it-works' },
+  { key: 'why',       label: 'Why foodPac',  href: 'index.html#how-it-works' },
+  { key: 'how',       label: 'How It Works', href: 'index.html#ai-design' },
   { key: 'about',     label: 'About',        href: 'about.html' },
+];
+
+/** Product categories shown in the nav mega-dropdown */
+const NAV_CATEGORIES = [
+  { key: 'boxes',   label: 'Takeout Boxes',  img: 'cat-boxes.jpg' },
+  { key: 'cups',    label: 'Cups & Lids',    img: 'cat-cups.jpg' },
+  { key: 'bags',    label: 'Paper Bags',     img: 'cat-bags.jpg' },
+  { key: 'bowls',   label: 'Bowls',          img: 'cat-bowls.jpg' },
+  { key: 'wraps',   label: 'Wrapping Paper', img: 'cat-wraps.jpg' },
+  { key: 'cutlery', label: 'Cutlery',        img: 'cat-cutlery.jpg' },
 ];
 
 /**
@@ -68,7 +77,40 @@ export async function initNav(activePage = '') {
 
   _fixTailwindResponsive();
 
-  const links = NAV_LINKS.map(({ key, label, href }) => {
+  // Products — mega dropdown with category cards.
+  // On the homepage window.fpGoCat switches the in-page category tab;
+  // on other pages the link falls through to products.html?cat=xxx.
+  const dropdownCards = NAV_CATEGORIES.map(({ key, label, img }) => `
+    <a href="products.html?cat=${key}"
+       onclick="if(window.fpGoCat){window.fpGoCat('${key}');return false}"
+       class="group/card text-center">
+      <div class="rounded-xl overflow-hidden bg-gray-50 border border-gray-100 mb-2">
+        <img src="assets/images/${img}?v=2" alt="${label}" loading="lazy"
+             class="w-full h-24 object-cover group-hover/card:scale-105 transition-transform duration-300">
+      </div>
+      <span class="text-sm font-semibold text-gray-800 group-hover/card:text-primary-800 inline-flex items-center gap-1">${label} <span aria-hidden="true" class="text-primary-700">›</span></span>
+    </a>`).join('');
+
+  const productsDropdown = `
+    <div class="group">
+      <a href="products.html"
+         class="nav-link px-5 py-7 text-[15px] font-medium transition-colors inline-flex items-center gap-1
+           ${activePage === 'products' ? 'text-primary-800' : 'text-gray-700 hover:text-primary-800'}">
+        Products
+        <svg class="w-3.5 h-3.5 transition-transform group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+        </svg>
+      </a>
+      <div class="invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-150
+                  fixed left-1/2 -translate-x-1/2 top-[116px] z-[60] w-[min(960px,94vw)]
+                  bg-white rounded-2xl shadow-2xl border border-gray-100 p-5">
+        <div class="grid grid-cols-3 lg:grid-cols-6 gap-4">
+          ${dropdownCards}
+        </div>
+      </div>
+    </div>`;
+
+  const links = productsDropdown + NAV_LINKS.map(({ key, label, href }) => {
     const isActive = key === activePage;
     return `<a href="${href}"
       class="nav-link px-5 py-7 text-[15px] font-medium transition-colors inline-flex items-center
@@ -77,7 +119,15 @@ export async function initNav(activePage = '') {
     </a>`;
   }).join('');
 
-  const mobileLinks = NAV_LINKS.map(({ label, href }) =>
+  const mobileCategoryLinks = NAV_CATEGORIES.map(({ key, label }) =>
+    `<a href="products.html?cat=${key}" onclick="if(window.fpGoCat){window.fpGoCat('${key}');return false}"
+        class="px-3 py-2 text-sm text-gray-500 hover:text-primary-800 hover:bg-primary-50 rounded-lg">${label}</a>`
+  ).join('');
+
+  const mobileLinks = `
+    <a href="products.html" class="px-4 py-3 text-[15px] font-medium text-gray-700 hover:text-primary-800 hover:bg-primary-50 rounded-lg transition-colors block">Products</a>
+    <div class="grid grid-cols-2 gap-1 pl-6 pb-1">${mobileCategoryLinks}</div>
+  ` + NAV_LINKS.map(({ label, href }) =>
     `<a href="${href}" class="px-4 py-3 text-[15px] font-medium text-gray-700 hover:text-primary-800 hover:bg-primary-50 rounded-lg transition-colors block">${label}</a>`
   ).join('');
 
@@ -117,9 +167,9 @@ export async function initNav(activePage = '') {
 
             <!-- Logo -->
             <a href="index.html" class="flex items-center shrink-0">
-              <img src="assets/images/logo-horizontal.png"
+              <img src="assets/images/logo-horizontal-v2.png?v=9"
                    alt="foodPac"
-                   class="h-14 w-auto"
+                   class="h-12 w-auto"
                    onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
               <span class="hidden items-center" id="logo-fallback">
                 <span class="text-2xl font-extrabold tracking-tight">
@@ -371,7 +421,7 @@ export function initFooter() {
 
           <div class="lg:col-span-1">
             <div class="flex items-center gap-2.5 mb-4">
-              <img src="assets/images/logo-icon.png"
+              <img src="assets/images/logo-icon-v2.png?v=9"
                    alt="foodPac"
                    class="h-9 w-9 object-contain rounded-xl"
                    onerror="this.style.display='none'">

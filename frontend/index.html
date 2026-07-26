@@ -19,10 +19,10 @@
   <meta name="twitter:title" content="Custom Restaurant Takeout Packaging Canada | AI Design in 5 Minutes – foodPac" />
   <meta name="twitter:description" content="Branded takeout packaging for Canadian restaurants. AI-powered design in 5 minutes, 100% compostable materials, low 1,000-unit minimums, delivered across Canada." />
   <meta name="twitter:image" content="https://foodpac.ai/assets/images/hero-box.jpg?v=2" />
-  <link rel="stylesheet" href="css/tailwind.css?v=20260717">
+  <link rel="stylesheet" href="css/tailwind.css?v=20260726b">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/main.css">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/main.css?v=20260726">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -32,7 +32,7 @@
         "@id": "https://foodpac.ai/#organization",
         "name": "foodPac",
         "url": "https://foodpac.ai/",
-        "logo": "https://foodpac.ai/assets/images/logo-icon.png",
+        "logo": "https://foodpac.ai/assets/images/logo-icon-v2.png",
         "email": "hi@foodpac.ai",
         "description": "AI-powered custom takeout packaging for independent restaurants in Canada. Eco-friendly materials, low minimum orders from 1,000 units, nationwide delivery.",
         "address": {
@@ -71,101 +71,165 @@
           },
           {
             "@type": "Question",
-            "name": "Do you deliver across Canada?",
-            "acceptedAnswer": { "@type": "Answer", "text": "Yes. We deliver to restaurants nationwide — Toronto, Vancouver, Montreal, Calgary, Ottawa, Edmonton and beyond. Phased batch delivery is available so you never pay to store months of stock." }
-          },
-          {
-            "@type": "Question",
             "name": "Are your products compliant with Canada's single-use plastics rules?",
             "acceptedAnswer": { "@type": "Answer", "text": "Yes. All foodPac products use biodegradable or compostable materials (kraft paper, PLA, CPLA) and are fully compliant with Canada's Single-use Plastics Prohibition Regulations — at no price premium over generic packaging." }
           },
           {
             "@type": "Question",
             "name": "What if I don't have a logo or brand assets yet?",
-            "acceptedAnswer": { "@type": "Answer", "text": "No problem. Tell us about your restaurant in the quote form and our team will help with branding — from a simple logo to a full packaging identity — before generating your designs." }
+            "acceptedAnswer": { "@type": "Answer", "text": "No problem. Tell us about your restaurant and our team will help with branding — from a simple logo to a full packaging identity — before generating your designs." }
           }
         ]
       }
     ]
   }
   </script>
+  <style>
+    /* Homepage-specific styles (new design) */
+    .hero-gradient { background: linear-gradient(135deg, #0d3311 0%, #1b5e20 45%, #2e7d32 100%); }
+    .cat-tab.active { background: #2e7d32; color: #fff; border-color: #2e7d32; }
+    /* 移动端分类 tab 横向滑动，隐藏滚动条 */
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    /* ── Hero 品牌替换彩蛋 ── */
+    .fp-dot {
+      position: absolute; width: 22px; height: 22px; border-radius: 9999px;
+      background: #2e7d32; cursor: pointer; z-index: 20;
+      border: 2px solid rgba(255,255,255,.95);
+      box-shadow: 0 2px 8px rgba(0,0,0,.3);
+      transform: translate(-50%, -50%);
+    }
+    /* 中心黄色闪动点 */
+    .fp-dot::before {
+      content: ''; position: absolute; width: 8px; height: 8px; border-radius: 9999px;
+      left: 50%; top: 50%; transform: translate(-50%, -50%);
+      background: #ffca28;
+      animation: fp-dot-pulse 1.4s ease-in-out infinite;
+    }
+    .fp-dot::after {
+      content: ''; position: absolute; inset: -9px; border-radius: 9999px;
+      background: rgba(76,175,80,.35);
+      animation: fp-dot-ring 1.8s ease-out infinite;
+      z-index: -1;
+    }
+    @keyframes fp-dot-pulse {
+      0%,100% { box-shadow: 0 0 4px 1px rgba(255,202,40,.9);  transform: translate(-50%,-50%) scale(1); }
+      50%     { box-shadow: 0 0 14px 6px rgba(255,167,38,.95); transform: translate(-50%,-50%) scale(1.3); }
+    }
+    @keyframes fp-dot-ring {
+      0%   { transform: scale(.6); opacity: .9; }
+      100% { transform: scale(2.1); opacity: 0; }
+    }
+    .fp-try-btn {
+      position: absolute; z-index: 30;   /* 始终高于毛玻璃层 */
+      transform: translate(-50%, 10px);
+      white-space: nowrap; opacity: 0; pointer-events: none;
+      transition: opacity .18s ease, transform .18s ease;
+    }
+    .fp-hero-cell:hover .fp-try-btn, .fp-try-btn:hover {
+      opacity: 1; pointer-events: auto; transform: translate(-50%, 0);
+    }
+    /* 生成中：按钮与光点都不出现（悬浮也不出） */
+    .fp-hero-cell.designing .fp-try-btn { display: none; }
+    /* 毛玻璃生成态 */
+    .fp-glass {
+      position: absolute; inset: 0; z-index: 15;
+      backdrop-filter: blur(0px); background: rgba(255,255,255,0);
+      opacity: 0; pointer-events: none;
+      transition: opacity .5s ease;
+      overflow: hidden;
+    }
+    .fp-hero-cell.designing .fp-glass {
+      opacity: 1; backdrop-filter: blur(10px); background: rgba(255,255,255,.25);
+      transition: opacity .5s ease, backdrop-filter .8s ease, background .8s ease;
+    }
+    .fp-glass::before {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(105deg, transparent 40%, rgba(255,255,255,.65) 50%, transparent 60%);
+      transform: translateX(-100%);
+    }
+    .fp-hero-cell.designing .fp-glass::before {
+      animation: fp-shimmer 1.6s ease-in-out infinite;
+    }
+    @keyframes fp-shimmer { to { transform: translateX(100%); } }
+    .fp-hero-cell.designing .fp-dot { display: none; }
+    .fp-hero-cell img { transition: opacity .45s ease; }
+    .fp-swatch.sel { outline: 3px solid #1b5e20; outline-offset: 2px; }
+  </style>
 </head>
-<body class="font-sans text-gray-800 bg-white">
+<body class="font-sans text-gray-800 bg-white antialiased">
 
   <div id="navbar"></div>
 
-  <!-- ── HERO ──────────────────────────────────────────────── -->
-  <section class="hero-gradient text-white overflow-hidden">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-28">
-      <div class="grid lg:grid-cols-2 gap-12 items-center">
+  <!-- ── HERO (白色首屏) ────────────────────────────────────── -->
+  <section class="bg-white overflow-hidden">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-20 lg:pt-24 lg:pb-24">
+      <div class="grid lg:grid-cols-12 gap-14 items-center">
 
-        <div>
-          <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-4 py-1.5 mb-6">
-            <span class="w-2 h-2 rounded-full bg-accent-400 animate-pulse"></span>
-            <span class="text-sm font-medium text-white/90">Eco-Friendly · Custom-Branded · Low MOQ</span>
-          </div>
-          <h1 class="text-4xl lg:text-5xl xl:text-6xl font-extrabold leading-tight mb-6">
-            <span class="text-white">Food</span><span class="text-accent-400">Pac</span><br/>
-            <span class="text-accent-400">Made Simple</span>
-          </h1>
-          <p class="text-lg text-white/80 mb-8 max-w-lg leading-relaxed">
-            Professional branded packaging for independent restaurants — AI-powered design, eco-friendly materials, and flexible low-minimum orders starting at just 1,000 units.
+        <div class="lg:col-span-6">
+          <p class="inline-flex items-center gap-2 bg-primary-50 border border-primary-100 text-primary-800 rounded-full px-4 py-1.5 text-sm font-semibold mb-6">
+            <span class="w-2 h-2 rounded-full bg-accent-500 animate-pulse"></span>
+            Eco-Friendly · Custom-Branded · Low MOQ
           </p>
-          <div class="flex flex-wrap gap-4">
-            <button onclick="window.openDesignWidget && window.openDesignWidget()"
-               class="inline-flex items-center gap-2 px-7 py-3.5 bg-accent-500 hover:bg-accent-600 text-white font-semibold rounded-lg transition-colors shadow-lg">
-              ✨ Design Online
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
-              </svg>
+          <h1 class="text-5xl lg:text-6xl xl:text-7xl font-black leading-[1.05] tracking-tight text-gray-900 mb-7">
+            Your Brand,<br/>
+            On Every<br/>
+            <span class="text-primary-700">Takeout Order</span>
+          </h1>
+          <p class="text-xl text-gray-500 mb-10 max-w-xl leading-relaxed">
+            Custom eco-friendly packaging for Canadian restaurants —
+            designed by AI in 5 minutes, from just 1,000 units.
+          </p>
+          <div class="flex flex-wrap gap-4 mb-10">
+            <button onclick="fpOpenDesign()" class="inline-flex items-center gap-2.5 px-8 py-4 bg-accent-500 hover:bg-accent-600 text-white font-bold text-lg rounded-xl transition-colors shadow-xl shadow-accent-500/25">
+              ✨ Design Yours in 5 Minutes
             </button>
-            <a href="products.html"
-               class="inline-flex items-center gap-2 px-7 py-3.5 bg-white/10 hover:bg-white/20 text-white font-semibold rounded-lg border border-white/30 transition-colors">
-              View Products
+            <a href="products.html" class="inline-flex items-center gap-2 px-8 py-4 bg-white hover:bg-gray-50 text-gray-800 font-semibold text-lg rounded-xl border border-gray-200 transition-colors">
+              Browse Products
             </a>
           </div>
+          <ul class="flex flex-wrap gap-x-7 gap-y-2 text-sm text-gray-500 font-medium">
+            <li class="flex items-center gap-2"><span class="text-primary-700 font-bold">✓</span> Free AI design</li>
+            <li class="flex items-center gap-2"><span class="text-primary-700 font-bold">✓</span> 100% compostable</li>
+            <li class="flex items-center gap-2"><span class="text-primary-700 font-bold">✓</span> MOQ from 1,000</li>
+            <li class="flex items-center gap-2"><span class="text-primary-700 font-bold">✓</span> Free warehousing</li>
+          </ul>
         </div>
 
-        <!-- Hero product showcase -->
-        <div class="hidden lg:grid grid-cols-2 gap-4">
-          <div class="space-y-4">
-            <div class="bg-white/10 backdrop-blur-sm rounded-2xl overflow-hidden border border-white/20 card-hover">
-              <img src="assets/images/hero-box.jpg?v=2" alt="Takeout Boxes"
-                   class="w-full h-40 object-cover"
-                   onerror="this.parentElement.classList.add('flex','items-center','justify-center'); this.style.display='none'">
-              <div class="p-4">
-                <p class="text-white font-semibold text-sm">Takeout Boxes</p>
-                <p class="text-white/60 text-xs">Fully customized</p>
-              </div>
+        <!-- Hero collage -->
+        <div class="hidden lg:block lg:col-span-6 relative">
+          <div class="absolute -top-10 -right-14 w-96 h-96 bg-primary-50 rounded-full blur-3xl"></div>
+          <div class="relative grid grid-cols-12 grid-rows-6 gap-4 h-[540px]">
+            <div class="fp-hero-cell relative col-span-7 row-span-4 rounded-3xl overflow-hidden shadow-xl border border-gray-100" data-hero="hero-box">
+              <img src="assets/images/hero-box.jpg?v=2" alt="Custom takeout boxes" class="w-full h-full object-cover">
+              <span class="fp-dot" onclick="fpHeroOpen()" style="left:47%; top:56%"></span>
+              <button onclick="fpHeroOpen()" class="fp-try-btn px-4 py-2 bg-gray-900/85 hover:bg-gray-900 text-white text-xs font-bold rounded-full shadow-xl" style="left:47%; top:62%">✨ Try Your Brand Here</button>
+              <div class="fp-glass"></div>
             </div>
-            <div class="bg-white/10 backdrop-blur-sm rounded-2xl overflow-hidden border border-white/20 card-hover">
-              <img src="assets/images/hero-cup.jpg?v=2" alt="Custom Cups"
-                   class="w-full h-32 object-cover"
-                   onerror="this.style.display='none'">
-              <div class="p-4">
-                <p class="text-white font-semibold text-sm">Custom Cups</p>
-                <p class="text-white/60 text-xs">Hot & cold options</p>
-              </div>
+            <div class="fp-hero-cell relative col-span-5 row-span-3 rounded-3xl overflow-hidden shadow-xl border border-gray-100" data-hero="hero-cup">
+              <img src="assets/images/hero-cup.jpg?v=2" alt="Custom cups" class="w-full h-full object-cover">
+              <span class="fp-dot" onclick="fpHeroOpen()" style="left:50%; top:55%"></span>
+              <button onclick="fpHeroOpen()" class="fp-try-btn px-4 py-2 bg-gray-900/85 hover:bg-gray-900 text-white text-xs font-bold rounded-full shadow-xl" style="left:50%; top:52%">✨ Try Your Brand Here</button>
+              <div class="fp-glass"></div>
+            </div>
+            <div class="fp-hero-cell relative col-span-5 row-span-3 rounded-3xl overflow-hidden shadow-xl border border-gray-100" data-hero="hero-bag">
+              <img src="assets/images/hero-bag.jpg?v=2" alt="Custom kraft bags" class="w-full h-full object-cover">
+              <span class="fp-dot" onclick="fpHeroOpen()" style="left:52%; top:52%"></span>
+              <button onclick="fpHeroOpen()" class="fp-try-btn px-4 py-2 bg-gray-900/85 hover:bg-gray-900 text-white text-xs font-bold rounded-full shadow-xl" style="left:52%; top:60%">✨ Try Your Brand Here</button>
+              <div class="fp-glass"></div>
+            </div>
+            <div class="fp-hero-cell relative col-span-7 row-span-2 rounded-3xl overflow-hidden shadow-xl border border-gray-100" data-hero="hero-ai">
+              <img src="assets/images/hero-ai.jpg?v=2" alt="AI packaging design" class="w-full h-full object-cover">
+              <span class="fp-dot" onclick="fpHeroOpen()" style="left:40%; top:52%"></span>
+              <button onclick="fpHeroOpen()" class="fp-try-btn px-4 py-2 bg-gray-900/85 hover:bg-gray-900 text-white text-xs font-bold rounded-full shadow-xl" style="left:40%; top:64%">✨ Try Your Brand Here</button>
+              <div class="fp-glass"></div>
             </div>
           </div>
-          <div class="space-y-4 mt-8">
-            <div class="bg-white/10 backdrop-blur-sm rounded-2xl overflow-hidden border border-white/20 card-hover">
-              <img src="assets/images/hero-bag.jpg?v=2" alt="Kraft Bags"
-                   class="w-full h-32 object-cover"
-                   onerror="this.style.display='none'">
-              <div class="p-4">
-                <p class="text-white font-semibold text-sm">Kraft Bags</p>
-                <p class="text-white/60 text-xs">Eco-friendly kraft</p>
-              </div>
-            </div>
-            <div class="bg-accent-500/30 backdrop-blur-sm rounded-2xl overflow-hidden border border-accent-400/40 card-hover">
-              <img src="assets/images/hero-ai.jpg?v=2" alt="AI Design"
-                   class="w-full h-40 object-cover"
-                   onerror="this.style.display='none'">
-              <div class="p-4">
-                <p class="text-accent-300 font-semibold text-sm">AI Design</p>
-                <p class="text-white/60 text-xs">Ready in 5 minutes</p>
-              </div>
+          <div class="absolute z-40 -bottom-5 -left-5 bg-white text-gray-900 rounded-2xl shadow-2xl border border-gray-100 px-5 py-4 flex items-center gap-3">
+            <div id="fp-hero-badge-icon" class="w-11 h-11 bg-primary-800 rounded-xl flex items-center justify-center text-white text-xl">✨</div>
+            <div>
+              <p id="fp-hero-badge-title" class="font-bold text-sm">AI Design Ready</p>
+              <p id="fp-hero-badge-sub" class="text-gray-500 text-xs">4 options in under 5 minutes</p>
             </div>
           </div>
         </div>
@@ -174,293 +238,319 @@
     </div>
   </section>
 
-  <!-- ── STATS BAR ─────────────────────────────────────────── -->
-  <section class="bg-primary-800 text-white py-8">
+  <!-- ── STATS STRIP (浅绿分割带) ───────────────────────────── -->
+  <section class="bg-primary-50 border-y border-primary-100 py-10">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
         <div>
-          <div class="text-3xl font-extrabold text-accent-400">1,000</div>
-          <div class="text-sm text-white/70 mt-1">Units Minimum Order</div>
+          <div class="text-4xl font-black text-primary-800 mb-1">1,000</div>
+          <div class="text-sm text-gray-500">Units Minimum Order</div>
         </div>
         <div>
-          <div class="text-3xl font-extrabold text-accent-400">5 min</div>
-          <div class="text-sm text-white/70 mt-1">AI Design Generation</div>
+          <div class="text-4xl font-black text-primary-800 mb-1">5 min</div>
+          <div class="text-sm text-gray-500">AI Design Generation</div>
         </div>
         <div>
-          <div class="text-3xl font-extrabold text-accent-400">100%</div>
-          <div class="text-sm text-white/70 mt-1">Eco-Friendly Materials</div>
+          <div class="text-4xl font-black text-primary-800 mb-1">100%</div>
+          <div class="text-sm text-gray-500">Eco-Friendly Materials</div>
         </div>
         <div>
-          <div class="text-3xl font-extrabold text-accent-400">24 hrs</div>
-          <div class="text-sm text-white/70 mt-1">Quote &amp; Mockup Turnaround</div>
+          <div class="text-4xl font-black text-primary-800 mb-1">24 hrs</div>
+          <div class="text-sm text-gray-500">Quote &amp; Mockup Turnaround</div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ── PRODUCT CATEGORIES ────────────────────────────────── -->
-  <section class="py-20 bg-white" id="products">
+  <!-- ── SHOP BY CATEGORY (tab 导航 + 产品列表) ─────────────── -->
+  <section class="py-24 bg-white" id="categories">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="text-center mb-14">
-        <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">Our Packaging Range</h2>
-        <p class="text-lg text-gray-500 max-w-xl mx-auto">Everything your restaurant needs — branded, eco-friendly, and ready for takeout.</p>
+      <div class="flex items-end justify-between mb-10">
+        <div>
+          <h2 class="text-4xl lg:text-5xl font-extrabold text-gray-900 tracking-tight mb-3">Shop by Category</h2>
+          <p class="text-lg text-gray-500">Everything your takeout counter needs, branded with your logo. All prices in CAD.</p>
+        </div>
+        <a href="products.html" class="hidden sm:inline-flex items-center gap-2 text-primary-700 font-bold hover:text-primary-900 transition-colors shrink-0">
+          All products <span aria-hidden="true">→</span>
+        </a>
       </div>
-      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4" id="categoryGrid">
-        <!-- Injected by JS -->
-      </div>
-      <div class="text-center mt-10">
-        <a href="products.html" class="inline-flex items-center gap-2 text-primary-700 font-semibold hover:text-primary-900 transition-colors">
-          Browse all products
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+
+      <!-- Tabs：移动端单行横滑，桌面端换行平铺 -->
+      <div class="flex flex-nowrap md:flex-wrap gap-3 mb-10 overflow-x-auto md:overflow-visible no-scrollbar -mx-4 px-4 md:mx-0 md:px-0 snap-x" id="catTabs">
+        <button data-cat="boxes" class="cat-tab active inline-flex items-center gap-2 shrink-0 whitespace-nowrap snap-start px-6 py-2.5 rounded-full border border-gray-200 font-semibold text-sm text-gray-600 hover:border-primary-300 transition-colors">
+          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
           </svg>
+          Takeout Boxes
+        </button>
+        <button data-cat="cups" class="cat-tab inline-flex items-center gap-2 shrink-0 whitespace-nowrap snap-start px-6 py-2.5 rounded-full border border-gray-200 font-semibold text-sm text-gray-600 hover:border-primary-300 transition-colors">
+          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M17 8h1.5a3.5 3.5 0 010 7H17M3 8h14v6a5 5 0 01-5 5H8a5 5 0 01-5-5V8zM7 3v2m4-2v2"/>
+          </svg>
+          Cups &amp; Lids
+        </button>
+        <button data-cat="bags" class="cat-tab inline-flex items-center gap-2 shrink-0 whitespace-nowrap snap-start px-6 py-2.5 rounded-full border border-gray-200 font-semibold text-sm text-gray-600 hover:border-primary-300 transition-colors">
+          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+          </svg>
+          Paper Bags
+        </button>
+        <button data-cat="bowls" class="cat-tab inline-flex items-center gap-2 shrink-0 whitespace-nowrap snap-start px-6 py-2.5 rounded-full border border-gray-200 font-semibold text-sm text-gray-600 hover:border-primary-300 transition-colors">
+          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 11h18c0 5-4 9-9 9s-9-4-9-9zM8 11c0-3 1.5-5 4-7 2.5 2 4 4 4 7"/>
+          </svg>
+          Bowls
+        </button>
+        <button data-cat="wraps" class="cat-tab inline-flex items-center gap-2 shrink-0 whitespace-nowrap snap-start px-6 py-2.5 rounded-full border border-gray-200 font-semibold text-sm text-gray-600 hover:border-primary-300 transition-colors">
+          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8 8h12v12H8V8zM4 16V4h12"/>
+          </svg>
+          Wrapping Paper
+        </button>
+        <button data-cat="cutlery" class="cat-tab inline-flex items-center gap-2 shrink-0 whitespace-nowrap snap-start px-6 py-2.5 rounded-full border border-gray-200 font-semibold text-sm text-gray-600 hover:border-primary-300 transition-colors">
+          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 3v5a2 2 0 004 0V3M8 10v11M17 3v18M17 3c1.7 2 2.5 4.3 2.5 6.5 0 2-1.1 3.5-2.5 3.5"/>
+          </svg>
+          Cutlery
+        </button>
+      </div>
+
+      <!-- Product grid (4 per row), injected by inline script -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-10" id="catGrid"></div>
+    </div>
+  </section>
+
+  <!-- ── AI DESIGN FEATURE ─────────────────────────────────── -->
+  <section class="py-24 hero-gradient text-white overflow-hidden" id="ai-design">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid lg:grid-cols-2 gap-16 items-center">
+        <div>
+          <p class="inline-flex items-center gap-2 bg-white/10 border border-white/20 rounded-full px-4 py-1.5 text-sm font-semibold mb-6">✨ Only at foodPac</p>
+          <h2 class="text-4xl lg:text-5xl font-extrabold tracking-tight leading-tight mb-6">
+            No Designer?<br/>Our AI Designs It<br/><span class="text-accent-400">in 5 Minutes.</span>
+          </h2>
+          <p class="text-lg text-white/80 mb-10 max-w-lg leading-relaxed">
+            Competitors take days to send you a design. Upload your logo, pick your colours,
+            and get 4 print-ready packaging designs before your coffee gets cold — free, unlimited revisions.
+          </p>
+          <ol class="space-y-5 mb-10">
+            <li class="flex gap-4 items-start">
+              <span class="w-8 h-8 shrink-0 bg-accent-500 rounded-full flex items-center justify-center font-bold text-sm">1</span>
+              <p class="text-white/85 pt-1"><strong class="text-white">Upload your logo</strong> — or just describe your restaurant.</p>
+            </li>
+            <li class="flex gap-4 items-start">
+              <span class="w-8 h-8 shrink-0 bg-accent-500 rounded-full flex items-center justify-center font-bold text-sm">2</span>
+              <p class="text-white/85 pt-1"><strong class="text-white">AI generates 4 designs</strong> on your chosen packaging in under 5 minutes.</p>
+            </li>
+            <li class="flex gap-4 items-start">
+              <span class="w-8 h-8 shrink-0 bg-accent-500 rounded-full flex items-center justify-center font-bold text-sm">3</span>
+              <p class="text-white/85 pt-1"><strong class="text-white">Refine &amp; order</strong> — tweak online, approve, and we handle production.</p>
+            </li>
+          </ol>
+          <button onclick="fpOpenDesign()" class="inline-flex items-center gap-2.5 px-8 py-4 bg-accent-500 hover:bg-accent-600 text-white font-bold text-lg rounded-xl transition-colors shadow-xl shadow-black/20">
+            ✨ Try the AI Designer — Free
+          </button>
+        </div>
+        <div class="relative">
+          <img src="assets/images/hero-ai.jpg?v=2" alt="AI packaging design" loading="lazy" class="rounded-3xl w-full shadow-2xl border border-white/15 object-cover max-h-[480px]">
+          <div class="absolute -top-5 -right-3 bg-white text-gray-900 rounded-2xl shadow-2xl px-5 py-3">
+            <p class="font-black text-primary-800 text-2xl leading-none">5 min</p>
+            <p class="text-gray-500 text-xs mt-1">logo → print-ready</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── RESTAURANT TYPES ──────────────────────────────────── -->
+  <section class="py-24 bg-white" id="restaurant-types">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-4xl lg:text-5xl font-extrabold text-gray-900 tracking-tight mb-3">Packaging by Restaurant Type</h2>
+        <p class="text-lg text-gray-500 max-w-xl mx-auto">From cozy cafés to busy food trucks — packaging matched to how you serve.</p>
+      </div>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <a href="contact.html" class="group relative rounded-3xl overflow-hidden h-64 card-hover">
+          <img src="assets/images/rest-cafe.jpg?v=2" alt="Cafes & Coffee Shops" loading="lazy" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent"></div>
+          <div class="absolute bottom-0 p-6">
+            <h3 class="text-white text-xl font-bold mb-1">Cafés &amp; Coffee Shops</h3>
+            <p class="text-white/80 text-sm">Cups, sleeves, pastry bags →</p>
+          </div>
+        </a>
+        <a href="contact.html" class="group relative rounded-3xl overflow-hidden h-64 card-hover">
+          <img src="assets/images/rest-asian.jpg?v=2" alt="Asian Restaurants" loading="lazy" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent"></div>
+          <div class="absolute bottom-0 p-6">
+            <h3 class="text-white text-xl font-bold mb-1">Asian Restaurants</h3>
+            <p class="text-white/80 text-sm">Noodle boxes, soup bowls, sushi trays →</p>
+          </div>
+        </a>
+        <a href="contact.html" class="group relative rounded-3xl overflow-hidden h-64 card-hover">
+          <img src="assets/images/rest-fastfood.jpg?v=2" alt="Fast Food & Burgers" loading="lazy" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent"></div>
+          <div class="absolute bottom-0 p-6">
+            <h3 class="text-white text-xl font-bold mb-1">Fast Food &amp; Burgers</h3>
+            <p class="text-white/80 text-sm">Wraps, fry boxes, drink cups →</p>
+          </div>
+        </a>
+        <a href="contact.html" class="group relative rounded-3xl overflow-hidden h-64 card-hover">
+          <img src="assets/images/rest-pizza.jpg?v=2" alt="Pizza & Italian" loading="lazy" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent"></div>
+          <div class="absolute bottom-0 p-6">
+            <h3 class="text-white text-xl font-bold mb-1">Pizza &amp; Italian</h3>
+            <p class="text-white/80 text-sm">Pizza boxes, pasta containers →</p>
+          </div>
+        </a>
+        <a href="contact.html" class="group relative rounded-3xl overflow-hidden h-64 card-hover">
+          <img src="assets/images/rest-foodtruck.jpg?v=2" alt="Food Trucks & Pop-Ups" loading="lazy" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent"></div>
+          <div class="absolute bottom-0 p-6">
+            <h3 class="text-white text-xl font-bold mb-1">Food Trucks &amp; Pop-Ups</h3>
+            <p class="text-white/80 text-sm">Lightweight, low-minimum kits →</p>
+          </div>
+        </a>
+        <a href="contact.html" class="group relative rounded-3xl overflow-hidden h-64 card-hover">
+          <img src="assets/images/rest-healthy.jpg?v=2" alt="Healthy Food & Salads" loading="lazy" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent"></div>
+          <div class="absolute bottom-0 p-6">
+            <h3 class="text-white text-xl font-bold mb-1">Healthy Food &amp; Salads</h3>
+            <p class="text-white/80 text-sm">Bowls, salad containers, kraft bags →</p>
+          </div>
         </a>
       </div>
     </div>
   </section>
 
-  <!-- ── RESTAURANT SOLUTIONS ──────────────────────────────── -->
-  <section class="py-20 bg-gray-50" id="restaurant-types">
+  <!-- ── HOW IT WORKS (pain-point framing) ─────────────────── -->
+  <section class="py-24 bg-gray-50" id="how-it-works">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="text-center mb-14">
-        <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">Solutions for Every Restaurant</h2>
-        <p class="text-lg text-gray-500 max-w-xl mx-auto">From cozy cafes to busy fast-food counters — we've got you covered.</p>
-      </div>
-      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6" id="restaurantGrid">
-        <!-- Injected by JS -->
-      </div>
-    </div>
-  </section>
-
-  <!-- ── WHY FOODPAC ───────────────────────────────────────── -->
-  <section class="py-20 bg-primary-50" id="why-foodpac">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="text-center mb-14">
-        <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">Why Restaurants Choose foodPac</h2>
-        <p class="text-lg text-gray-500 max-w-xl mx-auto">We solve the real pain points that hold small restaurants back from great packaging.</p>
+        <h2 class="text-4xl lg:text-5xl font-extrabold text-gray-900 tracking-tight mb-3">We Handle Everything</h2>
+        <p class="text-lg text-gray-500 max-w-xl mx-auto">From design to your doorstep — custom packaging without the headaches.</p>
       </div>
       <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div class="bg-white rounded-2xl p-7 shadow-sm card-hover border border-primary-100">
-          <div class="w-12 h-12 bg-primary-800 rounded-xl flex items-center justify-center mb-5">
-            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
-            </svg>
-          </div>
-          <h3 class="text-lg font-bold text-gray-900 mb-2">AI-Powered Design</h3>
-          <p class="text-gray-500 text-sm leading-relaxed">Upload your logo and get professional packaging designs in under 5 minutes — no designer needed, no extra cost.</p>
+        <div class="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm card-hover">
+          <p class="text-accent-500 font-bold text-sm mb-3">No design budget?</p>
+          <h3 class="text-xl font-extrabold text-gray-900 mb-3">Free AI Design</h3>
+          <p class="text-gray-500 leading-relaxed text-[15px]">Get 4 professional designs in <strong class="text-gray-800">5 minutes</strong>, not days. Unlimited revisions, zero cost.</p>
         </div>
-        <div class="bg-white rounded-2xl p-7 shadow-sm card-hover border border-primary-100">
-          <div class="w-12 h-12 bg-primary-800 rounded-xl flex items-center justify-center mb-5">
-            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064"/>
-            </svg>
-          </div>
-          <h3 class="text-lg font-bold text-gray-900 mb-2">100% Eco-Friendly</h3>
-          <p class="text-gray-500 text-sm leading-relaxed">All materials are biodegradable and compostable, fully compliant with Canadian Single-Use Plastics regulations.</p>
+        <div class="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm card-hover">
+          <p class="text-accent-500 font-bold text-sm mb-3">Worried about compliance?</p>
+          <h3 class="text-xl font-extrabold text-gray-900 mb-3">100% Eco &amp; Compliant</h3>
+          <p class="text-gray-500 leading-relaxed text-[15px]">Compostable materials that meet <strong class="text-gray-800">Canada's single-use plastics rules</strong> — no price premium.</p>
         </div>
-        <div class="bg-white rounded-2xl p-7 shadow-sm card-hover border border-primary-100">
-          <div class="w-12 h-12 bg-primary-800 rounded-xl flex items-center justify-center mb-5">
-            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
-            </svg>
-          </div>
-          <h3 class="text-lg font-bold text-gray-900 mb-2">Low Minimum Orders</h3>
-          <p class="text-gray-500 text-sm leading-relaxed">Start from just 1,000 units. We aggregate small orders so you get bulk pricing without bulk commitment.</p>
+        <div class="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm card-hover">
+          <p class="text-accent-500 font-bold text-sm mb-3">Only need a small batch?</p>
+          <h3 class="text-xl font-extrabold text-gray-900 mb-3">MOQ from 1,000</h3>
+          <p class="text-gray-500 leading-relaxed text-[15px]">We aggregate orders so you get <strong class="text-gray-800">bulk pricing</strong> without a bulk commitment.</p>
         </div>
-        <div class="bg-white rounded-2xl p-7 shadow-sm card-hover border border-primary-100">
-          <div class="w-12 h-12 bg-primary-800 rounded-xl flex items-center justify-center mb-5">
-            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-            </svg>
-          </div>
-          <h3 class="text-lg font-bold text-gray-900 mb-2">Phased Delivery</h3>
-          <p class="text-gray-500 text-sm leading-relaxed">We warehouse your stock and deliver in batches that match your usage — no storage headaches, no waste.</p>
+        <div class="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm card-hover">
+          <p class="text-accent-500 font-bold text-sm mb-3">No storage space?</p>
+          <h3 class="text-xl font-extrabold text-gray-900 mb-3">Free Warehousing</h3>
+          <p class="text-gray-500 leading-relaxed text-[15px]">We store your stock and <strong class="text-gray-800">ship in batches</strong> whenever you need a top-up.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ── HOW IT WORKS ──────────────────────────────────────── -->
-  <section class="py-20 bg-white" id="how-it-works">
+  <!-- ── TESTIMONIALS ──────────────────────────────────────── -->
+  <section class="py-24 bg-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="text-center mb-14">
-        <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">How It Works</h2>
-        <p class="text-lg text-gray-500 max-w-xl mx-auto">From logo to doorstep in four simple steps.</p>
+      <div class="text-center mb-12">
+        <h2 class="text-4xl lg:text-5xl font-extrabold text-gray-900 tracking-tight mb-3">Loved by Restaurants Like Yours</h2>
+        <p class="text-lg text-gray-500">Real stories from independent restaurants across Canada.</p>
       </div>
-      <div class="relative">
-        <div class="hidden lg:block absolute top-12 left-[16%] right-[16%] h-0.5 bg-primary-200 z-0"></div>
-        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 relative z-10">
-          <div class="flex flex-col items-center text-center">
-            <div class="w-24 h-24 bg-primary-800 rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-primary-800/20">
-              <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-              </svg>
-            </div>
-            <div class="w-7 h-7 bg-accent-500 rounded-full flex items-center justify-center text-white text-sm font-bold mb-4">1</div>
-            <h3 class="text-lg font-bold text-gray-900 mb-2">Upload Your Logo</h3>
-            <p class="text-gray-500 text-sm">Share your logo and brand colors. Our AI handles the rest.</p>
+      <div class="grid md:grid-cols-2 gap-6">
+        <figure class="bg-gray-50 rounded-3xl overflow-hidden border border-gray-100 grid sm:grid-cols-5">
+          <img src="assets/images/rest-asian.jpg?v=2" alt="" loading="lazy" class="sm:col-span-2 w-full h-full object-cover min-h-44">
+          <div class="sm:col-span-3 p-7 flex flex-col justify-center">
+            <blockquote class="text-gray-700 leading-relaxed mb-4">"The AI design was ready before our lunch rush ended. Our branded boxes arrived three weeks later — customers photograph them for Instagram now."</blockquote>
+            <figcaption class="text-sm"><strong class="text-gray-900">Sample Sushi Bar</strong> <span class="text-gray-400">· Toronto, ON</span></figcaption>
           </div>
-          <div class="flex flex-col items-center text-center">
-            <div class="w-24 h-24 bg-primary-700 rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-primary-700/20">
-              <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
-              </svg>
-            </div>
-            <div class="w-7 h-7 bg-accent-500 rounded-full flex items-center justify-center text-white text-sm font-bold mb-4">2</div>
-            <h3 class="text-lg font-bold text-gray-900 mb-2">AI Generates Designs</h3>
-            <p class="text-gray-500 text-sm">Get multiple professional design options in under 5 minutes. Pick your favourite.</p>
+        </figure>
+        <figure class="bg-gray-50 rounded-3xl overflow-hidden border border-gray-100 grid sm:grid-cols-5">
+          <img src="assets/images/rest-cafe.jpg?v=2" alt="" loading="lazy" class="sm:col-span-2 w-full h-full object-cover min-h-44">
+          <div class="sm:col-span-3 p-7 flex flex-col justify-center">
+            <blockquote class="text-gray-700 leading-relaxed mb-4">"Storage is tight in our kitchen, so foodPac holding our stock and shipping weekly has been a lifesaver. No more boxes stacked in the hallway."</blockquote>
+            <figcaption class="text-sm"><strong class="text-gray-900">Sample Brunch Café</strong> <span class="text-gray-400">· Vancouver, BC</span></figcaption>
           </div>
-          <div class="flex flex-col items-center text-center">
-            <div class="w-24 h-24 bg-primary-600 rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-primary-600/20">
-              <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-              </svg>
-            </div>
-            <div class="w-7 h-7 bg-accent-500 rounded-full flex items-center justify-center text-white text-sm font-bold mb-4">3</div>
-            <h3 class="text-lg font-bold text-gray-900 mb-2">Approve & Order</h3>
-            <p class="text-gray-500 text-sm">Confirm your design, choose quantity (from 1,000 units), and place your order.</p>
+        </figure>
+        <figure class="bg-gray-50 rounded-3xl overflow-hidden border border-gray-100 grid sm:grid-cols-5">
+          <img src="assets/images/rest-healthy.jpg?v=2" alt="" loading="lazy" class="sm:col-span-2 w-full h-full object-cover min-h-44">
+          <div class="sm:col-span-3 p-7 flex flex-col justify-center">
+            <blockquote class="text-gray-700 leading-relaxed mb-4">"We had no clear idea what we wanted. The AI gave us four directions in minutes and we refined from there — didn't pay a cent for design."</blockquote>
+            <figcaption class="text-sm"><strong class="text-gray-900">Sample Poke Shop</strong> <span class="text-gray-400">· Montreal, QC</span></figcaption>
           </div>
-          <div class="flex flex-col items-center text-center">
-            <div class="w-24 h-24 bg-accent-500 rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-accent-500/20">
-              <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/>
-              </svg>
-            </div>
-            <div class="w-7 h-7 bg-accent-500 rounded-full flex items-center justify-center text-white text-sm font-bold mb-4">4</div>
-            <h3 class="text-lg font-bold text-gray-900 mb-2">Delivered in Batches</h3>
-            <p class="text-gray-500 text-sm">We store your stock and deliver as you need it — no warehouse required on your end.</p>
+        </figure>
+        <figure class="bg-gray-50 rounded-3xl overflow-hidden border border-gray-100 grid sm:grid-cols-5">
+          <img src="assets/images/rest-fastfood.jpg?v=2" alt="" loading="lazy" class="sm:col-span-2 w-full h-full object-cover min-h-44">
+          <div class="sm:col-span-3 p-7 flex flex-col justify-center">
+            <blockquote class="text-gray-700 leading-relaxed mb-4">"Switching to compostable packaging felt expensive until we found foodPac — same price we paid for generic, but branded and compliant."</blockquote>
+            <figcaption class="text-sm"><strong class="text-gray-900">Sample Burger Joint</strong> <span class="text-gray-400">· Calgary, AB</span></figcaption>
           </div>
-        </div>
+        </figure>
       </div>
-    </div>
-  </section>
-
-  <!-- ── ECO COMMITMENT ────────────────────────────────────── -->
-  <section class="py-20 hero-gradient text-white">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="grid lg:grid-cols-2 gap-12 items-center">
-        <div>
-          <div class="inline-flex items-center gap-2 bg-white/10 border border-white/20 rounded-full px-4 py-1.5 mb-6">
-            <span class="text-xl">🌱</span>
-            <span class="text-sm font-medium">Our Eco Commitment</span>
-          </div>
-          <h2 class="text-3xl lg:text-4xl font-bold mb-6">
-            Packaging That's Good for Your Brand
-            <span class="text-accent-400"> and the Planet</span>
-          </h2>
-          <p class="text-white/80 text-lg mb-8 leading-relaxed">
-            Every foodPac product uses biodegradable or compostable materials, fully compliant with Canada's Single-Use Plastics Prohibition Regulations. Going green has never been this affordable.
-          </p>
-          <div class="grid sm:grid-cols-3 gap-4">
-            <div class="bg-white/10 rounded-xl p-4 text-center border border-white/20">
-              <div class="text-2xl mb-2">♻️</div>
-              <div class="text-sm font-semibold">100% Compostable</div>
-            </div>
-            <div class="bg-white/10 rounded-xl p-4 text-center border border-white/20">
-              <div class="text-2xl mb-2">🏛️</div>
-              <div class="text-sm font-semibold">Regulation Compliant</div>
-            </div>
-            <div class="bg-white/10 rounded-xl p-4 text-center border border-white/20">
-              <div class="text-2xl mb-2">💚</div>
-              <div class="text-sm font-semibold">No Price Premium</div>
-            </div>
-          </div>
-        </div>
-        <div class="hidden lg:block">
-          <img src="assets/images/eco-planet.jpg?v=2" loading="lazy"
-               alt="Eco-friendly packaging commitment"
-               class="rounded-2xl object-cover w-full h-80 opacity-90"
-               onerror="this.style.display='none'">
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ── CANADA COVERAGE ───────────────────────────────────── -->
-  <section class="py-10 bg-white border-b border-gray-100">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-      <p class="text-sm font-semibold text-primary-800 uppercase tracking-wider mb-3">🇨🇦 Proudly Serving Restaurants Across Canada</p>
-      <p class="text-gray-500 text-sm max-w-3xl mx-auto">
-        Toronto · Vancouver · Montreal · Calgary · Ottawa · Edmonton · Winnipeg · Halifax — and everywhere in between.
-        Nationwide delivery with free warehousing and phased shipments that match your usage.
-      </p>
     </div>
   </section>
 
   <!-- ── FAQ ───────────────────────────────────────────────── -->
-  <section class="py-20 bg-gray-50" id="faq">
+  <section class="py-24 bg-gray-50" id="faq">
     <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="text-center mb-12">
-        <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">Frequently Asked Questions</h2>
-        <p class="text-lg text-gray-500">Everything you need to know before ordering custom packaging.</p>
+        <h2 class="text-4xl lg:text-5xl font-extrabold text-gray-900 tracking-tight mb-3">Frequently Asked Questions</h2>
       </div>
       <div class="space-y-4">
         <details class="group bg-white rounded-2xl border border-gray-200 open:border-primary-200 open:shadow-sm">
-          <summary class="flex items-center justify-between gap-4 px-6 py-5 cursor-pointer list-none font-semibold text-gray-900">
+          <summary class="flex items-center justify-between gap-4 px-6 py-5 cursor-pointer list-none font-bold text-gray-900">
             What is the minimum order quantity?
             <span class="text-primary-700 transition-transform group-open:rotate-45 text-xl leading-none shrink-0">+</span>
           </summary>
-          <p class="px-6 pb-5 text-gray-500 text-sm leading-relaxed">Most products start at just 1,000 units (some accessories like lids and sleeves start at 2,000). We aggregate orders from multiple restaurants, so you get bulk factory pricing without a bulk commitment.</p>
+          <p class="px-6 pb-5 text-gray-500 leading-relaxed">Most products start at just 1,000 units (some accessories at 2,000). We aggregate orders from multiple restaurants, so you get bulk factory pricing without a bulk commitment.</p>
         </details>
         <details class="group bg-white rounded-2xl border border-gray-200 open:border-primary-200 open:shadow-sm">
-          <summary class="flex items-center justify-between gap-4 px-6 py-5 cursor-pointer list-none font-semibold text-gray-900">
+          <summary class="flex items-center justify-between gap-4 px-6 py-5 cursor-pointer list-none font-bold text-gray-900">
             How does the AI packaging design work?
             <span class="text-primary-700 transition-transform group-open:rotate-45 text-xl leading-none shrink-0">+</span>
           </summary>
-          <p class="px-6 pb-5 text-gray-500 text-sm leading-relaxed">Upload your logo and brand colours, and our AI generates multiple professional packaging design options in under 5 minutes. You can refine them online until you're happy — no designer needed, and the design service is free.</p>
+          <p class="px-6 pb-5 text-gray-500 leading-relaxed">Upload your logo and brand colours, and our AI generates 4 professional packaging designs in under 5 minutes. Refine them online until you're happy — no designer needed, free of charge.</p>
         </details>
         <details class="group bg-white rounded-2xl border border-gray-200 open:border-primary-200 open:shadow-sm">
-          <summary class="flex items-center justify-between gap-4 px-6 py-5 cursor-pointer list-none font-semibold text-gray-900">
+          <summary class="flex items-center justify-between gap-4 px-6 py-5 cursor-pointer list-none font-bold text-gray-900">
             How long do production and delivery take?
             <span class="text-primary-700 transition-transform group-open:rotate-45 text-xl leading-none shrink-0">+</span>
           </summary>
-          <p class="px-6 pb-5 text-gray-500 text-sm leading-relaxed">You'll receive a quote and design mockup within 24 hours. Production typically takes 2–3 weeks, followed by delivery anywhere in Canada. We can also warehouse your stock and deliver it in batches as you need it.</p>
+          <p class="px-6 pb-5 text-gray-500 leading-relaxed">Quote and design mockup within 24 hours. Production typically takes 2–3 weeks, followed by delivery anywhere in Canada — or phased batch delivery from our warehouse.</p>
         </details>
         <details class="group bg-white rounded-2xl border border-gray-200 open:border-primary-200 open:shadow-sm">
-          <summary class="flex items-center justify-between gap-4 px-6 py-5 cursor-pointer list-none font-semibold text-gray-900">
-            Do you deliver across Canada?
-            <span class="text-primary-700 transition-transform group-open:rotate-45 text-xl leading-none shrink-0">+</span>
-          </summary>
-          <p class="px-6 pb-5 text-gray-500 text-sm leading-relaxed">Yes. We deliver to restaurants nationwide — Toronto, Vancouver, Montreal, Calgary, Ottawa, Edmonton and beyond. Phased batch delivery is available so you never pay to store months of stock.</p>
-        </details>
-        <details class="group bg-white rounded-2xl border border-gray-200 open:border-primary-200 open:shadow-sm">
-          <summary class="flex items-center justify-between gap-4 px-6 py-5 cursor-pointer list-none font-semibold text-gray-900">
+          <summary class="flex items-center justify-between gap-4 px-6 py-5 cursor-pointer list-none font-bold text-gray-900">
             Are your products compliant with Canada's single-use plastics rules?
             <span class="text-primary-700 transition-transform group-open:rotate-45 text-xl leading-none shrink-0">+</span>
           </summary>
-          <p class="px-6 pb-5 text-gray-500 text-sm leading-relaxed">Yes. All foodPac products use biodegradable or compostable materials (kraft paper, PLA, CPLA) and are fully compliant with Canada's Single-use Plastics Prohibition Regulations — at no price premium over generic packaging.</p>
+          <p class="px-6 pb-5 text-gray-500 leading-relaxed">Yes. All foodPac products use biodegradable or compostable materials (kraft paper, PLA, CPLA), fully compliant with Canada's Single-use Plastics Prohibition Regulations — at no price premium.</p>
         </details>
         <details class="group bg-white rounded-2xl border border-gray-200 open:border-primary-200 open:shadow-sm">
-          <summary class="flex items-center justify-between gap-4 px-6 py-5 cursor-pointer list-none font-semibold text-gray-900">
-            What if I don't have a logo or brand assets yet?
+          <summary class="flex items-center justify-between gap-4 px-6 py-5 cursor-pointer list-none font-bold text-gray-900">
+            What if I don't have a logo yet?
             <span class="text-primary-700 transition-transform group-open:rotate-45 text-xl leading-none shrink-0">+</span>
           </summary>
-          <p class="px-6 pb-5 text-gray-500 text-sm leading-relaxed">No problem. Tell us about your restaurant in the quote form and our team will help with branding — from a simple logo to a full packaging identity — before generating your designs.</p>
+          <p class="px-6 pb-5 text-gray-500 leading-relaxed">No problem. Tell us about your restaurant and our team will help with branding — from a simple logo to a full packaging identity — before generating your designs.</p>
         </details>
       </div>
     </div>
   </section>
 
-  <!-- ── CTA ───────────────────────────────────────────────── -->
-  <section class="py-20 bg-white">
+  <!-- ── FINAL CTA ─────────────────────────────────────────── -->
+  <section class="py-24 hero-gradient text-white">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-      <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 mb-6">
-        Ready to Give Your Restaurant<br/>a Professional Edge?
-      </h2>
-      <p class="text-lg text-gray-500 mb-10 max-w-xl mx-auto">
-        Get a free design consultation and quote. No commitment, no minimum until you're ready.
-      </p>
+      <h2 class="text-4xl lg:text-6xl font-black tracking-tight mb-6">See Your Brand<br/>on Real Packaging — Today</h2>
+      <p class="text-xl text-white/80 mb-10 max-w-xl mx-auto">Free AI design in 5 minutes. Free quote in 24 hours. No commitment until you're ready to print.</p>
       <div class="flex flex-wrap justify-center gap-4">
-        <a href="contact.html"
-           class="inline-flex items-center gap-2 px-8 py-4 bg-primary-800 hover:bg-primary-900 text-white font-semibold rounded-xl transition-colors shadow-lg shadow-primary-800/20 text-lg">
+        <button onclick="fpOpenDesign()" class="inline-flex items-center gap-2.5 px-9 py-4 bg-accent-500 hover:bg-accent-600 text-white font-bold text-lg rounded-xl transition-colors shadow-xl shadow-black/20">
+          ✨ Design Yours in 5 Minutes
+        </button>
+        <a href="contact.html" class="inline-flex items-center gap-2 px-9 py-4 bg-white text-primary-900 hover:bg-primary-50 font-bold text-lg rounded-xl transition-colors">
           Get a Free Quote
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
-          </svg>
-        </a>
-        <a href="products.html"
-           class="inline-flex items-center gap-2 px-8 py-4 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-xl transition-colors text-lg">
-          Explore Products
         </a>
       </div>
     </div>
@@ -468,98 +558,672 @@
 
   <div id="footer"></div>
 
+  <!-- ══════════ DESIGN ONLINE：表单弹窗 ══════════ -->
+  <div id="fp-design-modal" class="hidden fixed inset-0 bg-black/60 z-[9990] flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[92vh] flex flex-col overflow-hidden">
+      <div class="flex items-center justify-between px-6 py-4 bg-primary-800 text-white shrink-0">
+        <div>
+          <p class="font-bold">✨ Design Your Packaging</p>
+          <p class="text-primary-200 text-xs mt-0.5">Free · 6 AI mockups in 1–2 minutes</p>
+        </div>
+        <button onclick="fpCloseDesign()" class="text-white/70 hover:text-white text-2xl leading-none">×</button>
+      </div>
+      <form id="fp-design-form" class="px-6 py-5 space-y-4 overflow-y-auto">
+        <div>
+          <label class="block text-sm font-bold text-gray-800 mb-1.5">Your brand name <span class="text-red-500">*</span></label>
+          <input type="text" id="fpd-brand" required maxlength="30" placeholder="e.g. Golden Dragon Kitchen"
+                 class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Brand color</label>
+          <div class="flex items-center gap-3" id="fpd-swatches">
+            <button type="button" data-c="#2e7d32" class="fp-swatch sel w-9 h-9 rounded-lg" style="background:#2e7d32" title="Green (default)"></button>
+            <button type="button" data-c="#f57c00" class="fp-swatch w-9 h-9 rounded-lg" style="background:#f57c00" title="Orange"></button>
+            <button type="button" data-c="#c62828" class="fp-swatch w-9 h-9 rounded-lg" style="background:#c62828" title="Red"></button>
+            <button type="button" data-c="#1565c0" class="fp-swatch w-9 h-9 rounded-lg" style="background:#1565c0" title="Blue"></button>
+            <button type="button" data-c="#212121" class="fp-swatch w-9 h-9 rounded-lg" style="background:#212121" title="Black"></button>
+            <label class="fp-swatch h-9 px-3 rounded-lg cursor-pointer border border-gray-300 bg-white hover:bg-gray-50 flex items-center gap-2 relative transition-colors" title="Custom color">
+              <span id="fpd-custom-view" class="w-4 h-4 rounded border border-gray-200" style="background:#2e7d32"></span>
+              <span class="text-xs font-semibold text-gray-600">Custom</span>
+              <input type="color" id="fpd-custom" value="#2e7d32" class="absolute inset-0 opacity-0 cursor-pointer">
+            </label>
+          </div>
+        </div>
+
+        <button type="button" id="fpd-more-toggle"
+                class="w-full flex items-center justify-between px-4 py-2.5 text-sm font-semibold text-primary-800 bg-primary-50 hover:bg-primary-100 rounded-lg transition-colors">
+          More Options
+          <svg id="fpd-more-chevron" class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+          </svg>
+        </button>
+
+        <div id="fpd-more" class="hidden space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1.5">Logo <span class="text-gray-400 font-normal">(optional)</span></label>
+            <label id="fpd-logo-drop" class="flex items-center gap-3 border-2 border-dashed border-gray-200 hover:border-primary-400 rounded-lg px-4 py-3 cursor-pointer transition-colors">
+              <svg class="w-5 h-5 text-gray-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4 16l4-4a3 3 0 014 0l4 4m-2-2l1-1a3 3 0 014 0l1 1M4 20h16M4 4h16v12H4z"/>
+              </svg>
+              <span id="fpd-logo-label" class="text-sm text-gray-500">Upload your logo (PNG / JPG, max 5MB)</span>
+              <img id="fpd-logo-preview" class="hidden w-10 h-10 rounded object-contain border border-gray-200 ml-auto" alt="">
+              <input type="file" id="fpd-logo" accept="image/*" class="hidden">
+            </label>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1.5">Restaurant type <span class="text-gray-400 font-normal">(optional)</span></label>
+            <select id="fpd-type" class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm bg-white">
+              <option value="">Select type…</option>
+              <option>Chinese</option><option>Cantonese / Dim Sum</option><option>Sichuan / Hunan</option>
+              <option>Hot Pot</option><option>Japanese / Sushi</option><option>Ramen</option>
+              <option>Korean</option><option>Thai</option><option>Vietnamese / Pho</option>
+              <option>Indian</option><option>Middle Eastern</option><option>Mediterranean / Greek</option>
+              <option>Mexican</option><option>Italian / Pizza</option><option>Burgers / Fast Food</option>
+              <option>Fried Chicken</option><option>BBQ / Grill</option><option>Seafood / Fish &amp; Chips</option>
+              <option>Cafe / Coffee Shop</option><option>Bakery / Desserts</option><option>Bubble Tea / Juice</option>
+              <option>Ice Cream</option><option>Salad / Healthy</option><option>Poke Bowl</option>
+              <option>Brunch / Breakfast</option><option>Food Truck</option><option>Other</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1.5">Slogan <span class="text-gray-400 font-normal">(optional)</span></label>
+            <input type="text" id="fpd-slogan" placeholder="e.g. Fresh wok, every day"
+                   class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm">
+          </div>
+          <div class="grid sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1.5">Address <span class="text-gray-400 font-normal">(optional)</span></label>
+              <input type="text" id="fpd-address" placeholder="123 Main St, Toronto"
+                     class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm">
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1.5">Phone <span class="text-gray-400 font-normal">(optional)</span></label>
+              <input type="tel" id="fpd-phone" placeholder="+1 (416) 000-0000"
+                     class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm">
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1.5">Ordering QR code <span class="text-gray-400 font-normal">(optional)</span></label>
+            <label class="flex items-center gap-3 border-2 border-dashed border-gray-200 hover:border-primary-400 rounded-lg px-4 py-3 cursor-pointer transition-colors">
+              <svg class="w-5 h-5 text-gray-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h3v3h-3zM20 17v3h-3"/>
+              </svg>
+              <span id="fpd-qr-label" class="text-sm text-gray-500">Upload the QR customers scan to order</span>
+              <img id="fpd-qr-preview" class="hidden w-10 h-10 rounded object-contain border border-gray-200 ml-auto" alt="">
+              <input type="file" id="fpd-qr" accept="image/*" class="hidden">
+            </label>
+          </div>
+        </div>
+
+        <div id="fpd-error" class="hidden text-sm text-red-700 bg-red-50 border border-red-200 rounded-lg px-4 py-2.5"></div>
+        <button type="submit" id="fpd-submit" disabled
+                class="w-full py-3.5 bg-accent-500 hover:bg-accent-600 text-white font-bold rounded-xl transition-colors shadow-lg shadow-accent-500/25 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-accent-500">
+          ✨ Generate My Designs
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ══════════ 登录提示弹窗（游客第二次生成）══════════ -->
+  <div id="fp-login-modal" class="hidden fixed inset-0 bg-black/60 z-[9995] flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-8 text-center">
+      <div class="w-14 h-14 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-4">
+        <svg class="w-7 h-7 text-primary-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
+          <circle cx="12" cy="7" r="4" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"/>
+        </svg>
+      </div>
+      <h3 class="text-xl font-bold text-gray-900 mb-2">Sign in to keep designing</h3>
+      <p class="text-gray-500 text-sm mb-6">You've used your 2 free generations. Sign in with Google for unlimited designs — everything you've already created will be merged into your account.</p>
+      <button id="fp-login-google"
+              class="w-full py-3 bg-primary-800 hover:bg-primary-900 text-white font-bold rounded-xl transition-colors mb-3">
+        Sign in with Google
+      </button>
+      <button onclick="document.getElementById('fp-login-modal').classList.add('hidden')"
+              class="text-sm text-gray-400 hover:text-gray-600">Maybe later</button>
+    </div>
+  </div>
+
+  <!-- ══════════ 结果悬浮面板：桌面右侧 / 移动端底部 ══════════ -->
+  <div id="fp-dock" class="hidden fixed z-[9980] bg-white shadow-2xl border border-gray-200
+        inset-x-0 bottom-0 rounded-t-2xl max-h-[45vh]
+        lg:inset-x-auto lg:right-5 lg:top-32 lg:bottom-8 lg:w-96 lg:rounded-2xl lg:max-h-none
+        flex flex-col overflow-hidden">
+    <div class="flex items-center justify-between px-5 py-3.5 bg-primary-800 text-white shrink-0">
+      <div>
+        <p class="font-bold text-sm">Your Designs <span id="fp-dock-count" class="text-primary-200 font-normal"></span></p>
+        <p id="fp-dock-status" class="text-primary-200 text-xs mt-0.5">Generating…</p>
+      </div>
+      <div class="flex items-center gap-2">
+        <button onclick="fpOpenDesign()" title="New design" class="text-white/80 hover:text-white text-sm font-semibold px-2">↺ Redo</button>
+        <button onclick="fpToggleDock(false)" class="text-white/70 hover:text-white text-2xl leading-none px-1">×</button>
+      </div>
+    </div>
+    <div id="fp-dock-grid" class="flex lg:flex-col gap-4 p-4 overflow-x-auto lg:overflow-x-hidden lg:overflow-y-auto no-scrollbar"></div>
+  </div>
+
+  <!-- 收起后的悬浮胶囊 -->
+  <button id="fp-dock-chip" onclick="fpToggleDock(true)"
+    class="hidden fixed bottom-5 right-5 z-[9980] items-center gap-2 px-5 py-3 bg-primary-800 hover:bg-primary-900 text-white text-sm font-bold rounded-2xl shadow-xl">
+    🎨 My Designs <span id="fp-chip-count" class="bg-accent-500 text-white text-xs font-bold rounded-full px-2 py-0.5"></span>
+  </button>
+
+  <!-- ══════════ 下单弹窗（选中设计 → 选规格 → 加购）══════════ -->
+  <div id="fp-order-modal" class="hidden fixed inset-0 bg-black/60 z-[9992] flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md max-h-[92vh] flex flex-col overflow-hidden">
+      <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between shrink-0">
+        <h3 class="text-lg font-bold text-gray-900">Order This Design</h3>
+        <button onclick="document.getElementById('fp-order-modal').classList.add('hidden')" class="text-gray-400 hover:text-gray-600 text-2xl leading-none">×</button>
+      </div>
+      <form id="fp-order-form" class="px-6 py-5 space-y-4 overflow-y-auto">
+        <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-xl">
+          <img id="fpo-preview" src="" alt="Design" class="w-16 h-16 rounded-lg object-cover border border-gray-200">
+          <div>
+            <p id="fpo-label" class="text-sm font-bold text-gray-900"></p>
+            <p class="text-xs text-gray-500">Selected design</p>
+          </div>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Size <span class="text-red-500">*</span></label>
+          <select id="fpo-size" required class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm bg-white">
+            <option value="">Loading sizes…</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Quantity <span class="text-red-500">*</span></label>
+          <input type="number" id="fpo-qty" required min="1000" step="500" placeholder="Minimum 1,000"
+                 class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm">
+          <p class="text-xs text-gray-400 mt-1">Minimum order: 1,000 units</p>
+        </div>
+        <div id="fpo-error" class="hidden text-sm text-red-700 bg-red-50 border border-red-200 rounded-lg px-4 py-2.5"></div>
+        <button type="submit" id="fpo-submit"
+                class="w-full py-3 bg-primary-800 hover:bg-primary-900 text-white font-bold rounded-xl transition-colors disabled:opacity-60">
+          Add to Cart
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ══════════ 共享导航 / 页脚（含登录状态、购物车角标）══════════ -->
   <script type="module">
     import { initNav, initFooter } from './js/components.js';
-    import { CATEGORIES } from './js/products.js';
-    import { initPackify } from './js/packify.js';
+    import { loginWithGoogle } from './js/auth.js';
 
     initNav();
     initFooter();
-    initPackify();
 
-    // Category grid
-    const catImages = {
-      boxes:   'assets/images/cat-boxes.jpg?v=2',
-      cups:   'assets/images/cat-cups.jpg?v=2',
-      bags:   'assets/images/cat-bags.jpg?v=2',
-      bowls:   'assets/images/cat-bowls.jpg?v=2',
-      wraps:   'assets/images/cat-wraps.jpg?v=2',
-      cutlery:   'assets/images/cat-cutlery.jpg?v=2',
-    };
-
-    const catGrid = document.getElementById('categoryGrid');
-    CATEGORIES.filter(c => c.key !== 'all').forEach(({ key, label }) => {
-      catGrid.insertAdjacentHTML('beforeend', `
-        <a href="products.html?cat=${key}"
-           class="group bg-primary-50 hover:bg-primary-100 rounded-2xl overflow-hidden text-center transition-colors card-hover">
-          <img src="${catImages[key]}" alt="${label}" loading="lazy"
-               class="w-full h-28 object-cover"
-               onerror="this.style.display='none'">
-          <div class="p-4">
-            <span class="text-sm font-semibold text-primary-800">${label}</span>
-          </div>
-        </a>
-      `);
-    });
-
-    // Restaurant types grid
-    const restaurants = [
-      { key:'cafe',      emoji:'☕', label:'Cafes & Coffee Shops',   bg:'from-amber-50 to-amber-100',  text:'text-amber-700',
-        desc:'Branded cups, cup sleeves, pastry bags, and takeout boxes that tell your story with every order.',
-        img:'assets/images/rest-cafe.jpg?v=2' },
-      { key:'asian',     emoji:'🍜', label:'Asian Restaurants',       bg:'from-red-50 to-orange-100',   text:'text-red-700',
-        desc:'Noodle boxes, soup containers, sushi trays, and more — designed to keep your food fresh and your brand visible.',
-        img:'assets/images/rest-asian.jpg?v=2' },
-      { key:'fastfood',  emoji:'🍔', label:'Fast Food & Burgers',     bg:'from-yellow-50 to-yellow-100',text:'text-yellow-700',
-        desc:'Burger wraps, fry boxes, paper bags, and drink cups built for speed, style, and sustainability.',
-        img:'assets/images/rest-fastfood.jpg?v=2' },
-      { key:'pizza',     emoji:'🍕', label:'Pizza & Italian',         bg:'from-green-50 to-green-100',  text:'text-green-700',
-        desc:'Custom pizza boxes, pasta containers, and deli paper — all branded to make your customers remember you.',
-        img:'assets/images/rest-pizza.jpg?v=2' },
-      { key:'foodtruck', emoji:'🚚', label:'Food Trucks & Pop-Ups',   bg:'from-blue-50 to-indigo-100',  text:'text-blue-700',
-        desc:'Lightweight, branded packaging for on-the-go operations. Low minimums mean you only order what you need.',
-        img:'assets/images/rest-foodtruck.jpg?v=2' },
-      { key:'healthy',   emoji:'🥗', label:'Healthy Food & Salads',   bg:'from-primary-50 to-primary-100',text:'text-primary-700',
-        desc:'Eco-friendly bowls, salad containers, and kraft bags that match your sustainability values and brand image.',
-        img:'assets/images/rest-healthy.jpg?v=2' },
-    ];
-
-    const restGrid = document.getElementById('restaurantGrid');
-    restaurants.forEach(r => {
-      restGrid.insertAdjacentHTML('beforeend', `
-        <div class="bg-white rounded-2xl overflow-hidden shadow-sm card-hover border border-gray-100">
-          <div class="relative h-44 bg-gradient-to-br ${r.bg} overflow-hidden">
-            <img src="${r.img}" alt="${r.label}" loading="lazy"
-                 class="absolute inset-0 w-full h-full object-cover"
-                 onerror="this.style.display='none'">
-          </div>
-          <div class="p-6">
-            <h3 class="text-lg font-bold text-gray-900 mb-2">${r.label}</h3>
-            <p class="text-gray-500 text-sm mb-4">${r.desc}</p>
-            <a href="contact.html" class="text-primary-700 font-semibold text-sm hover:text-primary-900 flex items-center gap-1">
-              Get packaging for my restaurant
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-              </svg>
-            </a>
-          </div>
-        </div>
-      `);
-    });
+    // 登录提示弹窗复用统一的 Google 登录流程（保存 authRedirect 后跳转）
+    document.getElementById('fp-login-google')?.addEventListener('click', loginWithGoogle);
   </script>
 
-  <!-- ── Design Online FAB ─────────────────────────────────── -->
-  <button id="fp-fab"
-    onclick="window.openDesignWidget ? window.openDesignWidget() : (window.packify ? window.packify.openDesign() : alert('Design service is loading, please try again.'))"
-    class="fixed bottom-6 right-6 z-50 flex items-center gap-2.5 px-5 py-3.5
-           bg-accent-500 hover:bg-accent-600 text-white text-sm font-bold rounded-2xl
-           shadow-lg shadow-accent-500/30 hover:shadow-xl hover:shadow-accent-500/40
-           hover:-translate-y-0.5 transition-all duration-200">
-    <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-        d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
-    </svg>
-    ✨ Design Online
-  </button>
+  <script>
+    // ══════════ Design Online（表单式设计）══════════
+    const FP_API = '/api/v1';
+    let fpJobId = localStorage.getItem('fp_last_job') || null;
+    let fpPollTimer = null;
+    let fpSeen = new Set();
+
+    let fpModalMode = 'form';   // 'form' = Design Online 入口, 'hero' = 首屏光点入口
+    const fpSyncSubmit = () => {
+      document.getElementById('fpd-submit').disabled =
+        !document.getElementById('fpd-brand').value.trim();
+    };
+    document.getElementById('fpd-brand').addEventListener('input', fpSyncSubmit);
+    window.fpOpenDesign = (mode = 'form') => {
+      fpModalMode = mode;
+      document.getElementById('fp-design-modal').classList.remove('hidden');
+      fpSyncSubmit();
+      setTimeout(() => document.getElementById('fpd-brand').focus(), 50);
+    };
+    // More Options 折叠
+    document.getElementById('fpd-more-toggle').addEventListener('click', () => {
+      const more = document.getElementById('fpd-more');
+      const open = more.classList.toggle('hidden');
+      document.getElementById('fpd-more-chevron').style.transform = open ? '' : 'rotate(180deg)';
+    });
+    // 颜色选择
+    let fpColor = '#2e7d32';
+    document.querySelectorAll('#fpd-swatches .fp-swatch[data-c]').forEach(b => {
+      b.addEventListener('click', () => {
+        document.querySelectorAll('#fpd-swatches .fp-swatch').forEach(s => s.classList.remove('sel'));
+        b.classList.add('sel');
+        fpColor = b.dataset.c;
+      });
+    });
+    document.getElementById('fpd-custom').addEventListener('input', (e) => {
+      fpColor = e.target.value;
+      document.querySelectorAll('#fpd-swatches .fp-swatch').forEach(s => s.classList.remove('sel'));
+      e.target.closest('.fp-swatch').classList.add('sel');
+      document.getElementById('fpd-custom-view').style.background = fpColor;
+    });
+    window.fpCloseDesign = () => {
+      document.getElementById('fp-design-modal').classList.add('hidden');
+    };
+    window.fpToggleDock = (show) => {
+      document.getElementById('fp-dock').classList.toggle('hidden', !show);
+      const chip = document.getElementById('fp-dock-chip');
+      chip.classList.toggle('hidden', show || fpSeen.size === 0);
+      chip.classList.toggle('flex', !show && fpSeen.size > 0);
+    };
+
+    // 文件选择预览
+    function fpWireFile(inputId, labelId, previewId) {
+      const input = document.getElementById(inputId);
+      input.addEventListener('change', () => {
+        const f = input.files[0];
+        if (!f) return;
+        document.getElementById(labelId).textContent = f.name;
+        const img = document.getElementById(previewId);
+        img.src = URL.createObjectURL(f);
+        img.classList.remove('hidden');
+      });
+    }
+    fpWireFile('fpd-logo', 'fpd-logo-label', 'fpd-logo-preview');
+    fpWireFile('fpd-qr', 'fpd-qr-label', 'fpd-qr-preview');
+
+    async function fpUpload(file) {
+      const fd = new FormData();
+      fd.append('file', file);
+      const res = await fetch(`${FP_API}/design/uploads`, { method: 'POST', body: fd, credentials: 'include' });
+      if (!res.ok) throw new Error('upload failed');
+      return (await res.json()).file;
+    }
+
+    document.getElementById('fp-design-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const err = document.getElementById('fpd-error');
+      const btn = document.getElementById('fpd-submit');
+      err.classList.add('hidden');
+      const brand = document.getElementById('fpd-brand').value.trim();
+      const logoInput = document.getElementById('fpd-logo');
+      if (!brand) {
+        err.textContent = 'Please enter your brand name.';
+        err.classList.remove('hidden');
+        return;
+      }
+      btn.disabled = true; btn.textContent = 'Starting…';
+      try {
+        let res;
+        if (fpModalMode === 'hero') {
+          // 首屏品牌试穿：只重绘 4 张 hero 图（快）
+          res = await fetch(`${FP_API}/design/hero-swap`, {
+            method: 'POST', credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ brandText: brand, color: fpColor })
+          });
+        } else {
+          // 完整设计：6 个产品 mockup
+          btn.textContent = 'Uploading…';
+          let logoFile = null, qrFile = null;
+          if (logoInput.files[0]) logoFile = await fpUpload(logoInput.files[0]);
+          const qrInput = document.getElementById('fpd-qr');
+          if (qrInput.files[0]) qrFile = await fpUpload(qrInput.files[0]);
+          btn.textContent = 'Starting generation…';
+          res = await fetch(`${FP_API}/design/generate`, {
+            method: 'POST', credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              brandText: brand, brandColor: fpColor, logoFile,
+              restaurantType: document.getElementById('fpd-type').value || null,
+              slogan: document.getElementById('fpd-slogan').value.trim() || null,
+              address: document.getElementById('fpd-address').value.trim() || null,
+              phone: document.getElementById('fpd-phone').value.trim() || null,
+              qrFile
+            })
+          });
+        }
+        if (res.status === 401) {
+          const data = await res.json().catch(() => ({}));
+          if (data.error === 'LOGIN_REQUIRED' || data.error === 'Unauthorized') {
+            fpCloseDesign();
+            document.getElementById('fp-login-modal').classList.remove('hidden');
+            return;
+          }
+        }
+        if (!res.ok) throw new Error();
+        const { jobId } = await res.json();
+        fpCloseDesign();
+        if (fpModalMode === 'hero') {
+          // 毛玻璃 + Designing 徽章 + 轮询换图（结果同时进 My Designs）
+          fpHeroSeen = new Set();
+          document.querySelectorAll('.fp-hero-cell').forEach(c => c.classList.add('designing'));
+          fpHeroBadge(true);
+          clearInterval(fpHeroTimer);
+          fpHeroTimer = setInterval(() => fpHeroPoll(jobId), 2000);
+        } else {
+          fpJobId = jobId;
+          localStorage.setItem('fp_last_job', jobId);
+          document.getElementById('fp-dock-grid').insertAdjacentHTML('afterbegin', fpSkeletons(6));
+          fpToggleDock(true);
+          fpStartPolling();
+        }
+      } catch (ex) {
+        err.textContent = 'Something went wrong. Please try again.';
+        err.classList.remove('hidden');
+      } finally {
+        btn.textContent = '✨ Generate My Designs';
+        fpSyncSubmit();
+      }
+    });
+
+    function fpSkeletons(n) {
+      return Array.from({ length: n }, () => `
+        <div class="fp-skel shrink-0 w-40 lg:w-full">
+          <div class="aspect-[4/3] rounded-xl bg-gray-100 animate-pulse"></div>
+          <div class="h-3 w-24 bg-gray-100 rounded mt-2 animate-pulse"></div>
+        </div>`).join('');
+    }
+
+    function fpStartPolling() {
+      clearInterval(fpPollTimer);
+      fpPollTimer = setInterval(fpPoll, 1500);
+      fpPoll();
+    }
+
+    async function fpPoll() {
+      if (!fpJobId) return;
+      try {
+        const res = await fetch(`${FP_API}/design/jobs/${fpJobId}`, { credentials: 'include' });
+        if (!res.ok) { clearInterval(fpPollTimer); return; }
+        const job = await res.json();
+        const grid = document.getElementById('fp-dock-grid');
+        job.results.forEach(r => {
+          if (fpSeen.has(r.id)) return;
+          fpSeen.add(r.id);
+          const skel = grid.querySelector('.fp-skel');
+          if (skel) skel.remove();
+          grid.insertAdjacentHTML('beforeend', fpCard(r));
+        });
+        document.getElementById('fp-dock-count').textContent = `(${fpSeen.size})`;
+        document.getElementById('fp-chip-count').textContent = fpSeen.size;
+        const st = document.getElementById('fp-dock-status');
+        if (job.status === 'COMPLETED') {
+          st.textContent = 'Done — pick one to order, or redo with new info.';
+          clearInterval(fpPollTimer);
+          grid.querySelectorAll('.fp-skel').forEach(s => s.remove());
+        } else if (job.status === 'FAILED') {
+          st.textContent = 'Generation failed — please try again.';
+          clearInterval(fpPollTimer);
+          grid.querySelectorAll('.fp-skel').forEach(s => s.remove());
+        } else {
+          st.textContent = `Generating… ${fpSeen.size}/6`;
+        }
+      } catch {}
+    }
+
+    function fpCard(r) {
+      return `
+        <div class="shrink-0 w-40 lg:w-full group" id="fp-item-${r.id}">
+          <div class="relative rounded-xl overflow-hidden border border-gray-200">
+            <img src="${r.imageUrl}" alt="${r.productLabel}" class="w-full aspect-[4/3] object-cover">
+            <button onclick="fpDeleteItem('${r.id}')" title="Delete"
+              class="absolute top-2 right-2 w-7 h-7 bg-black/50 hover:bg-red-600 text-white rounded-full text-xs leading-none opacity-0 group-hover:opacity-100 transition-opacity">✕</button>
+          </div>
+          <div class="flex items-center justify-between mt-2 gap-2">
+            <p class="text-xs font-semibold text-gray-700 truncate">${r.productLabel}</p>
+            ${r.productType === 'HERO' ? '' : `<button onclick='fpOrder(${JSON.stringify(r)})'
+              class="shrink-0 text-xs font-bold text-white bg-accent-500 hover:bg-accent-600 rounded-lg px-3 py-1.5 transition-colors">Order</button>`}
+          </div>
+        </div>`;
+    }
+
+    window.fpDeleteItem = async (id) => {
+      document.getElementById(`fp-item-${id}`)?.remove();
+      fpSeen.delete(id);
+      document.getElementById('fp-dock-count').textContent = `(${fpSeen.size})`;
+      document.getElementById('fp-chip-count').textContent = fpSeen.size;
+      try { await fetch(`${FP_API}/design/job-items/${id}`, { method: 'DELETE', credentials: 'include' }); } catch {}
+    };
+
+    // ── 下单 ──
+    let fpOrderCtx = null;
+    window.fpOrder = async (r) => {
+      fpOrderCtx = r;
+      document.getElementById('fpo-preview').src = r.imageUrl;
+      document.getElementById('fpo-label').textContent = r.productLabel;
+      document.getElementById('fpo-qty').value = '';
+      document.getElementById('fpo-error').classList.add('hidden');
+      document.getElementById('fp-order-modal').classList.remove('hidden');
+      const sizeEl = document.getElementById('fpo-size');
+      sizeEl.innerHTML = '<option value="">Loading sizes…</option>';
+      try {
+        const res = await fetch(`${FP_API}/products/sizes/${r.productType}`);
+        const sizes = await res.json();
+        sizeEl.innerHTML = '<option value="">Select size…</option>' +
+          sizes.map(s => `<option value="${s.label}">${s.label}</option>`).join('');
+      } catch {
+        sizeEl.innerHTML = '<option value="">Failed to load sizes</option>';
+      }
+    };
+
+    document.getElementById('fp-order-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!fpOrderCtx) return;
+      const err = document.getElementById('fpo-error');
+      const btn = document.getElementById('fpo-submit');
+      const size = document.getElementById('fpo-size').value;
+      const qty = parseInt(document.getElementById('fpo-qty').value, 10);
+      err.classList.add('hidden');
+      if (!size || !qty || qty < 1000) {
+        err.textContent = 'Please choose a size and a quantity of at least 1,000.';
+        err.classList.remove('hidden');
+        return;
+      }
+      btn.disabled = true; btn.textContent = 'Adding…';
+      try {
+        const res = await fetch(`${FP_API}/cart`, {
+          method: 'POST', credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            imageUrl: fpOrderCtx.imageUrl,
+            productType: fpOrderCtx.productType,
+            productLabel: fpOrderCtx.productLabel,
+            sizeSpec: size, material: null, quantity: qty
+          })
+        });
+        if (res.status === 401) {
+          document.getElementById('fp-order-modal').classList.add('hidden');
+          document.getElementById('fp-login-modal').classList.remove('hidden');
+          return;
+        }
+        if (!res.ok) throw new Error();
+        document.getElementById('fp-order-modal').classList.add('hidden');
+        const t = document.createElement('div');
+        t.innerHTML = '✓ Added to cart &nbsp;<a href="cart.html" style="text-decoration:underline">View cart</a>';
+        t.className = 'fixed bottom-6 left-1/2 -translate-x-1/2 bg-primary-800 text-white text-sm font-medium px-5 py-3 rounded-xl shadow-lg z-[99999]';
+        document.body.appendChild(t);
+        setTimeout(() => t.remove(), 3500);
+      } catch {
+        err.textContent = 'Failed to add to cart. Please try again.';
+        err.classList.remove('hidden');
+      } finally {
+        btn.disabled = false; btn.textContent = 'Add to Cart';
+      }
+    });
+
+    // ══════════ Hero 品牌试穿（logo-only 重绘）══════════
+    let fpHeroTimer = null;
+    let fpHeroSeen = new Set();
+
+    window.fpHeroOpen = () => fpOpenDesign('hero');
+
+
+    function fpHeroBadge(designing) {
+      const icon = document.getElementById('fp-hero-badge-icon');
+      const title = document.getElementById('fp-hero-badge-title');
+      const sub = document.getElementById('fp-hero-badge-sub');
+      if (designing) {
+        icon.innerHTML = '<svg class="w-6 h-6 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-90" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/></svg>';
+        title.textContent = 'AI Designing…';
+        sub.textContent = 'Repainting your brand on the packaging';
+      } else {
+        icon.textContent = '✨';
+        title.textContent = 'AI Design Ready';
+        sub.textContent = '4 options in under 5 minutes';
+      }
+    }
+
+
+    async function fpHeroPoll(jobId) {
+      try {
+        const res = await fetch(`${FP_API}/design/jobs/${jobId}`, { credentials: 'include' });
+        if (!res.ok) { fpHeroDone(); return; }
+        const job = await res.json();
+        job.results.forEach(r => {
+          if (fpHeroSeen.has(r.productId)) return;
+          fpHeroSeen.add(r.productId);
+          // 同步进 My Designs
+          if (!fpSeen.has(r.id)) {
+            fpSeen.add(r.id);
+            document.getElementById('fp-dock-grid').insertAdjacentHTML('afterbegin', fpCard(r));
+            document.getElementById('fp-dock-count').textContent = `(${fpSeen.size})`;
+            document.getElementById('fp-chip-count').textContent = fpSeen.size;
+            const chip = document.getElementById('fp-dock-chip');
+            if (document.getElementById('fp-dock').classList.contains('hidden')) {
+              chip.classList.remove('hidden'); chip.classList.add('flex');
+            }
+          }
+          const cell = document.querySelector(`.fp-hero-cell[data-hero="${r.productId}"]`);
+          if (!cell) return;
+          const img = cell.querySelector('img');
+          const pre = new Image();
+          pre.onload = () => {
+            img.style.opacity = '0';
+            setTimeout(() => { img.src = r.imageUrl; img.style.opacity = '1'; cell.classList.remove('designing'); }, 450);
+          };
+          pre.src = r.imageUrl;
+        });
+        if (job.status === 'COMPLETED' || job.status === 'FAILED') fpHeroDone();
+      } catch {}
+    }
+
+    function fpHeroDone() {
+      clearInterval(fpHeroTimer);
+      // 任何未完成的格子撤掉毛玻璃（保底）
+      setTimeout(() => {
+        document.querySelectorAll('.fp-hero-cell.designing').forEach(c => c.classList.remove('designing'));
+        fpHeroBadge(false);
+      }, 600);
+    }
+
+    // 页面加载：登录用户先合并游客历史，然后加载完整 My Designs
+    (async () => {
+      try {
+        const me = await fetch(`${FP_API}/auth/me`, { credentials: 'include' });
+        if (me.ok) await fetch(`${FP_API}/design/claim`, { method: 'POST', credentials: 'include' }).catch(() => {});
+      } catch {}
+      try {
+        const res = await fetch(`${FP_API}/design/my-designs`, { credentials: 'include' });
+        if (res.ok) {
+          const { items } = await res.json();
+          const grid = document.getElementById('fp-dock-grid');
+          items.forEach(r => {
+            if (fpSeen.has(r.id)) return;
+            fpSeen.add(r.id);
+            grid.insertAdjacentHTML('beforeend', fpCard(r));
+          });
+          if (fpSeen.size > 0) {
+            document.getElementById('fp-dock-count').textContent = `(${fpSeen.size})`;
+            document.getElementById('fp-chip-count').textContent = fpSeen.size;
+            document.getElementById('fp-dock-status').textContent = 'Your saved designs';
+            const chip = document.getElementById('fp-dock-chip');
+            chip.classList.remove('hidden');
+            chip.classList.add('flex');
+          }
+        }
+      } catch {}
+      // 上一个任务还在生成中则继续轮询
+      if (fpJobId) {
+        try {
+          const res = await fetch(`${FP_API}/design/jobs/${fpJobId}`, { credentials: 'include' });
+          if (res.ok) {
+            const job = await res.json();
+            if (job.status === 'RUNNING' || job.status === 'PENDING') { fpToggleDock(true); fpStartPolling(); }
+          }
+        } catch {}
+      }
+    })();
+  </script>
+
+  <script>
+    // 分类 tab + 产品数据（价格为样例，后续可改为从 products.js / 后端读取）
+    const PRODUCTS = {
+      boxes: [
+        { name:'Kraft Take-Out Box',         img:'prod-box-lunat-takeout.svg', price:'0.19', moq:'1,000', tag:'Best Seller', tagCls:'bg-accent-500' },
+        { name:'Chinese Take-Out Box',       img:'prod-box-lunat-chinese.svg', price:'0.14', moq:'1,000', tag:'Eco Pick', tagCls:'bg-primary-700' },
+        { name:'Compostable Burger Box',     img:'prod-box-lunat-burger.svg',  price:'0.21', moq:'1,000', tag:'Eco Pick', tagCls:'bg-primary-700' },
+        { name:'French Fry Holder',          img:'prod-box-lunat-fry.svg',     price:'0.08', moq:'2,000', tag:'Economical', tagCls:'bg-gray-700' },
+        { name:'Hot Dog Box',                img:'prod-box-lunat-hotdog.svg',  price:'0.12', moq:'2,000', tag:'', tagCls:'' },
+        { name:'Fried Chicken Box',          img:'prod-box-lunat-chicken.svg', price:'0.25', moq:'1,000', tag:'New', tagCls:'bg-sky-600' },
+        { name:'Dessert Box w/ Clear Lid',   img:'prod-box-lunat-dessert.svg', price:'0.18', moq:'1,000', tag:'New', tagCls:'bg-sky-600' },
+        { name:'Donut Box w/ Window',        img:'prod-box-lunat-donut.svg',   price:'0.33', moq:'1,000', tag:'', tagCls:'' },
+        { name:'Kraft Corrugated Pizza Box', img:'prod-box-lunat-pizza.svg',   price:'0.46', moq:'1,000', tag:'Best Seller', tagCls:'bg-accent-500' },
+        { name:'Paper Gable Box',            img:'prod-box-lunat-gable.svg',   price:'0.31', moq:'1,000', tag:'', tagCls:'' },
+        { name:'Paper Food Tray',            img:'prod-box-lunat-tray.svg',    price:'0.06', moq:'2,000', tag:'Economical', tagCls:'bg-gray-700' },
+        { name:'Tuck-Top Bento Box',         img:'prod-box-lunat-bento.svg',   price:'0.20', moq:'1,000', tag:'', tagCls:'' },
+      ],
+      cups: [
+        { name:'Hot Drink Cup (8/12/16 oz)',  img:'prod-cup-hot.jpg',    price:'0.14', moq:'1,000', tag:'Best Seller', tagCls:'bg-accent-500' },
+        { name:'Cold Drink Cup (16/22 oz)',   img:'prod-cup-cold.jpg',   price:'0.13', moq:'1,000', tag:'Eco Pick', tagCls:'bg-primary-700' },
+        { name:'Cup Sleeve',                  img:'prod-cup-sleeve.jpg', price:'0.07', moq:'2,000', tag:'', tagCls:'' },
+        { name:'Compostable Lids',            img:'prod-cup-lid.jpg',    price:'0.06', moq:'2,000', tag:'Economical', tagCls:'bg-gray-700' },
+      ],
+      bags: [
+        { name:'Kraft Paper Bag (Small)',     img:'prod-bag-sm.jpg',   price:'0.18', moq:'1,000', tag:'Economical', tagCls:'bg-gray-700' },
+        { name:'Kraft Paper Bag (Large)',     img:'prod-bag-lg.jpg',   price:'0.24', moq:'1,000', tag:'Best Seller', tagCls:'bg-accent-500' },
+        { name:'Foil-Lined Insulated Bag',    img:'prod-bag-foil.jpg', price:'0.42', moq:'1,000', tag:'New', tagCls:'bg-sky-600' },
+      ],
+      bowls: [
+        { name:'Salad & Grain Bowl',          img:'prod-bowl-salad.jpg', price:'0.19', moq:'1,000', tag:'Eco Pick', tagCls:'bg-primary-700' },
+        { name:'Soup & Ramen Bowl',           img:'prod-bowl-soup.jpg',  price:'0.28', moq:'1,000', tag:'Best Seller', tagCls:'bg-accent-500' },
+        { name:'Bowl Lids (Flat & Vented)',   img:'prod-bowl-lid.jpg',   price:'0.08', moq:'2,000', tag:'', tagCls:'' },
+      ],
+      wraps: [
+        { name:'Deli Wrap Paper',             img:'prod-wrap-deli.jpg',   price:'0.05', moq:'2,000', tag:'Economical', tagCls:'bg-gray-700' },
+        { name:'Custom Tissue Paper',         img:'prod-wrap-tissue.jpg', price:'0.04', moq:'2,000', tag:'New', tagCls:'bg-sky-600' },
+      ],
+      cutlery: [
+        { name:'Compostable Cutlery Set',                  img:'prod-cut-set.jpg',       price:'0.09', moq:'1,000', tag:'Eco Pick', tagCls:'bg-primary-700' },
+        { name:'Cutlery Set (Fork, Knife, Spoon, Napkin)', img:'prod-cut-set4.jpg',      price:'0.16', moq:'1,000', tag:'New', tagCls:'bg-sky-600' },
+        { name:'Cutlery Set (Chopsticks, Spoon, Napkin)',  img:'prod-cut-set-asian.jpg', price:'0.15', moq:'1,000', tag:'New', tagCls:'bg-sky-600' },
+        { name:'Chopsticks w/ Paper Wrapping',             img:'prod-cut-chopsticks.jpg',price:'0.06', moq:'2,000', tag:'', tagCls:'' },
+        { name:'2-Ply Beverage Napkin',                    img:'prod-cut-napkin.jpg',    price:'0.02', moq:'5,000', tag:'Economical', tagCls:'bg-gray-700' },
+        { name:'Wet Wipe Pack',                            img:'prod-cut-wipe.jpg',      price:'0.08', moq:'2,000', tag:'New', tagCls:'bg-sky-600' },
+        { name:'Paper Straws',                             img:'prod-straw.jpg',         price:'0.03', moq:'2,000', tag:'Economical', tagCls:'bg-gray-700' },
+        { name:'CPLA Fork',                                img:'prod-cut-fork.jpg',      price:'0.04', moq:'2,000', tag:'', tagCls:'' },
+      ],
+    };
+
+    const grid = document.getElementById('catGrid');
+    function renderCat(cat) {
+      grid.innerHTML = PRODUCTS[cat].map(p => `
+        <a href="products.html?cat=${cat}" class="group block">
+          <div class="relative aspect-square rounded-2xl overflow-hidden bg-gray-50 border border-gray-100 mb-4">
+            ${p.tag ? `<span class="absolute top-3 left-3 z-10 ${p.tagCls} text-white text-xs font-bold px-3 py-1 rounded-full">${p.tag}</span>` : ''}
+            <img src="assets/images/${p.img}?v=2" alt="${p.name}" loading="lazy"
+                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+          </div>
+          <h3 class="font-bold text-gray-900 leading-snug mb-1.5 group-hover:text-primary-800 transition-colors">${p.name}</h3>
+          <p class="text-sm text-gray-500">From <span class="font-extrabold text-gray-900">$${p.price}</span> + Shipping&nbsp;&nbsp;<span class="text-gray-300">|</span>&nbsp;&nbsp;MOQ: <span class="font-semibold text-gray-700">${p.moq}</span></p>
+        </a>
+      `).join('');
+    }
+    // 导航下拉（components.js）→ 首页内切换分类 tab 并滚动到产品列表
+    window.fpGoCat = (cat) => {
+      const btn = document.querySelector(`.cat-tab[data-cat="${cat}"]`);
+      if (btn) btn.click();
+      document.getElementById('categories')?.scrollIntoView({ behavior: 'smooth' });
+      document.getElementById('mobileMenu')?.classList.add('hidden');
+    };
+
+    document.querySelectorAll('.cat-tab').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.cat-tab').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        renderCat(btn.dataset.cat);
+      });
+    });
+    renderCat('boxes');
+  </script>
 </body>
 </html>

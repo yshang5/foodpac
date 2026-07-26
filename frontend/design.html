@@ -6,8 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="robots" content="noindex,nofollow" />
   <title>Design Your Packaging – foodPac</title>
-  <link rel="stylesheet" href="css/tailwind.css?v=20260717">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/tailwind.css?v=20260726b">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     .chat-bubble-user { background:#2e7d32; color:#fff; border-radius:18px 18px 4px 18px; }
     .chat-bubble-ai   { background:#f9fafb; color:#1a1a1a; border-radius:18px 18px 18px 4px; border:1px solid #e5e7eb; }
@@ -178,7 +178,7 @@
     <!-- Widget Header -->
     <div class="bg-primary-800 text-white px-5 py-3 flex items-center justify-between shrink-0">
       <div class="flex items-center gap-3">
-        <img src="assets/images/logo-icon.png" class="w-8 h-8 rounded-full bg-white/20 object-contain p-0.5" alt="foodPac">
+        <img src="assets/images/logo-icon-v2.png?v=9" class="w-8 h-8 rounded-full bg-white/20 object-contain p-0.5" alt="foodPac">
         <div>
           <p class="text-sm font-semibold">foodPac AI Designer</p>
           <p class="text-xs text-primary-200">Custom eco-friendly packaging</p>
@@ -534,7 +534,7 @@
         const ch = (currentUser.name || currentUser.email || 'U').charAt(0).toUpperCase();
         return `<div class="w-7 h-7 rounded-full bg-primary-600 text-white flex items-center justify-center text-xs font-bold shrink-0">${ch}</div>`;
       }
-      const AI_AVATAR = `<img src="assets/images/logo-icon.png" class="w-7 h-7 rounded-full object-contain bg-white border border-gray-100 shrink-0" alt="AI">`;
+      const AI_AVATAR = `<img src="assets/images/logo-icon-v2.png?v=9" class="w-7 h-7 rounded-full object-contain bg-white border border-gray-100 shrink-0" alt="AI">`;
 
       // ── Design Info panel ──────────────────────────────────────────────────
       const INFO_LABELS = { product:'Product', brand:'Brand', style:'Style', colors:'Colors', logoUrl:'Logo' };
