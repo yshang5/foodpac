@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/x-icon" href="assets/images/favicon.ico?v=2">
+  <link rel="apple-touch-icon" href="assets/images/apple-touch-icon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Product – foodPac</title>
+  <meta name="description" content="Custom branded food packaging for Canadian restaurants — free AI design, low minimums, nationwide delivery." />
+  <link rel="stylesheet" href="css/tailwind.css?v=20260726e">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/main.css">
+</head>
+<body class="font-sans text-gray-800 bg-white">
+
+  <div id="navbar"></div>
+
+  <!-- ── BREADCRUMB ────────────────────────────────────────── -->
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+    <nav class="text-sm text-gray-400 flex items-center gap-2">
+      <a href="index.html" class="hover:text-primary-800">Home</a><span>›</span>
+      <a href="products.html" class="hover:text-primary-800">Products</a><span>›</span>
+      <a id="bc-cat" href="#" class="hover:text-primary-800"></a><span>›</span>
+      <span id="bc-name" class="text-gray-700 font-medium"></span>
+    </nav>
+  </div>
+
+  <!-- ── PRODUCT MAIN ──────────────────────────────────────── -->
+  <section class="py-10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid lg:grid-cols-2 gap-12">
+
+      <!-- 左：主图 -->
+      <div>
+        <div class="rounded-3xl overflow-hidden bg-gray-50 border border-gray-100">
+          <img id="p-image" src="" alt="" class="w-full aspect-square object-cover">
+        </div>
+      </div>
+
+      <!-- 右：信息 -->
+      <div>
+        <h1 id="p-name" class="text-3xl lg:text-4xl font-extrabold text-gray-900 tracking-tight mb-3"></h1>
+
+        <div class="flex flex-wrap gap-2 mb-5" id="p-badges"></div>
+
+        <p class="text-gray-500 mb-1">From
+          <span class="text-3xl font-extrabold text-primary-800">$<span id="p-price"></span></span>
+          <span class="text-gray-500">/unit + Shipping</span>
+        </p>
+        <p class="text-sm text-gray-400 mb-6">Minimum <span id="p-moq" class="font-semibold text-gray-600"></span> units</p>
+
+        <p id="p-desc" class="text-gray-600 leading-relaxed mb-6"></p>
+
+        <!-- 服务行 -->
+        <div class="grid grid-cols-3 gap-3 mb-8 text-center">
+          <div class="bg-primary-50 rounded-xl py-3">
+            <p class="text-primary-800 font-bold">Free</p><p class="text-xs text-gray-500">AI Design Service</p>
+          </div>
+          <div class="bg-primary-50 rounded-xl py-3">
+            <p class="text-primary-800 font-bold">Free</p><p class="text-xs text-gray-500">Warehousing</p>
+          </div>
+          <div class="bg-primary-50 rounded-xl py-3">
+            <p class="text-primary-800 font-bold">2–3 wks</p><p class="text-xs text-gray-500">Production ETA</p>
+          </div>
+        </div>
+
+        <!-- 规格选择 -->
+        <div class="grid sm:grid-cols-2 gap-4 mb-5">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1.5">Size</label>
+            <select id="p-size" class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm bg-white">
+              <option value="">Loading sizes…</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1.5">Quantity</label>
+            <input type="number" id="p-qty" min="500" step="500" placeholder="e.g. 2,000"
+                   class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm">
+          </div>
+        </div>
+
+        <!-- Custom Design 区 -->
+        <div class="border border-gray-200 rounded-2xl p-4 mb-6">
+          <div class="flex items-center justify-between gap-4">
+            <div class="flex items-center gap-3 min-w-0">
+              <img id="p-design-thumb" src="" alt=""
+                   class="hidden w-16 h-16 rounded-lg object-cover border border-gray-200 shrink-0">
+              <div id="p-design-empty" class="w-16 h-16 rounded-lg border-2 border-dashed border-gray-200 flex items-center justify-center text-gray-300 text-2xl shrink-0">✨</div>
+              <div class="min-w-0">
+                <p class="font-bold text-gray-900 text-sm">Custom Design</p>
+                <p id="p-design-label" class="text-xs text-gray-500 truncate">No design selected — pick one or create with AI</p>
+              </div>
+            </div>
+            <button id="p-design-btn"
+                    class="shrink-0 px-4 py-2.5 bg-primary-800 hover:bg-primary-900 text-white text-sm font-bold rounded-lg transition-colors">
+              Custom Design
+            </button>
+          </div>
+        </div>
+
+        <!-- CTA -->
+        <button id="p-quote-btn"
+                class="w-full py-4 bg-accent-500 hover:bg-accent-600 text-white font-bold text-lg rounded-xl transition-colors shadow-lg shadow-accent-500/25 mb-2">
+          Start Custom Quote
+        </button>
+        <p class="text-center text-sm text-gray-400">Get a <span class="text-gray-600 font-medium">quote + free branded mockups</span> within 24 hrs</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── GUARANTEE ─────────────────────────────────────────── -->
+  <section class="py-12 bg-gray-50 border-y border-gray-100">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid md:grid-cols-3 gap-6">
+      <div class="bg-white rounded-2xl p-6 border border-gray-100">
+        <p class="font-bold text-gray-900 mb-1">🔒 Secure & Confidential</p>
+        <p class="text-sm text-gray-500">Your data is SSL-protected. We keep your brand assets and information safe.</p>
+      </div>
+      <div class="bg-white rounded-2xl p-6 border border-gray-100">
+        <p class="font-bold text-gray-900 mb-1">✅ 100% Satisfaction</p>
+        <p class="text-sm text-gray-500">Food-safe, durable materials with a detailed quality check on every order.</p>
+      </div>
+      <div class="bg-white rounded-2xl p-6 border border-gray-100">
+        <p class="font-bold text-gray-900 mb-1">🤝 1-on-1 Expert Support</p>
+        <p class="text-sm text-gray-500">A dedicated packaging expert guides you from design to delivery.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── TABS: SPECS / FAQ ─────────────────────────────────── -->
+  <section class="py-14">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex gap-2 mb-8" id="p-tabs">
+        <button data-tab="specs" class="p-tab active px-5 py-2.5 rounded-full border border-gray-200 text-sm font-semibold text-gray-600">Specifications</button>
+        <button data-tab="faq" class="p-tab px-5 py-2.5 rounded-full border border-gray-200 text-sm font-semibold text-gray-600">FAQs</button>
+      </div>
+
+      <div id="tab-specs">
+        <table class="w-full text-sm border border-gray-100 rounded-2xl overflow-hidden">
+          <tbody id="p-specs" class="divide-y divide-gray-100"></tbody>
+        </table>
+      </div>
+
+      <div id="tab-faq" class="hidden space-y-3">
+        <details class="group bg-white rounded-2xl border border-gray-200">
+          <summary class="flex items-center justify-between gap-4 px-5 py-4 cursor-pointer list-none font-bold text-gray-900 text-sm">How can I place an order?<span class="text-primary-700 group-open:rotate-45 transition-transform">+</span></summary>
+          <p class="px-5 pb-4 text-gray-500 text-sm">Choose your size and quantity, attach a design (or create one with AI), then click "Start Custom Quote". Our team will contact you within 24 hours with a confirmed quote and print-ready artwork.</p>
+        </details>
+        <details class="group bg-white rounded-2xl border border-gray-200">
+          <summary class="flex items-center justify-between gap-4 px-5 py-4 cursor-pointer list-none font-bold text-gray-900 text-sm">I don't have a design. Can you help?<span class="text-primary-700 group-open:rotate-45 transition-transform">+</span></summary>
+          <p class="px-5 pb-4 text-gray-500 text-sm">Yes — click "Custom Design" on this page and our AI creates branded mockups in minutes, free. Our team polishes the chosen design into print-ready artwork before production.</p>
+        </details>
+        <details class="group bg-white rounded-2xl border border-gray-200">
+          <summary class="flex items-center justify-between gap-4 px-5 py-4 cursor-pointer list-none font-bold text-gray-900 text-sm">How long until I receive my order?<span class="text-primary-700 group-open:rotate-45 transition-transform">+</span></summary>
+          <p class="px-5 pb-4 text-gray-500 text-sm">Production typically takes 2–3 weeks after artwork approval, followed by delivery anywhere in Canada. Phased batch delivery from our warehouse is available.</p>
+        </details>
+        <details class="group bg-white rounded-2xl border border-gray-200">
+          <summary class="flex items-center justify-between gap-4 px-5 py-4 cursor-pointer list-none font-bold text-gray-900 text-sm">Is this product eco-friendly?<span class="text-primary-700 group-open:rotate-45 transition-transform">+</span></summary>
+          <p class="px-5 pb-4 text-gray-500 text-sm">Yes. All foodPac products use biodegradable or compostable materials, fully compliant with Canada's Single-use Plastics Prohibition Regulations.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <div id="footer"></div>
+
+  <!-- ══════════ 设计选择弹窗 ══════════ -->
+  <div id="p-picker" class="hidden fixed inset-0 bg-black/60 z-[9985] flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[85vh] flex flex-col overflow-hidden">
+      <div class="flex items-center justify-between px-6 py-4 bg-primary-800 text-white shrink-0">
+        <p class="font-bold">Choose a Design</p>
+        <button id="p-picker-close" class="text-white/70 hover:text-white text-2xl leading-none">×</button>
+      </div>
+      <div id="p-picker-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-4 p-6 overflow-y-auto"></div>
+      <div class="px-6 py-4 border-t border-gray-100 shrink-0 flex justify-between items-center">
+        <p class="text-xs text-gray-400">Pick a design, or create a new one</p>
+        <button id="p-picker-new" class="px-5 py-2.5 bg-accent-500 hover:bg-accent-600 text-white text-sm font-bold rounded-lg transition-colors">✨ Create New Design</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════ 询价提交弹窗 ══════════ -->
+  <div id="p-quote-modal" class="hidden fixed inset-0 bg-black/60 z-[9986] flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md max-h-[92vh] flex flex-col overflow-hidden">
+      <div class="flex items-center justify-between px-6 py-4 bg-primary-800 text-white shrink-0">
+        <div>
+          <p class="font-bold">Start Custom Quote</p>
+          <p class="text-primary-200 text-xs mt-0.5">Our team replies within 24 hours</p>
+        </div>
+        <button id="p-quote-close" class="text-white/70 hover:text-white text-2xl leading-none">×</button>
+      </div>
+      <form id="p-quote-form" class="px-6 py-5 space-y-4 overflow-y-auto">
+        <!-- 摘要 -->
+        <div class="bg-gray-50 rounded-xl p-4 flex items-center gap-3">
+          <img id="pq-design-thumb" src="" class="hidden w-14 h-14 rounded-lg object-cover border border-gray-200" alt="">
+          <div class="text-sm">
+            <p id="pq-summary" class="font-bold text-gray-900"></p>
+            <p id="pq-summary2" class="text-gray-500 text-xs mt-0.5"></p>
+          </div>
+        </div>
+        <div class="grid sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Your name <span class="text-red-500">*</span></label>
+            <input type="text" id="pq-name" required class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Restaurant <span class="text-red-500">*</span></label>
+            <input type="text" id="pq-biz" required class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm">
+          </div>
+        </div>
+        <div class="grid sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Email <span class="text-red-500">*</span></label>
+            <input type="email" id="pq-email" required class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+            <input type="tel" id="pq-phone" class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm">
+          </div>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">City <span class="text-red-500">*</span></label>
+          <input type="text" id="pq-city" required placeholder="e.g. Toronto" class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Notes</label>
+          <textarea id="pq-notes" rows="2" placeholder="Anything else we should know…"
+                    class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm resize-none"></textarea>
+        </div>
+        <div id="pq-error" class="hidden text-sm text-red-700 bg-red-50 border border-red-200 rounded-lg px-4 py-2.5"></div>
+        <button type="submit" id="pq-submit"
+                class="w-full py-3.5 bg-accent-500 hover:bg-accent-600 text-white font-bold rounded-xl transition-colors shadow-lg shadow-accent-500/25 disabled:opacity-60">
+          Submit Quote Request
+        </button>
+      </form>
+      <div id="pq-success" class="hidden px-6 py-12 text-center">
+        <div class="w-14 h-14 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">✓</div>
+        <h3 class="text-xl font-bold text-gray-900 mb-2">Request received!</h3>
+        <p class="text-gray-500 text-sm">Our factory team will contact you within 24 hours with a confirmed quote for this product and your design.</p>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    .p-tab.active { background:#2e7d32; color:#fff; border-color:#2e7d32; }
+    details summary::-webkit-details-marker { display:none; }
+  </style>
+
+  <script type="module">
+    import { initNav, initFooter } from './js/components.js?v=20260726d';
+    import { getProducts } from './js/products.js?v=20260726d';
+    import { initDesignModal } from './js/design-modal.js?v=20260726d';
+
+    initNav('products');
+    initFooter();
+    initDesignModal();
+
+    const FP_API = '/api/v1';
+    const CAT = {
+      boxes:   { label: 'Takeout Boxes',  type: 'BOX' },
+      cups:    { label: 'Cups & Lids',    type: 'CUP' },
+      bags:    { label: 'Bags',           type: 'BAG' },
+      bowls:   { label: 'Bowls',          type: 'BOWL' },
+      wraps:   { label: 'Wrapping Paper', type: 'WRAP' },
+      cutlery: { label: 'Cutlery',        type: 'CUTLERY' },
+    };
+    const SPECS_BY_CAT = {
+      boxes:   { Material: 'Food-grade kraft / white paperboard or bagasse fibre', Certification: 'FDA · SGS · Compostable', 'Printing': 'Full-color custom printing', 'Temperature Range': '-18°C to 90°C' },
+      cups:    { Material: 'Paperboard w/ PLA lining, PLA or rPET (clear)', Certification: 'FDA · SGS · Compostable options', 'Printing': 'Full-wrap custom printing', 'Temperature Range': 'Hot & cold variants' },
+      bags:    { Material: 'Kraft / white paper, non-woven or compostable bio-film', Certification: 'FSC paper · Compostable options', 'Printing': 'Custom printing, 1–4 colors', 'Handle': 'Twisted paper / loop / ribbon' },
+      bowls:   { Material: 'Kraft paperboard w/ PLA lining or bagasse pulp', Certification: 'FDA · BPI · Compostable', 'Printing': 'Full-color custom printing', 'Temperature Range': '-18°C to 90°C' },
+      wraps:   { Material: 'Greaseproof kraft / tissue paper', Certification: 'FDA food-safe inks', 'Printing': 'Repeat-pattern custom printing', 'Format': 'Sheets or rolls' },
+      cutlery: { Material: 'CPLA (cornstarch), bamboo, 2-ply paper', Certification: 'Compostable · Heat-resistant to 85°C', 'Printing': 'Custom-printed sleeves & packets', 'Format': 'Individually wrapped' },
+    };
+
+    const id = new URLSearchParams(location.search).get('id');
+    const all = getProducts('all');
+    const p = all.find(x => x.id === id) || all[0];
+    const cat = CAT[p.category];
+
+    // 填充页面
+    document.title = `${p.name} – Custom Printed | foodPac`;
+    document.querySelector('meta[name="description"]').content =
+      `${p.name}: ${p.description} From $${p.price} CAD/unit, MOQ ${p.moq}. Free AI design, delivered across Canada.`;
+    document.getElementById('bc-cat').textContent = cat.label;
+    document.getElementById('bc-cat').href = `products.html?cat=${p.category}`;
+    document.getElementById('bc-name').textContent = p.name;
+    document.getElementById('p-image').src = p.image;
+    document.getElementById('p-image').alt = p.name;
+    document.getElementById('p-name').textContent = p.name;
+    document.getElementById('p-price').textContent = p.price;
+    document.getElementById('p-moq').textContent = p.moq;
+    document.getElementById('p-desc').textContent = p.description;
+    const badges = ['Eco-Friendly', 'Custom Printed', 'Made for Canada'];
+    if (p.tag) badges.unshift(p.tag);
+    document.getElementById('p-badges').innerHTML = badges.map(b =>
+      `<span class="text-xs font-semibold px-3 py-1 rounded-full bg-primary-50 text-primary-800 border border-primary-100">${b}</span>`).join('');
+
+    // 规格表
+    const specs = { ...SPECS_BY_CAT[p.category], 'MOQ': `${p.moq} units`, 'Design Service': 'Free AI design + expert refinement', 'Production ETA': '2–3 weeks + shipping' };
+    document.getElementById('p-specs').innerHTML = Object.entries(specs).map(([k, v]) => `
+      <tr><td class="px-5 py-3.5 font-semibold text-gray-700 bg-gray-50 w-1/3">${k}</td>
+          <td class="px-5 py-3.5 text-gray-600">${v}</td></tr>`).join('');
+
+    // Sizes
+    fetch(`${FP_API}/products/sizes/${cat.type}`).then(r => r.json()).then(sizes => {
+      document.getElementById('p-size').innerHTML = '<option value="">Select size…</option>' +
+        sizes.map(s => `<option value="${s.label}">${s.label}</option>`).join('');
+    }).catch(() => {
+      document.getElementById('p-size').innerHTML = '<option value="">Standard</option>';
+    });
+
+    // Tabs
+    document.querySelectorAll('.p-tab').forEach(t => t.addEventListener('click', () => {
+      document.querySelectorAll('.p-tab').forEach(x => x.classList.remove('active'));
+      t.classList.add('active');
+      document.getElementById('tab-specs').classList.toggle('hidden', t.dataset.tab !== 'specs');
+      document.getElementById('tab-faq').classList.toggle('hidden', t.dataset.tab !== 'faq');
+    }));
+
+    // ── Custom Design ──
+    let selectedDesign = null;
+    function setDesign(d) {
+      selectedDesign = d;
+      const thumb = document.getElementById('p-design-thumb');
+      const empty = document.getElementById('p-design-empty');
+      if (d) {
+        thumb.src = d.imageUrl; thumb.classList.remove('hidden'); empty.classList.add('hidden');
+        document.getElementById('p-design-label').textContent = d.productLabel || 'Selected design';
+      } else {
+        thumb.classList.add('hidden'); empty.classList.remove('hidden');
+        document.getElementById('p-design-label').textContent = 'No design selected — pick one or create with AI';
+      }
+    }
+
+    async function openPicker() {
+      let items = [];
+      try {
+        const res = await fetch(`${FP_API}/design/my-designs`, { credentials: 'include' });
+        if (res.ok) items = (await res.json()).items;
+      } catch {}
+      if (!items.length) { window.fpOpenDesign('form'); return; }
+      const grid = document.getElementById('p-picker-grid');
+      grid.innerHTML = items.map(r => `
+        <button type="button" data-id="${r.id}" class="pk-item text-left group">
+          <img src="${r.imageUrl}" alt="" class="w-full aspect-square object-cover rounded-xl border-2 ${selectedDesign?.id === r.id ? 'border-primary-700' : 'border-transparent'} group-hover:border-primary-400 transition-colors">
+          <p class="text-xs text-gray-600 mt-1.5 truncate">${r.productLabel}</p>
+        </button>`).join('');
+      grid.querySelectorAll('.pk-item').forEach(el => el.addEventListener('click', () => {
+        setDesign(items.find(x => x.id === el.dataset.id));
+        document.getElementById('p-picker').classList.add('hidden');
+      }));
+      document.getElementById('p-picker').classList.remove('hidden');
+    }
+    document.getElementById('p-design-btn').addEventListener('click', openPicker);
+    document.getElementById('p-picker-close').onclick = () => document.getElementById('p-picker').classList.add('hidden');
+    document.getElementById('p-picker-new').onclick = () => {
+      document.getElementById('p-picker').classList.add('hidden');
+      window.fpOpenDesign('form');
+    };
+
+    // ── Quote 提交 ──
+    document.getElementById('p-quote-btn').addEventListener('click', () => {
+      const size = document.getElementById('p-size').value || 'Not selected';
+      const qty = document.getElementById('p-qty').value || 'TBD';
+      document.getElementById('pq-summary').textContent = p.name;
+      document.getElementById('pq-summary2').textContent =
+        `Size: ${size} · Qty: ${qty} · Design: ${selectedDesign ? 'attached' : 'none (our team will help)'}`;
+      const dt = document.getElementById('pq-design-thumb');
+      if (selectedDesign) { dt.src = selectedDesign.imageUrl; dt.classList.remove('hidden'); }
+      else dt.classList.add('hidden');
+      document.getElementById('p-quote-form').classList.remove('hidden');
+      document.getElementById('pq-success').classList.add('hidden');
+      document.getElementById('p-quote-modal').classList.remove('hidden');
+    });
+    document.getElementById('p-quote-close').onclick = () => document.getElementById('p-quote-modal').classList.add('hidden');
+
+    document.getElementById('p-quote-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const err = document.getElementById('pq-error');
+      const btn = document.getElementById('pq-submit');
+      err.classList.add('hidden');
+      btn.disabled = true; btn.textContent = 'Submitting…';
+      const size = document.getElementById('p-size').value || 'Not selected';
+      const qty = document.getElementById('p-qty').value || 'TBD';
+      const notes = [
+        `[PRODUCT QUOTE] ${p.name} (${p.id})`,
+        `Size: ${size}`, `Quantity: ${qty}`,
+        `Design: ${selectedDesign ? location.origin + selectedDesign.imageUrl + ' (' + selectedDesign.productLabel + ')' : 'none'}`,
+        document.getElementById('pq-notes').value.trim()
+      ].filter(Boolean).join(' | ');
+      try {
+        const res = await fetch(`${FP_API}/contact`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            businessName: document.getElementById('pq-biz').value.trim(),
+            contactName: document.getElementById('pq-name').value.trim(),
+            email: document.getElementById('pq-email').value.trim(),
+            phone: document.getElementById('pq-phone').value.trim(),
+            city: document.getElementById('pq-city').value.trim(),
+            restaurantType: '',
+            products: [p.category],
+            quantity: qty === 'TBD' ? 'unsure' : String(qty),
+            hasLogo: selectedDesign ? 'yes' : 'no',
+            notes
+          })
+        });
+        if (!res.ok) throw new Error();
+        document.getElementById('p-quote-form').classList.add('hidden');
+        document.getElementById('pq-success').classList.remove('hidden');
+      } catch {
+        err.textContent = 'Something went wrong. Please try again or email hi@foodpac.ai';
+        err.classList.remove('hidden');
+      } finally {
+        btn.disabled = false; btn.textContent = 'Submit Quote Request';
+      }
+    });
+  </script>
+</body>
+</html>
