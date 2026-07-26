@@ -54,6 +54,7 @@ public class SecurityConfig {
                 // Form-based Design Online — guests allowed (limit enforced in controller)
                 .requestMatchers(HttpMethod.POST, "/api/v1/design/uploads").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/v1/design/generate").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/v1/design/hero-swap").permitAll()
                 .requestMatchers(HttpMethod.GET,  "/api/v1/design/jobs/*").permitAll()
                 .requestMatchers(HttpMethod.GET,  "/api/v1/design/files/*").permitAll()
                 .requestMatchers(HttpMethod.DELETE, "/api/v1/design/job-items/*").permitAll()

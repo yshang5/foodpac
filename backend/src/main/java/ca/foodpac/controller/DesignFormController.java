@@ -90,6 +90,38 @@ public class DesignFormController {
         return ResponseEntity.ok(Map.of("jobId", job.getId(), "status", job.getStatus().name()));
     }
 
+    // ── Homepage hero brand-swap (logo-only, cheap teaser) ────────────────────
+
+    public record HeroSwapRequest(String brandText, String color) {}
+
+    @PostMapping("/hero-swap")
+    public ResponseEntity<?> heroSwap(@AuthenticationPrincipal User user,
+                                      @RequestBody HeroSwapRequest req,
+                                      HttpServletRequest httpReq,
+                                      HttpServletResponse httpRes) {
+        if (req.brandText() == null || req.brandText().isBlank())
+            return ResponseEntity.badRequest().body(Map.of("error", "Brand name required"));
+        String color = req.color() != null && req.color().matches("#[0-9a-fA-F]{6}")
+                ? req.color().toLowerCase() : "#2e7d32";
+
+        String anonToken = null;
+        if (user == null) {
+            anonToken = readCookie(httpReq);
+            if (anonToken != null && service.heroGuestLimitReached(anonToken))
+                return ResponseEntity.status(401).body(Map.of("error", "LOGIN_REQUIRED",
+                        "message", "Sign in to keep trying brands."));
+            if (anonToken == null) {
+                anonToken = UUID.randomUUID().toString();
+                httpRes.addHeader("Set-Cookie", String.format(
+                        "%s=%s; Path=/; Max-Age=31536000; HttpOnly%s; SameSite=Lax",
+                        ANON_COOKIE, anonToken, cookieSecure ? "; Secure" : ""));
+            }
+        }
+
+        DesignJob job = service.createHeroJob(user, anonToken, req.brandText().trim(), color);
+        return ResponseEntity.ok(Map.of("jobId", job.getId(), "status", job.getStatus().name()));
+    }
+
     // ── Poll job progress ─────────────────────────────────────────────────────
 
     @GetMapping("/jobs/{id}")

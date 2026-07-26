@@ -73,9 +73,14 @@ public class DesignFormService {
 
     // ── Guest limit ────────────────────────────────────────────────────────────
 
-    /** Guests get one free generation; after that login is required. */
+    /** Guests get one free full-form generation; after that login is required. */
     public boolean guestLimitReached(String anonToken) {
-        return anonToken != null && jobRepo.countByAnonToken(anonToken) >= 1;
+        return anonToken != null && jobRepo.countByAnonTokenAndKind(anonToken, "FORM") >= 1;
+    }
+
+    /** The homepage hero teaser is cheaper — guests get two tries. */
+    public boolean heroGuestLimitReached(String anonToken) {
+        return anonToken != null && jobRepo.countByAnonTokenAndKind(anonToken, "HERO") >= 2;
     }
 
     // ── Job lifecycle ──────────────────────────────────────────────────────────
@@ -160,6 +165,83 @@ public class DesignFormService {
             jobRepo.save(job);
         } catch (Exception e) {
             log.error("Design job {} failed", jobId, e);
+            job.setStatus(DesignJob.Status.FAILED);
+            job.setError(e.getMessage());
+            jobRepo.save(job);
+        }
+    }
+
+    // ── Homepage hero brand-swap (logo-only re-render of the 4 hero photos) ───
+
+    public record HeroTemplate(String id, String file) {}
+    public static final java.util.List<HeroTemplate> HERO_TEMPLATES = java.util.List.of(
+            new HeroTemplate("hero-box", "hero-box.jpg"),
+            new HeroTemplate("hero-cup", "hero-cup.jpg"),
+            new HeroTemplate("hero-bag", "hero-bag.jpg"),
+            new HeroTemplate("hero-ai",  "hero-ai.jpg"));
+
+    public DesignJob createHeroJob(User user, String anonToken, String brandText, String color) {
+        DesignJob job = DesignJob.builder()
+                .user(user)
+                .anonToken(user == null ? anonToken : null)
+                .kind("HERO")
+                .brandText(brandText)
+                .brandColor(color)
+                .status(DesignJob.Status.PENDING)
+                .build();
+        job = jobRepo.save(job);
+        String jobId = job.getId();
+        executor.submit(() -> runHero(jobId));
+        return job;
+    }
+
+    private void runHero(String jobId) {
+        DesignJob job = jobRepo.findById(jobId).orElse(null);
+        if (job == null) return;
+        try {
+            job.setStatus(DesignJob.Status.RUNNING);
+            jobRepo.save(job);
+            Files.createDirectories(STORAGE_DIR);
+
+            String prompt = ("The input image is a product photo of kraft food packaging printed with "
+                    + "the brand \"Lunat\" (a dark lettering logo, some pieces with small red accents and "
+                    + "sub-text). Recreate this EXACT photo — identical products, camera angle, composition, "
+                    + "lighting, shadows, background, kraft material and textures — changing ONLY the printed "
+                    + "brand logo: replace \"Lunat\" and its accompanying small logo text with \"%s\" printed "
+                    + "in the color %s, using a similar typographic style, the same size and the same placement "
+                    + "on the packaging. Spell \"%s\" exactly. Change NOTHING else in the image: no new objects, "
+                    + "no color changes to the packaging material or background, no layout changes.")
+                    .formatted(job.getBrandText(), job.getBrandColor(), job.getBrandText());
+
+            var futures = HERO_TEMPLATES.stream()
+                    .map(t -> java.util.concurrent.CompletableFuture.runAsync(() -> {
+                        try {
+                            byte[] template;
+                            try (var in = getClass().getResourceAsStream("/mockups/hero/" + t.file())) {
+                                if (in == null) throw new IOException("missing hero template " + t.file());
+                                template = in.readAllBytes();
+                            }
+                            byte[] png = aiImageService.rebrand(template, null, null, prompt);
+                            String name = "gen-" + jobId + "-" + t.id() + ".png";
+                            Files.write(STORAGE_DIR.resolve(name), png);
+                            itemRepo.save(DesignJobItem.builder()
+                                    .job(job)
+                                    .productId(t.id())
+                                    .productLabel(t.id())
+                                    .productType("HERO")
+                                    .imageUrl("/api/v1/design/files/" + name)
+                                    .build());
+                        } catch (Exception e) {
+                            log.warn("Hero swap failed for {}: {}", t.id(), e.getMessage());
+                        }
+                    }, imagePool))
+                    .toArray(java.util.concurrent.CompletableFuture[]::new);
+            java.util.concurrent.CompletableFuture.allOf(futures).join();
+
+            job.setStatus(DesignJob.Status.COMPLETED);
+            jobRepo.save(job);
+        } catch (Exception e) {
+            log.error("Hero job {} failed", jobId, e);
             job.setStatus(DesignJob.Status.FAILED);
             job.setError(e.getMessage());
             jobRepo.save(job);

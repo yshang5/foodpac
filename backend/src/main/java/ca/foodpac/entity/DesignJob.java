@@ -29,6 +29,14 @@ public class DesignJob {
     /** Anonymous visitor token (fp_anon cookie) for guest rate limiting */
     private String anonToken;
 
+    /** Job kind: FORM (full design form) or HERO (homepage brand-swap teaser) */
+    @Builder.Default
+    @Column(nullable = false, length = 10)
+    private String kind = "FORM";
+
+    /** Brand color chosen in the hero teaser (hex) */
+    private String brandColor;
+
     private String brandText;
     private String logoFile;          // stored filename of uploaded logo
     private String restaurantType;
