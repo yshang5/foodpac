@@ -49,6 +49,8 @@ services:
       PACKIFY_API_KEY:    ${PACKIFY_API_KEY}
       RESEND_API_KEY:     ${RESEND_API_KEY}
       JAVA_OPTS:          "-Xms256m -Xmx512m -XX:+UseContainerSupport"
+    volumes:
+      - design_data:/data/design       # uploaded logos/QRs + generated mockups
     expose:
       - "8080"             # only reachable from within Docker network (via Nginx)
     depends_on:
@@ -104,6 +106,7 @@ services:
 
 volumes:
   postgres_data:
+  design_data:
 
 networks:
   foodpac-net:

@@ -14,6 +14,9 @@ RUN apk add --no-cache maven && \
 FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app
 
+# Fonts for Java2D text rendering (design mockup generation)
+RUN apk add --no-cache fontconfig ttf-dejavu
+
 COPY --from=builder /app/target/foodpac-backend-*.jar app.jar
 
 EXPOSE 8080

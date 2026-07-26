@@ -51,6 +51,12 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/api/v1/quotes").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/v1/contact").permitAll()
                 .requestMatchers("/api/v1/auth/me", "/api/v1/auth/logout").permitAll()
+                // Form-based Design Online — guests allowed (limit enforced in controller)
+                .requestMatchers(HttpMethod.POST, "/api/v1/design/uploads").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/v1/design/generate").permitAll()
+                .requestMatchers(HttpMethod.GET,  "/api/v1/design/jobs/*").permitAll()
+                .requestMatchers(HttpMethod.GET,  "/api/v1/design/files/*").permitAll()
+                .requestMatchers(HttpMethod.DELETE, "/api/v1/design/job-items/*").permitAll()
                 // Guest-mode design endpoints — work without login
                 .requestMatchers(HttpMethod.POST, "/api/v1/design/sessions").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/v1/design/sessions/*/messages").permitAll()

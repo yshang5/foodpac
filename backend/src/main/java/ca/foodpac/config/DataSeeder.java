@@ -24,7 +24,7 @@ public class DataSeeder implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) {
-        if (typeRepo.count() > 0) return;   // already seeded
+        if (typeRepo.count() > 0) { seedCutlery(); return; }   // already seeded
 
         // ── Product types ───────────────────────────────────────────
         var types = List.of(
@@ -66,5 +66,16 @@ public class DataSeeder implements ApplicationRunner {
             SizeOption.builder().productTypeKey("WRAP").label("Large (450mm × 500m)").sortOrder(2).build()
         );
         sizeRepo.saveAll(sizes);
+        seedCutlery();
+    }
+
+    /** Idempotent: CUTLERY type was added after the initial seed ran in prod. */
+    private void seedCutlery() {
+        if (typeRepo.existsById("CUTLERY")) return;
+        typeRepo.save(new ProductTypeConfig("CUTLERY", "Cutlery", 7));
+        sizeRepo.saveAll(List.of(
+            SizeOption.builder().productTypeKey("CUTLERY").label("Standard Set (fork+knife+spoon)").sortOrder(1).build(),
+            SizeOption.builder().productTypeKey("CUTLERY").label("Single Utensil").sortOrder(2).build()
+        ));
     }
 }
