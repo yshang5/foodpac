@@ -159,7 +159,7 @@ public class DesignFormService {
                             itemRepo.save(DesignJobItem.builder()
                                     .job(job)
                                     .productId(product.id())
-                                    .productLabel(product.label())
+                                    .productLabel(brandedLabel(job.getBrandText(), product.label()))
                                     .productType(product.cartType())
                                     .imageUrl("/api/v1/design/files/" + name)
                                     .build());
@@ -187,7 +187,7 @@ public class DesignFormService {
             new HeroTemplate("hero-box", "hero-box.jpg", "Kraft Takeout Box", "BOX"),
             new HeroTemplate("hero-cup", "hero-cup.jpg", "Hot Drink Cup",     "CUP"),
             new HeroTemplate("hero-bag", "hero-bag.jpg", "Kraft Paper Bag",   "BAG"),
-            new HeroTemplate("hero-ai",  "hero-ai.jpg",  "Brand Scene",       "HERO"));
+            new HeroTemplate("hero-ai",  "hero-ai.jpg",  "Brand Set",         "BOX"));
 
     public DesignJob createHeroJob(User user, String anonToken, String brandText, String color) {
         DesignJob job = DesignJob.builder()
@@ -239,7 +239,7 @@ public class DesignFormService {
                             itemRepo.save(DesignJobItem.builder()
                                     .job(job)
                                     .productId(t.id())
-                                    .productLabel(t.label())
+                                    .productLabel(brandedLabel(job.getBrandText(), t.label()))
                                     .productType(t.cartType())
                                     .imageUrl("/api/v1/design/files/" + name)
                                     .build());
@@ -258,6 +258,11 @@ public class DesignFormService {
             job.setError(e.getMessage());
             jobRepo.save(job);
         }
+    }
+
+    /** "Kongfu" + "Kraft Takeout Box" → "Kongfu Kraft Takeout Box" */
+    private static String brandedLabel(String brand, String label) {
+        return brand == null || brand.isBlank() ? label : brand.trim() + " " + label;
     }
 
     private byte[] loadTemplate(String fileName) throws IOException {
