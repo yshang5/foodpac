@@ -334,14 +334,14 @@ public class DesignFormService {
 
             byte[] logo = readStored(job.getLogoFile());
             byte[] qr = readStored(job.getQrFile());
-            String prompt = buildStyledPrompt(job);
 
             var futures = STYLE_PARTS.stream()
                     .map(part -> java.util.concurrent.CompletableFuture.runAsync(() -> {
                         try {
                             byte[] template = Files.readAllBytes(
                                     styleTemplatePath(job.getStyleType(), job.getStyleId(), part.part()));
-                            byte[] png = aiImageService.rebrand(template, logo, qr, prompt, part.size());
+                            byte[] png = aiImageService.rebrand(template, logo, qr,
+                                    buildStyledPrompt(job, part.part()), part.size());
                             String name = "gen-" + jobId + "-" + part.cellId() + ".png";
                             Files.write(STORAGE_DIR.resolve(name), png);
                             itemRepo.save(DesignJobItem.builder()
@@ -389,9 +389,24 @@ public class DesignFormService {
     /**
      * The style photos are fully designed "Lunat" packaging: keep the design,
      * swap the brand, and (when a color is chosen) shift the whole printed
-     * scheme to that hue. Optional form extras are appended in small print.
+     * scheme to that hue. Secondary info (slogan/contact/QR) is placed where
+     * the piece has room for it — per-part guidance below — and the model is
+     * told to drop the least important elements rather than crowd a small
+     * surface (e.g. a chopstick sleeve can carry the brand name only).
      */
-    private String buildStyledPrompt(DesignJob job) {
+    private static final Map<String, String> PART_INFO_GUIDE = Map.of(
+            "box", "This box has generous printable panels: the slogan sits below or beside the brand "
+                 + "name; the contact line and QR code go on a secondary panel or near the bottom edge. ",
+            "cup", "This cup has a medium printable surface: the slogan can sit under the brand name; "
+                 + "the contact line goes in very small type near the bottom rim; include the QR code "
+                 + "only if it fits discreetly. ",
+            "bag", "This bag has a large front panel: the slogan sits under the brand name; the contact "
+                 + "line and QR code go near the bottom edge or on the side gusset. ",
+            "family", "Apply the same extended layout to each piece according to its size: larger pieces "
+                 + "(bag, box) may carry the slogan and contact line, smaller pieces show fewer "
+                 + "elements. The set must stay visually consistent. ");
+
+    private String buildStyledPrompt(DesignJob job, String part) {
         String brand = job.getBrandText();
         StringBuilder p = new StringBuilder();
         p.append("The input image is a professional product photo of food packaging printed with the ")
@@ -409,16 +424,29 @@ public class DesignFormService {
         if (job.getLogoFile() != null)
             p.append("The SECOND input image is the brand logo — print it faithfully where the main ")
              .append("logo sits. ");
-        if (job.getSlogan() != null)
-            p.append("Add the slogan in small print near the brand name: \"")
-             .append(job.getSlogan()).append("\". ");
+
         String contact = java.util.stream.Stream.of(job.getPhone(), job.getAddress())
                 .filter(s -> s != null && !s.isBlank())
                 .collect(java.util.stream.Collectors.joining(" · "));
-        if (!contact.isBlank())
-            p.append("Contact line in small print: \"").append(contact).append("\". ");
-        if (job.getQrFile() != null)
-            p.append("Also print the provided QR code image on a suitable flat area of the packaging. ");
+        boolean hasExtras = job.getSlogan() != null || !contact.isBlank() || job.getQrFile() != null;
+        if (hasExtras) {
+            p.append("Additionally, integrate the following brand information into the printed design, ")
+             .append("in the SAME typographic language as the style (matching fonts, colors and ")
+             .append("alignment), keeping a clear hierarchy — brand name dominant, slogan secondary, ")
+             .append("contact details and QR code smallest: ");
+            if (job.getSlogan() != null)
+                p.append("slogan \"").append(job.getSlogan()).append("\"; ");
+            if (!contact.isBlank())
+                p.append("contact line \"").append(contact).append("\"; ");
+            if (job.getQrFile() != null)
+                p.append("the ").append(job.getLogoFile() != null ? "THIRD" : "SECOND")
+                 .append(" input image is a QR code to print as-is (scannable, on a light background); ");
+            p.append(". ").append(PART_INFO_GUIDE.getOrDefault(part, ""));
+            p.append("Placement must look like real professional packaging print. If this surface is ")
+             .append("too small or the composition would become cluttered, omit elements in this order ")
+             .append("rather than crowding the design: first the QR code, then the contact line, then ")
+             .append("the slogan. Never shrink or displace the main brand name to make room. ");
+        }
         p.append("Spell \"").append(brand)
          .append("\" exactly. No other brand names, no watermarks, no new objects.");
         return p.toString();
