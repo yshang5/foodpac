@@ -99,6 +99,46 @@ public class DesignFormService {
         return jobs.size();
     }
 
+    // ── Design kits: one reusable brand asset per distinct brand name ─────────
+
+    /**
+     * A user's design inputs become per-brand "kits": for each distinct brand
+     * name (newest first) we coalesce every field from that brand's job
+     * history, newest value winning, so a hero-teaser job doesn't wipe the
+     * logo/slogan captured by an earlier full-form job.
+     */
+    public java.util.List<Map<String, Object>> buildKits(User user, String anonToken) {
+        java.util.List<DesignJob> jobs = user != null
+                ? jobRepo.findByUser_IdOrderByCreatedAtDesc(user.getId())
+                : anonToken == null ? java.util.List.of()
+                : jobRepo.findByAnonTokenOrderByCreatedAtDesc(anonToken);
+        var kits = new java.util.LinkedHashMap<String, java.util.HashMap<String, Object>>();
+        for (DesignJob j : jobs) {
+            if (j.getBrandText() == null || j.getBrandText().isBlank()) continue;
+            String key = j.getBrandText().trim().toLowerCase();
+            var kit = kits.computeIfAbsent(key, k -> {
+                var m = new java.util.HashMap<String, Object>();
+                m.put("brandText", j.getBrandText().trim());
+                m.put("updatedAt", j.getCreatedAt());
+                return m;
+            });
+            putIfAbsent(kit, "brandColor", j.getBrandColor());
+            putIfAbsent(kit, "slogan", j.getSlogan());
+            putIfAbsent(kit, "restaurantType", j.getRestaurantType());
+            putIfAbsent(kit, "address", j.getAddress());
+            putIfAbsent(kit, "phone", j.getPhone());
+            putIfAbsent(kit, "logoFile", j.getLogoFile());
+            putIfAbsent(kit, "qrFile", j.getQrFile());
+            putIfAbsent(kit, "styleType", j.getStyleType());
+            putIfAbsent(kit, "styleId", j.getStyleId());
+        }
+        return new java.util.ArrayList<>(kits.values());
+    }
+
+    private static void putIfAbsent(java.util.Map<String, Object> kit, String key, String value) {
+        if (value != null && !value.isBlank() && !kit.containsKey(key)) kit.put(key, value);
+    }
+
     // ── Job lifecycle ──────────────────────────────────────────────────────────
 
     public DesignJob createJob(User user, String anonToken, String brandText, String logoFile,

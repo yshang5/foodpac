@@ -117,6 +117,14 @@ public class DesignFormController {
                 "createdAt", i.getCreatedAt())).toList()));
     }
 
+    // ── Design kits: saved per-brand design assets for reuse ──────────────────
+
+    @GetMapping("/kits")
+    public ResponseEntity<?> kits(@AuthenticationPrincipal User user, HttpServletRequest httpReq) {
+        return ResponseEntity.ok(Map.of("kits",
+                service.buildKits(user, user == null ? readCookie(httpReq) : null)));
+    }
+
     // ── Claim guest history after login (idempotent) ──────────────────────────
 
     @PostMapping("/claim")

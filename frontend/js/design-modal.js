@@ -13,9 +13,9 @@
  *   window.fpChipBusy(on)     — toggle the chip generating animation
  */
 
-import { loginWithGoogle } from './auth.js?v=20260727a';
-import { _refreshCartBadge } from './components.js?v=20260727a';
-import { STYLE_LIBRARY, styleImg, getStyle, setStyle } from './styles.js?v=20260727a';
+import { loginWithGoogle } from './auth.js?v=20260727b';
+import { _refreshCartBadge } from './components.js?v=20260727b';
+import { STYLE_LIBRARY, styleImg, getStyle, setStyle } from './styles.js?v=20260727b';
 
 const FP_CSS = `
   .fp-swatch.sel { outline: 3px solid #1b5e20; outline-offset: 2px; }
@@ -67,8 +67,15 @@ const FP_HTML = `
         <form id="fp-design-form" class="flex-1 px-6 py-5 space-y-4 lg:overflow-y-auto">
         <div>
           <label class="block text-sm font-bold text-gray-800 mb-1.5">Your brand name <span class="text-red-500">*</span></label>
-          <input type="text" id="fpd-brand" required maxlength="30" placeholder="e.g. Golden Dragon Kitchen"
-                 class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm">
+          <div class="relative">
+            <input type="text" id="fpd-brand" required maxlength="30" placeholder="e.g. Golden Dragon Kitchen"
+                   class="w-full border border-gray-200 rounded-lg px-4 py-2.5 pr-10 text-sm">
+            <button type="button" id="fpd-kit-toggle" title="Your saved brand kits"
+                    class="hidden absolute right-1.5 top-1/2 -translate-y-1/2 w-7 h-7 items-center justify-center text-gray-400 hover:text-gray-700 rounded-md hover:bg-gray-100 transition-colors">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </button>
+            <div id="fpd-kit-menu" class="hidden absolute left-0 right-0 top-full mt-1 bg-white border border-gray-200 rounded-xl shadow-xl z-20 max-h-56 overflow-y-auto py-1"></div>
+          </div>
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-2">Brand color</label>
@@ -282,10 +289,128 @@ export function initDesignModal() {
     window.fpOpenDesign = (mode = 'form') => {
       fpModalMode = mode;
       fpsRefresh();
+      // 自动带入最近一个品牌的设计 kit（表单还空着时）
+      if (fpKits.length && !document.getElementById('fpd-brand').value.trim()) fpApplyKit(fpKits[0]);
       document.getElementById('fp-design-modal').classList.remove('hidden');
       fpSyncSubmit();
       setTimeout(() => document.getElementById('fpd-brand').focus(), 50);
     };
+
+    // ── Design kits：历史输入沉淀为品牌资产，可下拉复用 ──
+    let fpKits = [];
+    let fpKitLogoFile = null, fpKitQrFile = null;   // 选中 kit 带入的已存文件名
+
+    const fpEsc = (s) => String(s ?? '').replace(/[&<>"']/g,
+      c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+    const fpHex = (c) => /^#[0-9a-fA-F]{6}$/.test(c || '') ? c : '#2e7d32';
+
+    async function fpLoadKits() {
+      try {
+        const res = await fetch(`${FP_API}/design/kits`, { credentials: 'include' });
+        if (res.ok) fpKits = (await res.json()).kits || [];
+      } catch {}
+      const t = document.getElementById('fpd-kit-toggle');
+      t.classList.toggle('hidden', fpKits.length === 0);
+      t.classList.toggle('flex', fpKits.length > 0);
+      // 弹窗已开且表单还空着（如 ?design=1 深链）→ 补一次自动带入
+      if (fpKits.length && !document.getElementById('fp-design-modal').classList.contains('hidden')
+          && !document.getElementById('fpd-brand').value.trim()) fpApplyKit(fpKits[0]);
+    }
+
+    function fpSelectSwatchFor(color) {
+      color = fpHex(color);
+      document.querySelectorAll('#fpd-swatches .fp-swatch').forEach(s => s.classList.remove('sel'));
+      const preset = document.querySelector(`#fpd-swatches .fp-swatch[data-c="${color}"]`);
+      if (preset) preset.classList.add('sel');
+      else {
+        const custom = document.getElementById('fpd-custom');
+        custom.value = color;
+        document.getElementById('fpd-custom-view').style.background = color;
+        custom.closest('.fp-swatch').classList.add('sel');
+      }
+      fpColor = color;
+    }
+
+    function fpSetFilePreview(labelId, previewId, file, savedText, emptyText) {
+      const img = document.getElementById(previewId);
+      if (file) {
+        document.getElementById(labelId).textContent = savedText;
+        img.src = `${FP_API}/design/files/${file}`;
+        img.classList.remove('hidden');
+      } else {
+        document.getElementById(labelId).textContent = emptyText;
+        img.removeAttribute('src');
+        img.classList.add('hidden');
+      }
+    }
+
+    function fpApplyKit(kit) {
+      document.getElementById('fpd-brand').value = kit.brandText || '';
+      fpSelectSwatchFor(kit.brandColor);
+      document.getElementById('fpd-type').value = kit.restaurantType || '';
+      document.getElementById('fpd-slogan').value = kit.slogan || '';
+      document.getElementById('fpd-address').value = kit.address || '';
+      document.getElementById('fpd-phone').value = kit.phone || '';
+      fpKitLogoFile = kit.logoFile || null;
+      fpKitQrFile = kit.qrFile || null;
+      document.getElementById('fpd-logo').value = '';
+      document.getElementById('fpd-qr').value = '';
+      fpSetFilePreview('fpd-logo-label', 'fpd-logo-preview', fpKitLogoFile,
+        'Saved logo from this kit', 'Upload your logo (PNG / JPG, max 5MB)');
+      fpSetFilePreview('fpd-qr-label', 'fpd-qr-preview', fpKitQrFile,
+        'Saved QR from this kit', 'Upload the QR customers scan to order');
+      if (kit.styleType && kit.styleId) setStyle(kit.styleType, kit.styleId);
+      // kit 带了扩展信息时展开 More Options，让用户看到自动填充的内容
+      if (kit.slogan || kit.logoFile || kit.address || kit.phone || kit.qrFile || kit.restaurantType) {
+        document.getElementById('fpd-more').classList.remove('hidden');
+        document.getElementById('fpd-more-chevron').style.transform = 'rotate(180deg)';
+      }
+      fpSyncSubmit();
+    }
+
+    function fpResetKitForm() {
+      ['fpd-brand', 'fpd-slogan', 'fpd-address', 'fpd-phone'].forEach(id =>
+        document.getElementById(id).value = '');
+      document.getElementById('fpd-type').value = '';
+      document.getElementById('fpd-logo').value = '';
+      document.getElementById('fpd-qr').value = '';
+      fpKitLogoFile = fpKitQrFile = null;
+      fpSelectSwatchFor('#2e7d32');
+      fpSetFilePreview('fpd-logo-label', 'fpd-logo-preview', null, '', 'Upload your logo (PNG / JPG, max 5MB)');
+      fpSetFilePreview('fpd-qr-label', 'fpd-qr-preview', null, '', 'Upload the QR customers scan to order');
+      fpSyncSubmit();
+      document.getElementById('fpd-brand').focus();
+    }
+
+    function fpKitMenuRender() {
+      const menu = document.getElementById('fpd-kit-menu');
+      menu.innerHTML = `
+        <button type="button" data-k="-1"
+                class="w-full text-left px-4 py-2.5 text-sm font-semibold text-gray-600 hover:bg-gray-50">
+          ✎ Start fresh — new design brief
+        </button>` +
+        fpKits.map((k, i) => `
+        <button type="button" data-k="${i}"
+                class="w-full text-left px-4 py-2.5 text-sm font-bold hover:bg-gray-50 truncate"
+                style="color:${fpHex(k.brandColor)}">
+          ${fpEsc(k.brandText)}${k.slogan ? ` <span class="font-normal opacity-70">— ${fpEsc(k.slogan)}</span>` : ''}
+        </button>`).join('');
+      menu.querySelectorAll('button').forEach(b => b.addEventListener('click', () => {
+        const i = parseInt(b.dataset.k, 10);
+        if (i < 0) fpResetKitForm(); else fpApplyKit(fpKits[i]);
+        menu.classList.add('hidden');
+      }));
+    }
+
+    document.getElementById('fpd-kit-toggle').addEventListener('click', () => {
+      const menu = document.getElementById('fpd-kit-menu');
+      if (menu.classList.contains('hidden')) { fpKitMenuRender(); menu.classList.remove('hidden'); }
+      else menu.classList.add('hidden');
+    });
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('#fpd-kit-menu') && !e.target.closest('#fpd-kit-toggle'))
+        document.getElementById('fpd-kit-menu')?.classList.add('hidden');
+    });
 
     // ── 参考风格：左侧面板 + 风格选择器 ──
     let fpsType = getStyle().type.id;    // 选择器当前分类 tab
@@ -425,7 +550,8 @@ export function initDesignModal() {
         } else {
           // 完整设计：基于参考风格的 4 张 mockup（盒/杯/袋/全家福）
           btn.textContent = 'Uploading…';
-          let logoFile = null, qrFile = null;
+          // 新上传的文件优先；否则沿用 kit 里保存的 logo/QR
+          let logoFile = fpKitLogoFile, qrFile = fpKitQrFile;
           if (logoInput.files[0]) logoFile = await fpUpload(logoInput.files[0]);
           const qrInput = document.getElementById('fpd-qr');
           if (qrInput.files[0]) qrFile = await fpUpload(qrInput.files[0]);
@@ -454,6 +580,7 @@ export function initDesignModal() {
         }
         if (!res.ok) throw new Error();
         const { jobId } = await res.json();
+        fpLoadKits();   // 本次输入沉淀/更新为该品牌的设计 kit
         fpCloseDesign();
         if (fpModalMode === 'hero') {
           // 首页专属：毛玻璃 + Designing 徽章 + 轮询换图（由页面钩子接管）
@@ -619,6 +746,7 @@ export function initDesignModal() {
         const me = await fetch(`${FP_API}/auth/me`, { credentials: 'include' });
         if (me.ok) await fetch(`${FP_API}/design/claim`, { method: 'POST', credentials: 'include' }).catch(() => {});
       } catch {}
+      fpLoadKits();
       try {
         const res = await fetch(`${FP_API}/design/my-designs`, { credentials: 'include' });
         if (res.ok) {
