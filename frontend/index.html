@@ -251,9 +251,9 @@
                   </a>
                   <a href="#categories" onclick="fpGoCat('bags');return false" class="group/card text-center">
                     <div class="rounded-xl overflow-hidden bg-gray-50 border border-gray-100 mb-2">
-                      <img src="assets/images/cat-bags.jpg?v=2" alt="Paper Bags" loading="lazy" class="w-full h-24 object-cover group-hover/card:scale-105 transition-transform duration-300">
+                      <img src="assets/images/cat-bags.jpg?v=2" alt="Bags" loading="lazy" class="w-full h-24 object-cover group-hover/card:scale-105 transition-transform duration-300">
                     </div>
-                    <span class="text-sm font-semibold text-gray-800 group-hover/card:text-primary-800 inline-flex items-center gap-1">Paper Bags <span aria-hidden="true" class="text-primary-700">›</span></span>
+                    <span class="text-sm font-semibold text-gray-800 group-hover/card:text-primary-800 inline-flex items-center gap-1">Bags <span aria-hidden="true" class="text-primary-700">›</span></span>
                   </a>
                   <a href="#categories" onclick="fpGoCat('bowls');return false" class="group/card text-center">
                     <div class="rounded-xl overflow-hidden bg-gray-50 border border-gray-100 mb-2">
@@ -332,7 +332,7 @@
         <div class="grid grid-cols-2 gap-1 pl-6 pb-1">
           <a href="#categories" onclick="fpGoCat('boxes')" class="px-3 py-2 text-sm text-gray-500 hover:text-primary-800 hover:bg-primary-50 rounded-lg">Takeout Boxes</a>
           <a href="#categories" onclick="fpGoCat('cups')" class="px-3 py-2 text-sm text-gray-500 hover:text-primary-800 hover:bg-primary-50 rounded-lg">Cups &amp; Lids</a>
-          <a href="#categories" onclick="fpGoCat('bags')" class="px-3 py-2 text-sm text-gray-500 hover:text-primary-800 hover:bg-primary-50 rounded-lg">Paper Bags</a>
+          <a href="#categories" onclick="fpGoCat('bags')" class="px-3 py-2 text-sm text-gray-500 hover:text-primary-800 hover:bg-primary-50 rounded-lg">Bags</a>
           <a href="#categories" onclick="fpGoCat('bowls')" class="px-3 py-2 text-sm text-gray-500 hover:text-primary-800 hover:bg-primary-50 rounded-lg">Bowls</a>
           <a href="#categories" onclick="fpGoCat('wraps')" class="px-3 py-2 text-sm text-gray-500 hover:text-primary-800 hover:bg-primary-50 rounded-lg">Wrapping Paper</a>
           <a href="#categories" onclick="fpGoCat('cutlery')" class="px-3 py-2 text-sm text-gray-500 hover:text-primary-800 hover:bg-primary-50 rounded-lg">Cutlery</a>
@@ -488,7 +488,7 @@
           <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
           </svg>
-          Paper Bags
+          Bags
         </button>
         <button data-cat="bowls" class="cat-tab inline-flex items-center gap-2 shrink-0 whitespace-nowrap snap-start px-6 py-2.5 rounded-full border border-gray-200 font-semibold text-sm text-gray-600 hover:border-primary-300 transition-colors">
           <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
@@ -763,7 +763,7 @@
         <ul class="space-y-2">
           <li><a href="products.html?cat=boxes" class="hover:text-white">Takeout Boxes</a></li>
           <li><a href="products.html?cat=cups" class="hover:text-white">Cups &amp; Lids</a></li>
-          <li><a href="products.html?cat=bags" class="hover:text-white">Paper Bags</a></li>
+          <li><a href="products.html?cat=bags" class="hover:text-white">Bags</a></li>
           <li><a href="products.html?cat=bowls" class="hover:text-white">Bowls</a></li>
         </ul>
       </div>
@@ -1377,9 +1377,14 @@
         { name:'Compostable Lids',            img:'prod-cup-lid.jpg',    price:'0.06', moq:'2,000', tag:'Economical', tagCls:'bg-gray-700' },
       ],
       bags: [
-        { name:'Kraft Paper Bag (Small)',     img:'prod-bag-sm.jpg',   price:'0.18', moq:'1,000', tag:'Economical', tagCls:'bg-gray-700' },
-        { name:'Kraft Paper Bag (Large)',     img:'prod-bag-lg.jpg',   price:'0.24', moq:'1,000', tag:'Best Seller', tagCls:'bg-accent-500' },
-        { name:'Foil-Lined Insulated Bag',    img:'prod-bag-foil.jpg', price:'0.42', moq:'1,000', tag:'New', tagCls:'bg-sky-600' },
+        { name:'Kraft Paper Bag (Small)',     img:'prod-bag-sm.jpg',       price:'0.18', moq:'1,000', tag:'Economical', tagCls:'bg-gray-700' },
+        { name:'Kraft Paper Bag (Large)',     img:'prod-bag-lg.jpg',       price:'0.24', moq:'1,000', tag:'Best Seller', tagCls:'bg-accent-500' },
+        { name:'White Paper Bag w/ Handle',   img:'prod-bag-white.jpg',    price:'0.26', moq:'1,000', tag:'', tagCls:'' },
+        { name:'Kraft Paper Bag (No Handle)', img:'prod-bag-flat.jpg',     price:'0.10', moq:'2,000', tag:'Economical', tagCls:'bg-gray-700' },
+        { name:'Reusable To-Go Bag',          img:'prod-bag-reusable.jpg', price:'0.32', moq:'1,000', tag:'Eco Pick', tagCls:'bg-primary-700' },
+        { name:'Drink Carrier Bag (1–2 Cups)',img:'prod-bag-cup2.jpg',     price:'0.09', moq:'2,000', tag:'New', tagCls:'bg-sky-600' },
+        { name:'Compostable T-Shirt Bag',     img:'prod-bag-tshirt.jpg',   price:'0.06', moq:'2,000', tag:'Economical', tagCls:'bg-gray-700' },
+        { name:'Foil-Lined Insulated Bag',    img:'prod-bag-foil.jpg',     price:'0.42', moq:'1,000', tag:'New', tagCls:'bg-sky-600' },
       ],
       bowls: [
         { name:'Salad & Grain Bowl',          img:'prod-bowl-salad.jpg', price:'0.19', moq:'1,000', tag:'Eco Pick', tagCls:'bg-primary-700' },

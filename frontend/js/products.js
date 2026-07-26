@@ -106,6 +106,41 @@ const PRODUCTS = [
     tag: 'New',         tagStyle: 'blue',   moq: '1,000',
     image: 'assets/images/prod-bag-foil.jpg?v=2',
     description: 'Keeps food warm during delivery. Foil interior with kraft exterior. Ideal for delivery platforms.' },
+  { id: 'bag-white',   category: 'bags',    name: 'White Paper Bag w/ Handle',
+    tag: '',            tagStyle: '',       moq: '1,000',
+    image: 'assets/images/prod-bag-white.jpg',
+    description: 'Clean white paper bag with twisted handles. A bright canvas that makes brand colors pop.' },
+
+  { id: 'bag-flat',    category: 'bags',    name: 'Kraft Paper Bag (No Handle)',
+    tag: 'Economical',  tagStyle: 'gray',   moq: '2,000',
+    image: 'assets/images/prod-bag-flat.jpg',
+    description: 'Flat-bottom SOS kraft bag without handles. The budget-friendly choice for counter service and quick takeout.' },
+
+  { id: 'bag-tshirt',  category: 'bags',    name: 'Compostable T-Shirt Bag',
+    tag: 'Economical',  tagStyle: 'gray',   moq: '2,000',
+    image: 'assets/images/prod-bag-tshirt.jpg',
+    description: 'Loop-handle takeout bag in compostable bio-film — the classic convenience format, made plastics-rules compliant.' },
+
+  { id: 'bag-reusable', category: 'bags',   name: 'Reusable To-Go Bag',
+    tag: 'Eco Pick',    tagStyle: 'green',  moq: '1,000',
+    image: 'assets/images/prod-bag-reusable.jpg',
+    description: 'Sturdy non-woven tote customers keep and reuse — your brand walks around town for months.' },
+
+  { id: 'bag-cup2',    category: 'bags',    name: 'Drink Carrier Bag (1–2 Cups)',
+    tag: 'New',         tagStyle: 'blue',   moq: '2,000',
+    image: 'assets/images/prod-bag-cup2.jpg',
+    description: 'Kraft carrier that holds one or two cups upright and spill-free. Perfect for delivery platforms and coffee runs.' },
+
+  { id: 'bag-bakery',  category: 'bags',    name: 'Bakery Bag',
+    tag: '',            tagStyle: '',       moq: '2,000',
+    image: 'assets/images/prod-bag-bakery.jpg',
+    description: 'Greaseproof flat bag for croissants, cookies and pastries. Fold-over top keeps baked goods fresh.' },
+
+  { id: 'bag-gift',    category: 'bags',    name: 'Gift Bag w/ Handle',
+    tag: 'New',         tagStyle: 'blue',   moq: '500',
+    image: 'assets/images/prod-bag-gift.jpg',
+    description: 'Premium thick-stock gift bag with ribbon handles for gift cards, merch and special occasions.' },
+
 
   // ── Bowls ──────────────────────────────────────────────────
   { id: 'bowl-salad',  category: 'bowls',   name: 'Salad & Grain Bowl',
@@ -195,7 +230,7 @@ export const CATEGORIES = [
   { key: 'all',     label: 'All Products' },
   { key: 'boxes',   label: 'Takeout Boxes' },
   { key: 'cups',    label: 'Cups & Lids' },
-  { key: 'bags',    label: 'Paper Bags' },
+  { key: 'bags',    label: 'Bags' },
   { key: 'bowls',   label: 'Bowls' },
   { key: 'wraps',   label: 'Wrapping Paper' },
   { key: 'cutlery', label: 'Cutlery' },
