@@ -51,6 +51,7 @@ services:
       JAVA_OPTS:          "-Xms256m -Xmx512m -XX:+UseContainerSupport"
     volumes:
       - design_data:/data/design       # uploaded logos/QRs + generated mockups
+      - ./frontend/assets/styles:/data/styles:ro   # style-template library (shared with frontend)
     expose:
       - "8080"             # only reachable from within Docker network (via Nginx)
     depends_on:

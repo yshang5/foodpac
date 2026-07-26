@@ -13,8 +13,9 @@
  *   window.fpChipBusy(on)     — toggle the chip generating animation
  */
 
-import { loginWithGoogle } from './auth.js?v=20260726f';
-import { _refreshCartBadge } from './components.js?v=20260726f';
+import { loginWithGoogle } from './auth.js?v=20260727a';
+import { _refreshCartBadge } from './components.js?v=20260727a';
+import { STYLE_LIBRARY, styleImg, getStyle, setStyle } from './styles.js?v=20260727a';
 
 const FP_CSS = `
   .fp-swatch.sel { outline: 3px solid #1b5e20; outline-offset: 2px; }
@@ -34,15 +35,36 @@ const FP_CSS = `
 const FP_HTML = `
   <!-- ══════════ DESIGN ONLINE：表单弹窗 ══════════ -->
   <div id="fp-design-modal" class="hidden fixed inset-0 bg-black/60 z-[9990] flex items-center justify-center p-4">
-    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[92vh] flex flex-col overflow-hidden">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg lg:max-w-4xl max-h-[92vh] flex flex-col overflow-hidden">
       <div class="flex items-center justify-between px-6 py-4 bg-primary-800 text-white shrink-0">
         <div>
           <p class="font-bold">✨ Design Your Packaging</p>
-          <p class="text-primary-200 text-xs mt-0.5">Free · 6 AI mockups in 1–2 minutes</p>
+          <p class="text-primary-200 text-xs mt-0.5">Free · 4 AI mockups in ~1 minute</p>
         </div>
         <button onclick="fpCloseDesign()" class="text-white/70 hover:text-white text-2xl leading-none">×</button>
       </div>
-      <form id="fp-design-form" class="px-6 py-5 space-y-4 overflow-y-auto">
+      <div class="flex-1 min-h-0 flex flex-col lg:flex-row overflow-y-auto lg:overflow-hidden">
+
+        <!-- 左侧：参考风格（全家福 + 换风格） -->
+        <aside class="lg:w-[44%] shrink-0 bg-gray-50 border-b lg:border-b-0 lg:border-r border-gray-100 px-6 py-5 lg:overflow-y-auto">
+          <p class="text-sm font-bold text-gray-800 mb-2.5">Reference style</p>
+          <img id="fps-family" src="" alt="Style reference"
+               class="w-full aspect-[3/2] object-cover rounded-xl border border-gray-200 shadow-sm bg-white">
+          <div class="flex items-center justify-between gap-3 mt-3">
+            <div class="min-w-0">
+              <p id="fps-name" class="text-sm font-bold text-gray-900 truncate"></p>
+              <p id="fps-type" class="text-xs text-gray-500 truncate"></p>
+            </div>
+            <button type="button" onclick="fpOpenStylePicker()"
+                    class="shrink-0 px-3.5 py-2 text-xs font-bold text-primary-800 bg-white border border-primary-200 hover:bg-primary-50 rounded-lg transition-colors">
+              Change Style
+            </button>
+          </div>
+          <p class="text-xs text-gray-400 mt-3 leading-relaxed">We'll repaint this packaging style with your brand name and color — box, cup, bag and the full set.</p>
+        </aside>
+
+        <!-- 右侧：表单 -->
+        <form id="fp-design-form" class="flex-1 px-6 py-5 space-y-4 lg:overflow-y-auto">
         <div>
           <label class="block text-sm font-bold text-gray-800 mb-1.5">Your brand name <span class="text-red-500">*</span></label>
           <input type="text" id="fpd-brand" required maxlength="30" placeholder="e.g. Golden Dragon Kitchen"
@@ -135,6 +157,19 @@ const FP_HTML = `
           ✨ Generate My Designs
         </button>
       </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════ 风格选择器（餐厅分类 tab → 全家福网格）══════════ -->
+  <div id="fp-style-modal" class="hidden fixed inset-0 bg-black/60 z-[9993] flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[88vh] flex flex-col overflow-hidden">
+      <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100 shrink-0">
+        <h3 class="text-lg font-bold text-gray-900">Choose a Packaging Style</h3>
+        <button onclick="fpCloseStylePicker()" class="text-gray-400 hover:text-gray-600 text-2xl leading-none">×</button>
+      </div>
+      <div id="fps-tabs" class="flex gap-2 px-6 pt-4 pb-1 overflow-x-auto no-scrollbar shrink-0"></div>
+      <div id="fps-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-4 px-6 py-5 overflow-y-auto"></div>
     </div>
   </div>
 
@@ -246,10 +281,53 @@ export function initDesignModal() {
     document.getElementById('fpd-brand').addEventListener('input', fpSyncSubmit);
     window.fpOpenDesign = (mode = 'form') => {
       fpModalMode = mode;
+      fpsRefresh();
       document.getElementById('fp-design-modal').classList.remove('hidden');
       fpSyncSubmit();
       setTimeout(() => document.getElementById('fpd-brand').focus(), 50);
     };
+
+    // ── 参考风格：左侧面板 + 风格选择器 ──
+    let fpsType = getStyle().type.id;    // 选择器当前分类 tab
+    function fpsRefresh() {
+      const cur = getStyle();
+      document.getElementById('fps-family').src = styleImg(cur.type.id, cur.style.id, 'family');
+      document.getElementById('fps-name').textContent = cur.style.label;
+      document.getElementById('fps-type').textContent = cur.type.label;
+    }
+    window.fpOpenStylePicker = () => {
+      fpsType = getStyle().type.id;
+      fpsRender();
+      document.getElementById('fp-style-modal').classList.remove('hidden');
+    };
+    window.fpCloseStylePicker = () =>
+      document.getElementById('fp-style-modal').classList.add('hidden');
+    function fpsRender() {
+      const cur = getStyle();
+      const tabs = document.getElementById('fps-tabs');
+      tabs.innerHTML = STYLE_LIBRARY.map(t => `
+        <button type="button" data-t="${t.id}" class="px-4 py-2 rounded-full text-sm font-semibold whitespace-nowrap transition-colors ${
+          t.id === fpsType ? 'bg-primary-800 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}">${t.label}</button>`).join('');
+      tabs.querySelectorAll('button').forEach(b =>
+        b.addEventListener('click', () => { fpsType = b.dataset.t; fpsRender(); }));
+      const type = STYLE_LIBRARY.find(t => t.id === fpsType);
+      const grid = document.getElementById('fps-grid');
+      grid.innerHTML = type.styles.map(s => {
+        const sel = cur.type.id === type.id && cur.style.id === s.id;
+        return `
+        <button type="button" data-s="${s.id}" class="group text-left">
+          <div class="relative rounded-xl overflow-hidden border-2 ${sel ? 'border-primary-700' : 'border-transparent group-hover:border-primary-300'} transition-colors">
+            <img src="${styleImg(type.id, s.id, 'family')}" alt="${s.label}" loading="lazy" class="w-full aspect-[3/2] object-cover">
+            ${sel ? '<span class="absolute top-2 right-2 w-6 h-6 bg-primary-700 text-white rounded-full flex items-center justify-center text-xs font-bold">✓</span>' : ''}
+          </div>
+          <p class="text-xs font-semibold text-gray-700 mt-1.5 truncate">${s.label}</p>
+        </button>`;
+      }).join('');
+      grid.querySelectorAll('button[data-s]').forEach(b =>
+        b.addEventListener('click', () => { setStyle(fpsType, b.dataset.s); fpCloseStylePicker(); }));
+    }
+    window.addEventListener('fp:style', fpsRefresh);
+    fpsRefresh();
     // More Options 折叠
     document.getElementById('fpd-more-toggle').addEventListener('click', () => {
       const more = document.getElementById('fpd-more');
@@ -334,16 +412,18 @@ export function initDesignModal() {
       }
       btn.disabled = true; btn.textContent = 'Starting…';
       try {
+        const st = getStyle();
         let res;
         if (fpModalMode === 'hero') {
-          // 首屏品牌试穿：只重绘 4 张 hero 图（快）
+          // 首屏品牌试穿：重绘当前风格的 4 张图（快）
           res = await fetch(`${FP_API}/design/hero-swap`, {
             method: 'POST', credentials: 'include',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ brandText: brand, color: fpColor })
+            body: JSON.stringify({ brandText: brand, color: fpColor,
+                                   styleType: st.type.id, styleId: st.style.id })
           });
         } else {
-          // 完整设计：6 个产品 mockup
+          // 完整设计：基于参考风格的 4 张 mockup（盒/杯/袋/全家福）
           btn.textContent = 'Uploading…';
           let logoFile = null, qrFile = null;
           if (logoInput.files[0]) logoFile = await fpUpload(logoInput.files[0]);
@@ -355,6 +435,7 @@ export function initDesignModal() {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               brandText: brand, brandColor: fpColor, logoFile,
+              styleType: st.type.id, styleId: st.style.id,
               restaurantType: document.getElementById('fpd-type').value || null,
               slogan: document.getElementById('fpd-slogan').value.trim() || null,
               address: document.getElementById('fpd-address').value.trim() || null,
@@ -380,7 +461,7 @@ export function initDesignModal() {
         } else {
           fpJobId = jobId;
           localStorage.setItem('fp_last_job', jobId);
-          document.getElementById('fp-dock-grid').insertAdjacentHTML('afterbegin', fpSkeletons(6));
+          document.getElementById('fp-dock-grid').insertAdjacentHTML('afterbegin', fpSkeletons(4));
           fpToggleDock(true);
           fpStartPolling();
         }
@@ -436,7 +517,7 @@ export function initDesignModal() {
           fpChipBusy(false);
           grid.querySelectorAll('.fp-skel').forEach(s => s.remove());
         } else {
-          st.textContent = `Generating… ${fpSeen.size}/6`;
+          st.textContent = `Generating… ${job.results.length}/4`;
         }
       } catch {}
     }

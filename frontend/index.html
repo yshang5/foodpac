@@ -18,7 +18,7 @@
   <meta name="twitter:title" content="Custom Restaurant Takeout Packaging Canada | AI Design in 5 Minutes – foodPac" />
   <meta name="twitter:description" content="Branded takeout packaging for Canadian restaurants. AI-powered design in 5 minutes, 100% compostable materials, low 1,000-unit minimums, delivered across Canada." />
   <meta name="twitter:image" content="https://foodpac.ai/assets/images/hero-box.jpg?v=2" />
-  <link rel="stylesheet" href="css/tailwind.css?v=20260726f">
+  <link rel="stylesheet" href="css/tailwind.css?v=20260727a">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
@@ -253,13 +253,16 @@
               <div class="fp-glass"></div>
             </div>
           </div>
-          <div class="absolute z-40 -bottom-5 -left-5 bg-white text-gray-900 rounded-2xl shadow-2xl border border-gray-100 px-5 py-4 flex items-center gap-3">
-            <div id="fp-hero-badge-icon" class="w-11 h-11 bg-primary-800 rounded-xl flex items-center justify-center text-white text-xl">✨</div>
-            <div>
-              <p id="fp-hero-badge-title" class="font-bold text-sm">AI Design Ready</p>
-              <p id="fp-hero-badge-sub" class="text-gray-500 text-xs">4 options in under 5 minutes</p>
+          <button id="fp-hero-badge" onclick="fpShuffleStyle()"
+                  class="absolute z-40 -bottom-5 -left-5 bg-white text-gray-900 rounded-2xl shadow-2xl border border-gray-100 hover:border-primary-300 px-5 py-4 flex items-center gap-3 text-left transition-colors disabled:cursor-default disabled:hover:border-gray-100">
+            <div id="fp-hero-badge-icon" class="w-11 h-11 bg-primary-800 rounded-xl flex items-center justify-center text-white text-xl">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg>
             </div>
-          </div>
+            <div>
+              <p id="fp-hero-badge-title" class="font-bold text-sm">Try Another Style</p>
+              <p id="fp-hero-badge-sub" class="text-gray-500 text-xs">Curated packaging styles</p>
+            </div>
+          </button>
         </div>
 
       </div>
@@ -605,18 +608,22 @@
       fpHeroTimer = setInterval(() => fpHeroPoll(jobId), 2000);
     };
 
+    const FP_SHUFFLE_SVG = '<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg>';
+
     function fpHeroBadge(designing) {
+      const badge = document.getElementById('fp-hero-badge');
       const icon = document.getElementById('fp-hero-badge-icon');
       const title = document.getElementById('fp-hero-badge-title');
       const sub = document.getElementById('fp-hero-badge-sub');
+      badge.disabled = designing;
       if (designing) {
         icon.innerHTML = '<svg class="w-6 h-6 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-90" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/></svg>';
         title.textContent = 'AI Designing…';
         sub.textContent = 'Repainting your brand on the packaging';
       } else {
-        icon.textContent = '✨';
-        title.textContent = 'AI Design Ready';
-        sub.textContent = '4 options in under 5 minutes';
+        icon.innerHTML = FP_SHUFFLE_SVG;
+        title.textContent = 'Try Another Style';
+        sub.textContent = window.__fpStyleLabel || 'Curated packaging styles';
       }
     }
 
@@ -655,13 +662,42 @@
   </script>
 
   <script type="module">
-    import { initNav, initFooter } from './js/components.js?v=20260726f';
-    import { initDesignModal } from './js/design-modal.js';
-    import { getProducts } from './js/products.js?v=20260726f';
+    import { initNav, initFooter } from './js/components.js?v=20260727a';
+    import { initDesignModal } from './js/design-modal.js?v=20260727a';
+    import { getProducts } from './js/products.js?v=20260727a';
+    import { getStyle, shuffleStyle, styleImg } from './js/styles.js?v=20260727a';
 
     initNav();
     initFooter();
     initDesignModal();
+
+    // ── Hero 风格模板：随机展示一组，四格 = 盒/杯/袋/全家福 ──
+    const FP_HERO_PARTS = { 'hero-box': 'box', 'hero-cup': 'cup', 'hero-bag': 'bag', 'hero-ai': 'family' };
+
+    function fpApplyHeroStyle(cur, fade = true) {
+      window.__fpStyleLabel = `${cur.type.label} · ${cur.style.label}`;
+      Object.entries(FP_HERO_PARTS).forEach(([cellId, part]) => {
+        const img = document.querySelector(`.fp-hero-cell[data-hero="${cellId}"] img`);
+        if (!img) return;
+        const url = styleImg(cur.type.id, cur.style.id, part);
+        const pre = new Image();
+        pre.onload = () => {
+          if (!fade) { img.src = url; return; }
+          img.style.opacity = '0';
+          setTimeout(() => { img.src = url; img.style.opacity = '1'; }, 300);
+        };
+        pre.src = url;
+      });
+      const sub = document.getElementById('fp-hero-badge-sub');
+      if (sub && !document.querySelector('.fp-hero-cell.designing')) sub.textContent = window.__fpStyleLabel;
+    }
+
+    window.fpShuffleStyle = () => {
+      if (document.querySelector('.fp-hero-cell.designing')) return;
+      shuffleStyle();   // 触发 fp:style 事件 → 下面的监听换图
+    };
+    window.addEventListener('fp:style', e => fpApplyHeroStyle(e.detail));
+    fpApplyHeroStyle(getStyle(), false);
 
     // 分类 tab 产品数据：与产品页共用 products.js（每类展示前 8 个）
     const TAG_CLS = { orange:'bg-accent-500', green:'bg-primary-700', blue:'bg-sky-600', gray:'bg-gray-700' };

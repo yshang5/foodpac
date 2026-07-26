@@ -38,8 +38,20 @@ public class DesignFormService {
     private final AiImageService aiImageService;
     private final ObjectMapper mapper = new ObjectMapper();
 
-    /** Template set used for generation; more sets can be added later. */
+    /** Template set used for legacy (no-style) generation. */
     private static final String TEMPLATE_SET = "default";
+
+    /** Style-template library, bind-mounted from frontend/assets/styles. */
+    public static final Path STYLES_DIR = Path.of(
+            System.getenv().getOrDefault("DESIGN_STYLES_DIR", "/data/styles"));
+
+    /** One generated image per part of the selected style group. */
+    private record StylePart(String part, String cellId, String label, String cartType, String size) {}
+    private static final java.util.List<StylePart> STYLE_PARTS = java.util.List.of(
+            new StylePart("box",    "hero-box", "Takeout Box", "BOX", "1024x1024"),
+            new StylePart("cup",    "hero-cup", "Paper Cup",   "CUP", "1024x1024"),
+            new StylePart("bag",    "hero-bag", "Paper Bag",   "BAG", "1024x1024"),
+            new StylePart("family", "hero-ai",  "Brand Set",   "BOX", "1536x1024"));
 
     // Two concurrent jobs; each job renders products on the shared image pool
     private final ExecutorService executor = Executors.newFixedThreadPool(2);
@@ -91,7 +103,8 @@ public class DesignFormService {
 
     public DesignJob createJob(User user, String anonToken, String brandText, String logoFile,
                                String restaurantType, String slogan, String address,
-                               String phone, String qrFile, String brandColor) {
+                               String phone, String qrFile, String brandColor,
+                               String styleType, String styleId) {
         DesignJob job = DesignJob.builder()
                 .user(user)
                 .anonToken(user == null ? anonToken : null)
@@ -99,6 +112,7 @@ public class DesignFormService {
                 .restaurantType(restaurantType).slogan(slogan)
                 .address(address).phone(phone).qrFile(qrFile)
                 .brandColor(brandColor)
+                .styleType(styleType).styleId(styleId)
                 .status(DesignJob.Status.PENDING)
                 .build();
         job = jobRepo.save(job);
@@ -110,6 +124,7 @@ public class DesignFormService {
     private void run(String jobId) {
         DesignJob job = jobRepo.findById(jobId).orElse(null);
         if (job == null) return;
+        if (job.getStyleId() != null) { runStyled(job); return; }
         try {
             job.setStatus(DesignJob.Status.RUNNING);
             jobRepo.save(job);
@@ -189,13 +204,15 @@ public class DesignFormService {
             new HeroTemplate("hero-bag", "hero-bag.jpg", "Kraft Paper Bag",   "BAG"),
             new HeroTemplate("hero-ai",  "hero-ai.jpg",  "Brand Set",         "BOX"));
 
-    public DesignJob createHeroJob(User user, String anonToken, String brandText, String color) {
+    public DesignJob createHeroJob(User user, String anonToken, String brandText, String color,
+                                   String styleType, String styleId) {
         DesignJob job = DesignJob.builder()
                 .user(user)
                 .anonToken(user == null ? anonToken : null)
                 .kind("HERO")
                 .brandText(brandText)
                 .brandColor(color)
+                .styleType(styleType).styleId(styleId)
                 .status(DesignJob.Status.PENDING)
                 .build();
         job = jobRepo.save(job);
@@ -207,6 +224,7 @@ public class DesignFormService {
     private void runHero(String jobId) {
         DesignJob job = jobRepo.findById(jobId).orElse(null);
         if (job == null) return;
+        if (job.getStyleId() != null) { runStyled(job); return; }
         try {
             job.setStatus(DesignJob.Status.RUNNING);
             jobRepo.save(job);
@@ -258,6 +276,112 @@ public class DesignFormService {
             job.setError(e.getMessage());
             jobRepo.save(job);
         }
+    }
+
+    // ── Style-template generation (box/cup/bag/family of the chosen style) ────
+
+    /**
+     * Shared pipeline for HERO and FORM jobs that carry a style reference:
+     * rebrand all four images of the selected style group. Item productIds use
+     * the hero cell ids so the homepage can swap results into its four cells.
+     */
+    private void runStyled(DesignJob job) {
+        String jobId = job.getId();
+        try {
+            job.setStatus(DesignJob.Status.RUNNING);
+            jobRepo.save(job);
+            Files.createDirectories(STORAGE_DIR);
+
+            byte[] logo = readStored(job.getLogoFile());
+            byte[] qr = readStored(job.getQrFile());
+            String prompt = buildStyledPrompt(job);
+
+            var futures = STYLE_PARTS.stream()
+                    .map(part -> java.util.concurrent.CompletableFuture.runAsync(() -> {
+                        try {
+                            byte[] template = Files.readAllBytes(
+                                    styleTemplatePath(job.getStyleType(), job.getStyleId(), part.part()));
+                            byte[] png = aiImageService.rebrand(template, logo, qr, prompt, part.size());
+                            String name = "gen-" + jobId + "-" + part.cellId() + ".png";
+                            Files.write(STORAGE_DIR.resolve(name), png);
+                            itemRepo.save(DesignJobItem.builder()
+                                    .job(job)
+                                    .productId(part.cellId())
+                                    .productLabel(brandedLabel(job.getBrandText(), part.label()))
+                                    .productType(part.cartType())
+                                    .imageUrl("/api/v1/design/files/" + name)
+                                    .build());
+                        } catch (Exception e) {
+                            log.warn("Styled generation failed for {} {}: {}",
+                                    job.getStyleId(), part.part(), e.getMessage());
+                        }
+                    }, imagePool))
+                    .toArray(java.util.concurrent.CompletableFuture[]::new);
+            java.util.concurrent.CompletableFuture.allOf(futures).join();
+
+            job.setStatus(DesignJob.Status.COMPLETED);
+            jobRepo.save(job);
+        } catch (Exception e) {
+            log.error("Styled job {} failed", jobId, e);
+            job.setStatus(DesignJob.Status.FAILED);
+            job.setError(e.getMessage());
+            jobRepo.save(job);
+        }
+    }
+
+    /** Validated path into the mounted style library; rejects traversal tokens. */
+    public static Path styleTemplatePath(String type, String id, String part) throws IOException {
+        if (type == null || id == null
+                || !type.matches("[a-z0-9-]{1,40}") || !id.matches("[a-z0-9-]{1,40}"))
+            throw new IOException("bad style reference");
+        Path p = STYLES_DIR.resolve(type).resolve(id + "-" + part + ".jpg").normalize();
+        if (!p.startsWith(STYLES_DIR) || !Files.isRegularFile(p))
+            throw new IOException("missing style template " + type + "/" + id + "-" + part);
+        return p;
+    }
+
+    /** Does the referenced style group exist in the mounted library? */
+    public boolean styleExists(String type, String id) {
+        try { styleTemplatePath(type, id, "family"); return true; }
+        catch (IOException e) { return false; }
+    }
+
+    /**
+     * The style photos are fully designed "Lunat" packaging: keep the design,
+     * swap the brand, and (when a color is chosen) shift the whole printed
+     * scheme to that hue. Optional form extras are appended in small print.
+     */
+    private String buildStyledPrompt(DesignJob job) {
+        String brand = job.getBrandText();
+        StringBuilder p = new StringBuilder();
+        p.append("The input image is a professional product photo of food packaging printed with the ")
+         .append("brand \"Lunat\". Recreate this EXACT photo — identical products, camera angle, ")
+         .append("composition, lighting, shadows, background, props, materials and textures — changing ")
+         .append("ONLY the packaging's printed artwork: replace the brand name \"Lunat\" with \"")
+         .append(brand).append("\" (same placement, same typographic style, same size), keeping every ")
+         .append("decorative pattern, motif, border and the overall layout of the printed design. ");
+        if (job.getBrandColor() != null)
+            p.append("Shift the packaging's brand color scheme — colored panels, coatings, lettering, ")
+             .append("patterns and marks — to a cohesive scheme built from ").append(job.getBrandColor())
+             .append(", using darker and lighter tints of that hue for hierarchy; natural materials ")
+             .append("(kraft paper, white paper base, wood, stone, food) and the scene background keep ")
+             .append("their original colors. ");
+        if (job.getLogoFile() != null)
+            p.append("The SECOND input image is the brand logo — print it faithfully where the main ")
+             .append("logo sits. ");
+        if (job.getSlogan() != null)
+            p.append("Add the slogan in small print near the brand name: \"")
+             .append(job.getSlogan()).append("\". ");
+        String contact = java.util.stream.Stream.of(job.getPhone(), job.getAddress())
+                .filter(s -> s != null && !s.isBlank())
+                .collect(java.util.stream.Collectors.joining(" · "));
+        if (!contact.isBlank())
+            p.append("Contact line in small print: \"").append(contact).append("\". ");
+        if (job.getQrFile() != null)
+            p.append("Also print the provided QR code image on a suitable flat area of the packaging. ");
+        p.append("Spell \"").append(brand)
+         .append("\" exactly. No other brand names, no watermarks, no new objects.");
+        return p.toString();
     }
 
     /** "Kongfu" + "Kraft Takeout Box" → "Kongfu Kraft Takeout Box" */

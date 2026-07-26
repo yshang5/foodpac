@@ -37,6 +37,10 @@ public class DesignJob {
     /** Brand color chosen in the hero teaser (hex) */
     private String brandColor;
 
+    /** Selected style template, e.g. chinese / s1-imperial; null = legacy default set */
+    private String styleType;
+    private String styleId;
+
     private String brandText;
     private String logoFile;          // stored filename of uploaded logo
     private String restaurantType;

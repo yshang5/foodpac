@@ -59,7 +59,7 @@ public class DesignFormController {
 
     public record GenerateRequest(String brandText, String logoFile, String restaurantType,
                                   String slogan, String address, String phone, String qrFile,
-                                  String brandColor) {}
+                                  String brandColor, String styleType, String styleId) {}
 
     @PostMapping("/generate")
     public ResponseEntity<?> generate(@AuthenticationPrincipal User user,
@@ -87,9 +87,12 @@ public class DesignFormController {
 
         String color = req.brandColor() != null && req.brandColor().matches("#[0-9a-fA-F]{6}")
                 ? req.brandColor().toLowerCase() : null;
+        // Style reference is optional; silently fall back to the legacy set if unknown
+        boolean styled = service.styleExists(trim(req.styleType()), trim(req.styleId()));
         DesignJob job = service.createJob(user, anonToken,
                 trim(req.brandText()), trim(req.logoFile()), trim(req.restaurantType()),
-                trim(req.slogan()), trim(req.address()), trim(req.phone()), trim(req.qrFile()), color);
+                trim(req.slogan()), trim(req.address()), trim(req.phone()), trim(req.qrFile()), color,
+                styled ? trim(req.styleType()) : null, styled ? trim(req.styleId()) : null);
         return ResponseEntity.ok(Map.of("jobId", job.getId(), "status", job.getStatus().name()));
     }
 
@@ -125,7 +128,7 @@ public class DesignFormController {
 
     // ── Homepage hero brand-swap (logo-only, cheap teaser) ────────────────────
 
-    public record HeroSwapRequest(String brandText, String color) {}
+    public record HeroSwapRequest(String brandText, String color, String styleType, String styleId) {}
 
     @PostMapping("/hero-swap")
     public ResponseEntity<?> heroSwap(@AuthenticationPrincipal User user,
@@ -151,7 +154,9 @@ public class DesignFormController {
             }
         }
 
-        DesignJob job = service.createHeroJob(user, anonToken, req.brandText().trim(), color);
+        boolean styled = service.styleExists(trim(req.styleType()), trim(req.styleId()));
+        DesignJob job = service.createHeroJob(user, anonToken, req.brandText().trim(), color,
+                styled ? trim(req.styleType()) : null, styled ? trim(req.styleId()) : null);
         return ResponseEntity.ok(Map.of("jobId", job.getId(), "status", job.getStatus().name()));
     }
 

@@ -54,12 +54,16 @@ public class AiImageService {
      * @return PNG bytes of the generated mockup
      */
     public byte[] rebrand(byte[] templateJpg, byte[] logoPng, byte[] qrPng, String prompt) {
+        return rebrand(templateJpg, logoPng, qrPng, prompt, "1024x1024");
+    }
+
+    public byte[] rebrand(byte[] templateJpg, byte[] logoPng, byte[] qrPng, String prompt, String size) {
         // Plain MultiValueMap multipart — MultipartBodyBuilder needs reactive-streams
         // on the classpath, which this servlet-only app doesn't ship.
         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
         body.add("model", imageModel);
         body.add("prompt", prompt);
-        body.add("size", "1024x1024");
+        body.add("size", size);
         body.add("quality", quality);
         body.add("n", "1");
         body.add("image[]", new NamedResource(templateJpg, "template.jpg"));
