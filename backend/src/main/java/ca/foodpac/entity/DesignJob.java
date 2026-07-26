@@ -41,6 +41,9 @@ public class DesignJob {
     private String styleType;
     private String styleId;
 
+    /** REDO jobs regenerate only this style part (box/cup/bag/family) */
+    private String redoPart;
+
     private String brandText;
     private String logoFile;          // stored filename of uploaded logo
     private String restaurantType;

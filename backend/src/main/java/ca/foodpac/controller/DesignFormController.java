@@ -168,6 +168,43 @@ public class DesignFormController {
         return ResponseEntity.ok(Map.of("jobId", job.getId(), "status", job.getStatus().name()));
     }
 
+    // ── Redesign: one different take on an existing design ────────────────────
+
+    public record RedesignRequest(String itemId) {}
+
+    @PostMapping("/redesign")
+    public ResponseEntity<?> redesign(@AuthenticationPrincipal User user,
+                                      @RequestBody RedesignRequest req,
+                                      HttpServletRequest httpReq,
+                                      HttpServletResponse httpRes) {
+        var item = itemRepo.findById(req.itemId() == null ? "" : req.itemId()).orElse(null);
+        if (item == null || item.isDeleted()) return ResponseEntity.notFound().build();
+
+        String anonToken = null;
+        if (user == null) {
+            anonToken = readCookie(httpReq);
+            if (anonToken != null && service.guestLimitReached(anonToken))
+                return ResponseEntity.status(401).body(Map.of("error", "LOGIN_REQUIRED",
+                        "message", "Sign in to keep designing."));
+            if (anonToken == null) {
+                anonToken = UUID.randomUUID().toString();
+                httpRes.addHeader("Set-Cookie", String.format(
+                        "%s=%s; Path=/; Max-Age=31536000; HttpOnly%s; SameSite=Lax",
+                        ANON_COOKIE, anonToken, cookieSecure ? "; Secure" : ""));
+            }
+        }
+
+        // The source item must belong to the requester — its inputs are copied
+        DesignJob src = item.getJob();
+        boolean owned = user != null
+                ? src.getUser() != null && src.getUser().getId().equals(user.getId())
+                : anonToken != null && anonToken.equals(src.getAnonToken());
+        if (!owned) return ResponseEntity.status(403).body(Map.of("error", "Forbidden"));
+
+        DesignJob job = service.createRedesignJob(user, anonToken, item);
+        return ResponseEntity.ok(Map.of("jobId", job.getId(), "status", job.getStatus().name()));
+    }
+
     // ── Poll job progress ─────────────────────────────────────────────────────
 
     @GetMapping("/jobs/{id}")

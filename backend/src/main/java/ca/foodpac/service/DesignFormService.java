@@ -318,6 +318,85 @@ public class DesignFormService {
         }
     }
 
+    // ── Redesign: one more, different take on a single existing design ────────
+
+    /**
+     * Clone the source item's job inputs into a REDO job that regenerates only
+     * that item's part with a "make it noticeably different" prompt. The dock
+     * shows one loading slot until the single new image lands.
+     */
+    public DesignJob createRedesignJob(User user, String anonToken, DesignJobItem srcItem) {
+        DesignJob s = srcItem.getJob();
+        String part = STYLE_PARTS.stream()
+                .filter(sp -> sp.cellId().equals(srcItem.getProductId()))
+                .map(StylePart::part).findFirst().orElse(null);
+        boolean styled = s.getStyleId() != null && part != null;
+        DesignJob job = DesignJob.builder()
+                .user(user)
+                .anonToken(user == null ? anonToken : null)
+                .kind("REDO")
+                .brandText(s.getBrandText()).brandColor(s.getBrandColor())
+                .logoFile(s.getLogoFile()).restaurantType(s.getRestaurantType())
+                .slogan(s.getSlogan()).address(s.getAddress()).phone(s.getPhone())
+                .qrFile(s.getQrFile())
+                .styleType(styled ? s.getStyleType() : null)
+                .styleId(styled ? s.getStyleId() : null)
+                .redoPart(styled ? part : null)
+                .status(DesignJob.Status.PENDING)
+                .build();
+        job = jobRepo.save(job);
+        String jobId = job.getId();
+        if (styled) {
+            executor.submit(() -> {
+                DesignJob j = jobRepo.findById(jobId).orElse(null);
+                if (j != null) runStyled(j);
+            });
+        } else {
+            String productId = srcItem.getProductId();
+            executor.submit(() -> runLegacySingle(jobId, productId));
+        }
+        return job;
+    }
+
+    /** Regenerate one product of the legacy (pre-style) template set. */
+    private void runLegacySingle(String jobId, String productId) {
+        DesignJob job = jobRepo.findById(jobId).orElse(null);
+        if (job == null) return;
+        try {
+            job.setStatus(DesignJob.Status.RUNNING);
+            jobRepo.save(job);
+            var product = MockupRenderer.PRODUCTS.stream()
+                    .filter(pr -> pr.id().equals(productId)).findFirst()
+                    .orElseThrow(() -> new IOException("unknown product " + productId));
+            byte[] logo = readStored(job.getLogoFile());
+            byte[] qr = readStored(job.getQrFile());
+            var aiSpec = brandSpecService.generate(logo, job.getBrandText(),
+                    job.getRestaurantType(), job.getSlogan());
+            final var spec = job.getBrandColor() == null ? aiSpec
+                    : new BrandSpecService.BrandSpec(job.getBrandColor(), aiSpec.secondary(),
+                            aiSpec.panelBg(), aiSpec.textColor(), aiSpec.styleName());
+            Files.createDirectories(STORAGE_DIR);
+            byte[] template = loadTemplate(product.baseImage());
+            byte[] image = aiImageService.rebrand(template, logo, qr, buildPrompt(product, spec, job));
+            String name = "gen-" + jobId + "-" + product.id() + ".png";
+            Files.write(STORAGE_DIR.resolve(name), image);
+            itemRepo.save(DesignJobItem.builder()
+                    .job(job)
+                    .productId(product.id())
+                    .productLabel(brandedLabel(job.getBrandText(), product.label()))
+                    .productType(product.cartType())
+                    .imageUrl("/api/v1/design/files/" + name)
+                    .build());
+            job.setStatus(DesignJob.Status.COMPLETED);
+            jobRepo.save(job);
+        } catch (Exception e) {
+            log.error("Legacy redesign {} failed", jobId, e);
+            job.setStatus(DesignJob.Status.FAILED);
+            job.setError(e.getMessage());
+            jobRepo.save(job);
+        }
+    }
+
     // ── Style-template generation (box/cup/bag/family of the chosen style) ────
 
     /**
@@ -335,7 +414,9 @@ public class DesignFormService {
             byte[] logo = readStored(job.getLogoFile());
             byte[] qr = readStored(job.getQrFile());
 
-            var futures = STYLE_PARTS.stream()
+            var parts = job.getRedoPart() == null ? STYLE_PARTS
+                    : STYLE_PARTS.stream().filter(sp -> sp.part().equals(job.getRedoPart())).toList();
+            var futures = parts.stream()
                     .map(part -> java.util.concurrent.CompletableFuture.runAsync(() -> {
                         try {
                             byte[] template = Files.readAllBytes(
@@ -408,13 +489,22 @@ public class DesignFormService {
 
     private String buildStyledPrompt(DesignJob job, String part) {
         String brand = job.getBrandText();
+        boolean redo = "REDO".equals(job.getKind());
         StringBuilder p = new StringBuilder();
         p.append("The input image is a professional product photo of food packaging printed with the ")
-         .append("brand \"Lunat\". Recreate this EXACT photo — identical products, camera angle, ")
-         .append("composition, lighting, shadows, background, props, materials and textures — changing ")
-         .append("ONLY the packaging's printed artwork: replace the brand name \"Lunat\" with \"")
-         .append(brand).append("\" (same placement, same typographic style, same size), keeping every ")
-         .append("decorative pattern, motif, border and the overall layout of the printed design. ");
+         .append("brand \"Lunat\". Recreate this photo — identical products, camera angle, ")
+         .append("composition, lighting, shadows, background, props, materials and textures — ");
+        if (redo)
+            p.append("but REDESIGN the packaging's printed artwork as a noticeably DIFFERENT variation ")
+             .append("in the same style family: replace the brand name \"Lunat\" with \"").append(brand)
+             .append("\" and rearrange or restyle the lettering, motifs, borders and decorative ")
+             .append("elements so the print design clearly differs from the reference while staying ")
+             .append("professional and stylistically related. ");
+        else
+            p.append("changing ONLY the packaging's printed artwork: replace the brand name \"Lunat\" ")
+             .append("with \"").append(brand)
+             .append("\" (same placement, same typographic style, same size), keeping every ")
+             .append("decorative pattern, motif, border and the overall layout of the printed design. ");
         if (job.getBrandColor() != null)
             p.append("Shift the packaging's brand color scheme — colored panels, coatings, lettering, ")
              .append("patterns and marks — to a cohesive scheme built from ").append(job.getBrandColor())

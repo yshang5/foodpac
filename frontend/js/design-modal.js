@@ -13,9 +13,9 @@
  *   window.fpChipBusy(on)     — toggle the chip generating animation
  */
 
-import { loginWithGoogle } from './auth.js?v=20260727b';
-import { _refreshCartBadge } from './components.js?v=20260727b';
-import { STYLE_LIBRARY, styleImg, getStyle, setStyle } from './styles.js?v=20260727b';
+import { loginWithGoogle } from './auth.js?v=20260727a';
+import { _refreshCartBadge } from './components.js?v=20260727a';
+import { STYLE_LIBRARY, styleImg, getStyle, setStyle } from './styles.js?v=20260727a';
 
 const FP_CSS = `
   .fp-swatch.sel { outline: 3px solid #1b5e20; outline-offset: 2px; }
@@ -655,15 +655,74 @@ export function initDesignModal() {
           <div class="relative rounded-xl overflow-hidden border border-gray-200">
             <img src="${r.imageUrl}" alt="${r.productLabel}" class="w-full aspect-[4/3] object-cover">
             <button onclick="fpDeleteItem('${r.id}')" title="Delete"
-              class="absolute top-2 right-2 w-7 h-7 bg-black/50 hover:bg-red-600 text-white rounded-full text-xs leading-none opacity-0 group-hover:opacity-100 transition-opacity">✕</button>
+              class="absolute top-2 right-2 w-7 h-7 bg-black/50 hover:bg-red-600 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M19 7l-.9 12.1A2 2 0 0116.1 21H7.9a2 2 0 01-2-1.9L5 7m3 0V5a2 2 0 012-2h4a2 2 0 012 2v2M3 7h18M10 11v6M14 11v6"/></svg>
+            </button>
           </div>
           <div class="flex items-center justify-between mt-2 gap-2">
             <p class="text-xs font-semibold text-gray-700 truncate">${r.productLabel}</p>
-            ${r.productType === 'HERO' ? '' : `<button onclick='fpOrder(${JSON.stringify(r)})'
-              class="shrink-0 text-xs font-bold text-white bg-accent-500 hover:bg-accent-600 rounded-lg px-3 py-1.5 transition-colors">Order</button>`}
+            <div class="flex items-center gap-1.5 shrink-0">
+              <button onclick="fpRedo('${r.id}')" title="Generate a different design with the same brief"
+                class="text-xs font-bold text-primary-800 border border-primary-200 hover:bg-primary-50 rounded-lg px-2.5 py-1.5 transition-colors">Redesign</button>
+              ${r.productType === 'HERO' ? '' : `<button onclick='fpOrder(${JSON.stringify(r)})'
+                class="flex items-center gap-1.5 text-xs font-bold text-white bg-accent-500 hover:bg-accent-600 rounded-lg px-2.5 py-1.5 transition-colors">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.3 4.6a1 1 0 00.9 1.4H19"/><circle cx="9" cy="20" r="1"/><circle cx="17" cy="20" r="1"/></svg>
+                Order</button>`}
+            </div>
           </div>
         </div>`;
     }
+
+    /** Redesign：同一输入再出一张不同设计；完成前在列表首位显示 loading */
+    window.fpRedo = async (id) => {
+      fpToggleDock(true);
+      const grid = document.getElementById('fp-dock-grid');
+      grid.insertAdjacentHTML('afterbegin', fpSkeletons(1));
+      const skel = grid.querySelector('.fp-skel');
+      fpChipBusy(true);
+      document.getElementById('fp-dock-status').textContent = 'Generating a new version…';
+      const stop = (msg) => {
+        skel.remove();
+        fpChipBusy(false);
+        if (msg) document.getElementById('fp-dock-status').textContent = msg;
+      };
+      try {
+        const res = await fetch(`${FP_API}/design/redesign`, {
+          method: 'POST', credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ itemId: id })
+        });
+        if (res.status === 401) {
+          stop('');
+          document.getElementById('fp-login-modal').classList.remove('hidden');
+          return;
+        }
+        if (!res.ok) throw new Error();
+        const { jobId } = await res.json();
+        const timer = setInterval(async () => {
+          try {
+            const jr = await fetch(`${FP_API}/design/jobs/${jobId}`, { credentials: 'include' });
+            if (!jr.ok) { clearInterval(timer); stop('Redesign failed — please try again.'); return; }
+            const job = await jr.json();
+            const r = job.results[0];
+            if (r) {
+              clearInterval(timer);
+              fpSeen.add(r.id);
+              skel.outerHTML = fpCard(r);
+              document.getElementById('fp-dock-count').textContent = `(${fpSeen.size})`;
+              document.getElementById('fp-chip-count').textContent = fpSeen.size;
+              document.getElementById('fp-dock-status').textContent = 'Done — pick one to order, or redo with new info.';
+              fpChipBusy(false);
+            } else if (job.status === 'FAILED') {
+              clearInterval(timer);
+              stop('Redesign failed — please try again.');
+            }
+          } catch {}
+        }, 2000);
+      } catch {
+        stop('Redesign failed — please try again.');
+      }
+    };
 
     window.fpDeleteItem = async (id) => {
       document.getElementById(`fp-item-${id}`)?.remove();
