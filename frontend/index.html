@@ -2,8 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <link rel="icon" type="image/x-icon" href="assets/images/favicon.ico">
-  <link rel="apple-touch-icon" href="assets/images/apple-touch-icon.png">
+  <link rel="icon" type="image/x-icon" href="assets/images/favicon.ico?v=2">
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Custom Restaurant Takeout Packaging Canada | AI Design in 5 Minutes – foodPac</title>
   <meta name="description" content="Branded takeout packaging for Canadian restaurants. AI-powered design in 5 minutes, 100% compostable materials, low 1,000-unit minimums, delivered across Canada." />
@@ -19,75 +18,22 @@
   <meta name="twitter:title" content="Custom Restaurant Takeout Packaging Canada | AI Design in 5 Minutes – foodPac" />
   <meta name="twitter:description" content="Branded takeout packaging for Canadian restaurants. AI-powered design in 5 minutes, 100% compostable materials, low 1,000-unit minimums, delivered across Canada." />
   <meta name="twitter:image" content="https://foodpac.ai/assets/images/hero-box.jpg?v=2" />
-  <link rel="stylesheet" href="css/tailwind.css?v=20260726b">
+  <link rel="stylesheet" href="css/tailwind.css?v=20260726">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/main.css?v=20260726">
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "Organization",
-        "@id": "https://foodpac.ai/#organization",
-        "name": "foodPac",
-        "url": "https://foodpac.ai/",
-        "logo": "https://foodpac.ai/assets/images/logo-icon-v2.png",
-        "email": "hi@foodpac.ai",
-        "description": "AI-powered custom takeout packaging for independent restaurants in Canada. Eco-friendly materials, low minimum orders from 1,000 units, nationwide delivery.",
-        "address": {
-          "@type": "PostalAddress",
-          "addressLocality": "Toronto",
-          "addressRegion": "ON",
-          "addressCountry": "CA"
-        },
-        "areaServed": { "@type": "Country", "name": "Canada" }
-      },
-      {
-        "@type": "WebSite",
-        "@id": "https://foodpac.ai/#website",
-        "url": "https://foodpac.ai/",
-        "name": "foodPac",
-        "publisher": { "@id": "https://foodpac.ai/#organization" },
-        "inLanguage": "en-CA"
-      },
-      {
-        "@type": "FAQPage",
-        "mainEntity": [
-          {
-            "@type": "Question",
-            "name": "What is the minimum order quantity?",
-            "acceptedAnswer": { "@type": "Answer", "text": "Most products start at just 1,000 units (some accessories like lids and sleeves start at 2,000). We aggregate orders from multiple restaurants, so you get bulk factory pricing without a bulk commitment." }
-          },
-          {
-            "@type": "Question",
-            "name": "How does the AI packaging design work?",
-            "acceptedAnswer": { "@type": "Answer", "text": "Upload your logo and brand colours, and our AI generates multiple professional packaging design options in under 5 minutes. You can refine them online until you're happy — no designer needed, and the design service is free." }
-          },
-          {
-            "@type": "Question",
-            "name": "How long do production and delivery take?",
-            "acceptedAnswer": { "@type": "Answer", "text": "You'll receive a quote and design mockup within 24 hours. Production typically takes 2–3 weeks, followed by delivery anywhere in Canada. We can also warehouse your stock and deliver it in batches as you need it." }
-          },
-          {
-            "@type": "Question",
-            "name": "Are your products compliant with Canada's single-use plastics rules?",
-            "acceptedAnswer": { "@type": "Answer", "text": "Yes. All foodPac products use biodegradable or compostable materials (kraft paper, PLA, CPLA) and are fully compliant with Canada's Single-use Plastics Prohibition Regulations — at no price premium over generic packaging." }
-          },
-          {
-            "@type": "Question",
-            "name": "What if I don't have a logo or brand assets yet?",
-            "acceptedAnswer": { "@type": "Answer", "text": "No problem. Tell us about your restaurant and our team will help with branding — from a simple logo to a full packaging identity — before generating your designs." }
-          }
-        ]
-      }
-    ]
-  }
-  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    /* Homepage-specific styles (new design) */
+    html { scroll-behavior: smooth; }
     .hero-gradient { background: linear-gradient(135deg, #0d3311 0%, #1b5e20 45%, #2e7d32 100%); }
+    .card-hover { transition: transform .2s ease, box-shadow .2s ease; }
+    .card-hover:hover { transform: translateY(-4px); box-shadow: 0 20px 40px rgba(0,0,0,.12); }
+    details summary::-webkit-details-marker { display: none; }
     .cat-tab.active { background: #2e7d32; color: #fff; border-color: #2e7d32; }
+    .nav-link { position: relative; }
+    .nav-link::after {
+      content: ''; position: absolute; bottom: -2px; left: 0;
+      width: 0; height: 2px; background: #f57c00; transition: width .2s ease;
+    }
+    .nav-link:hover::after { width: 100%; }
     /* 移动端分类 tab 横向滑动，隐藏滚动条 */
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     .no-scrollbar::-webkit-scrollbar { display: none; }
@@ -156,10 +102,259 @@
     .fp-hero-cell img { transition: opacity .45s ease; }
     .fp-swatch.sel { outline: 3px solid #1b5e20; outline-offset: 2px; }
   </style>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://foodpac.ai/#organization",
+      "name": "foodPac",
+      "url": "https://foodpac.ai/",
+      "logo": "https://foodpac.ai/assets/images/logo-icon.png",
+      "email": "hi@foodpac.ai",
+      "description": "AI-powered custom takeout packaging for independent restaurants in Canada. Eco-friendly materials, low minimum orders from 1,000 units, nationwide delivery.",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Toronto",
+        "addressRegion": "ON",
+        "addressCountry": "CA"
+      },
+      "areaServed": {
+        "@type": "Country",
+        "name": "Canada"
+      }
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://foodpac.ai/#website",
+      "url": "https://foodpac.ai/",
+      "name": "foodPac",
+      "publisher": {
+        "@id": "https://foodpac.ai/#organization"
+      },
+      "inLanguage": "en-CA"
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is the minimum order quantity?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Most products start at just 1,000 units (some accessories at 2,000). We aggregate orders from multiple restaurants, so you get bulk factory pricing without a bulk commitment."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How does the AI packaging design work?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Upload your logo and brand colours, and our AI generates 4 professional packaging designs in under 5 minutes. Refine them online until you're happy — no designer needed, free of charge."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How long do production and delivery take?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Quote and design mockup within 24 hours. Production typically takes 2–3 weeks, followed by delivery anywhere in Canada — or phased batch delivery from our warehouse."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Are your products compliant with Canada's single-use plastics rules?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. All foodPac products use biodegradable or compostable materials (kraft paper, PLA, CPLA), fully compliant with Canada's Single-use Plastics Prohibition Regulations — at no price premium."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What if I don't have a logo yet?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No problem. Tell us about your restaurant and our team will help with branding — from a simple logo to a full packaging identity — before generating your designs."
+          }
+        }
+      ]
+    }
+  ]
+}
+  </script>
 </head>
 <body class="font-sans text-gray-800 bg-white antialiased">
 
-  <div id="navbar"></div>
+  <!-- ── HEADER（与线上 index.html 一致的导航）──────────────── -->
+  <header class="sticky top-0 z-50">
+
+    <!-- Top info bar -->
+    <div class="bg-primary-800 text-white text-xs">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-9 flex items-center justify-between">
+        <span class="hidden sm:block text-white/75">
+          🌱 Canada's Eco-Friendly Packaging Partner — Custom branded, low MOQ, fast delivery
+        </span>
+        <div class="flex items-center gap-5 ml-auto text-white/80">
+          <a href="mailto:hi@foodpac.ai" class="flex items-center gap-1.5 hover:text-white transition-colors">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+            </svg>
+            hi@foodpac.ai
+          </a>
+          <span class="hidden md:flex items-center gap-1.5">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+            </svg>
+            Toronto, Canada
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main nav -->
+    <div class="bg-white border-b border-gray-200 shadow-sm">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-20">
+
+          <a href="index.html" class="flex items-center shrink-0">
+            <img src="assets/images/logo-horizontal-v2.png?v=9" alt="foodPac" class="h-12 w-auto">
+          </a>
+
+          <nav class="hidden md:flex items-center gap-0">
+            <div class="group">
+              <a href="#categories" class="nav-link px-5 py-7 text-[15px] font-medium transition-colors inline-flex items-center gap-1 text-gray-700 hover:text-primary-800">
+                Products
+                <svg class="w-3.5 h-3.5 transition-transform group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                </svg>
+              </a>
+              <!-- Mega dropdown：6 个分类卡 -->
+              <div class="invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-150
+                          fixed left-1/2 -translate-x-1/2 top-[116px] z-[60] w-[min(960px,94vw)]
+                          bg-white rounded-2xl shadow-2xl border border-gray-100 p-5">
+                <div class="grid grid-cols-3 lg:grid-cols-6 gap-4">
+                  <a href="#categories" onclick="fpGoCat('boxes');return false" class="group/card text-center">
+                    <div class="rounded-xl overflow-hidden bg-gray-50 border border-gray-100 mb-2">
+                      <img src="assets/images/cat-boxes.jpg?v=2" alt="Takeout Boxes" loading="lazy" class="w-full h-24 object-cover group-hover/card:scale-105 transition-transform duration-300">
+                    </div>
+                    <span class="text-sm font-semibold text-gray-800 group-hover/card:text-primary-800 inline-flex items-center gap-1">Takeout Boxes <span aria-hidden="true" class="text-primary-700">›</span></span>
+                  </a>
+                  <a href="#categories" onclick="fpGoCat('cups');return false" class="group/card text-center">
+                    <div class="rounded-xl overflow-hidden bg-gray-50 border border-gray-100 mb-2">
+                      <img src="assets/images/cat-cups.jpg?v=2" alt="Cups & Lids" loading="lazy" class="w-full h-24 object-cover group-hover/card:scale-105 transition-transform duration-300">
+                    </div>
+                    <span class="text-sm font-semibold text-gray-800 group-hover/card:text-primary-800 inline-flex items-center gap-1">Cups &amp; Lids <span aria-hidden="true" class="text-primary-700">›</span></span>
+                  </a>
+                  <a href="#categories" onclick="fpGoCat('bags');return false" class="group/card text-center">
+                    <div class="rounded-xl overflow-hidden bg-gray-50 border border-gray-100 mb-2">
+                      <img src="assets/images/cat-bags.jpg?v=2" alt="Paper Bags" loading="lazy" class="w-full h-24 object-cover group-hover/card:scale-105 transition-transform duration-300">
+                    </div>
+                    <span class="text-sm font-semibold text-gray-800 group-hover/card:text-primary-800 inline-flex items-center gap-1">Paper Bags <span aria-hidden="true" class="text-primary-700">›</span></span>
+                  </a>
+                  <a href="#categories" onclick="fpGoCat('bowls');return false" class="group/card text-center">
+                    <div class="rounded-xl overflow-hidden bg-gray-50 border border-gray-100 mb-2">
+                      <img src="assets/images/cat-bowls.jpg?v=2" alt="Bowls" loading="lazy" class="w-full h-24 object-cover group-hover/card:scale-105 transition-transform duration-300">
+                    </div>
+                    <span class="text-sm font-semibold text-gray-800 group-hover/card:text-primary-800 inline-flex items-center gap-1">Bowls <span aria-hidden="true" class="text-primary-700">›</span></span>
+                  </a>
+                  <a href="#categories" onclick="fpGoCat('wraps');return false" class="group/card text-center">
+                    <div class="rounded-xl overflow-hidden bg-gray-50 border border-gray-100 mb-2">
+                      <img src="assets/images/cat-wraps.jpg?v=2" alt="Wrapping Paper" loading="lazy" class="w-full h-24 object-cover group-hover/card:scale-105 transition-transform duration-300">
+                    </div>
+                    <span class="text-sm font-semibold text-gray-800 group-hover/card:text-primary-800 inline-flex items-center gap-1">Wrapping Paper <span aria-hidden="true" class="text-primary-700">›</span></span>
+                  </a>
+                  <a href="#categories" onclick="fpGoCat('cutlery');return false" class="group/card text-center">
+                    <div class="rounded-xl overflow-hidden bg-gray-50 border border-gray-100 mb-2">
+                      <img src="assets/images/cat-cutlery.jpg?v=2" alt="Cutlery" loading="lazy" class="w-full h-24 object-cover group-hover/card:scale-105 transition-transform duration-300">
+                    </div>
+                    <span class="text-sm font-semibold text-gray-800 group-hover/card:text-primary-800 inline-flex items-center gap-1">Cutlery <span aria-hidden="true" class="text-primary-700">›</span></span>
+                  </a>
+                </div>
+              </div>
+            </div>
+            <a href="#restaurant-types" class="nav-link px-5 py-7 text-[15px] font-medium transition-colors inline-flex items-center text-gray-700 hover:text-primary-800">Solutions</a>
+            <a href="#how-it-works" class="nav-link px-5 py-7 text-[15px] font-medium transition-colors inline-flex items-center text-gray-700 hover:text-primary-800">Why foodPac</a>
+            <a href="#ai-design" class="nav-link px-5 py-7 text-[15px] font-medium transition-colors inline-flex items-center text-gray-700 hover:text-primary-800">How It Works</a>
+            <a href="about.html" class="nav-link px-5 py-7 text-[15px] font-medium transition-colors inline-flex items-center text-gray-700 hover:text-primary-800">About</a>
+          </nav>
+
+          <div class="flex items-center gap-3">
+            <a href="contact.html"
+               class="hidden sm:inline-flex items-center gap-2 px-6 py-3 bg-accent-500 hover:bg-accent-600 text-white text-sm font-bold rounded-xl transition-all shadow-md shadow-accent-500/25 hover:shadow-lg hover:shadow-accent-500/30 hover:-translate-y-px">
+              Get a Free Quote
+            </a>
+            <a href="cart.html" title="My Cart"
+               class="relative flex items-center justify-center w-9 h-9 rounded-full text-gray-600 hover:text-primary-800 hover:bg-gray-100 transition-colors">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
+                  d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
+              </svg>
+              <span class="hidden absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] bg-accent-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center px-1 leading-none"></span>
+            </a>
+
+            <!-- Login (logged-out state; 正式版由 components.js 渲染头像/菜单) -->
+            <button title="Sign in" onclick="window.location.href='/oauth2/authorization/google'"
+              class="flex items-center justify-center w-9 h-9 rounded-full text-gray-600 hover:text-primary-800 hover:bg-gray-100 transition-colors">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
+                <circle cx="12" cy="7" r="4" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"/>
+              </svg>
+            </button>
+
+            <!-- Mobile menu toggle -->
+            <button id="menuToggle" class="md:hidden p-2 rounded-lg text-gray-600 hover:bg-gray-100 transition-colors">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile menu -->
+    <div id="mobileMenu" class="hidden md:hidden border-t border-gray-100 bg-white px-4 pb-5 pt-3 shadow-lg">
+      <div class="mb-3 pb-3 border-b border-gray-100">
+        <button onclick="window.location.href='/oauth2/authorization/google'" class="w-full flex items-center gap-3 px-4 py-3 text-[15px] font-medium text-gray-700 hover:text-primary-800 hover:bg-primary-50 rounded-lg transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
+            <circle cx="12" cy="7" r="4" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"/>
+          </svg>
+          Sign in with Google
+        </button>
+      </div>
+      <nav class="flex flex-col gap-1 mb-4">
+        <a href="#categories" class="px-4 py-3 text-[15px] font-medium text-gray-700 hover:text-primary-800 hover:bg-primary-50 rounded-lg transition-colors block">Products</a>
+        <div class="grid grid-cols-2 gap-1 pl-6 pb-1">
+          <a href="#categories" onclick="fpGoCat('boxes')" class="px-3 py-2 text-sm text-gray-500 hover:text-primary-800 hover:bg-primary-50 rounded-lg">Takeout Boxes</a>
+          <a href="#categories" onclick="fpGoCat('cups')" class="px-3 py-2 text-sm text-gray-500 hover:text-primary-800 hover:bg-primary-50 rounded-lg">Cups &amp; Lids</a>
+          <a href="#categories" onclick="fpGoCat('bags')" class="px-3 py-2 text-sm text-gray-500 hover:text-primary-800 hover:bg-primary-50 rounded-lg">Paper Bags</a>
+          <a href="#categories" onclick="fpGoCat('bowls')" class="px-3 py-2 text-sm text-gray-500 hover:text-primary-800 hover:bg-primary-50 rounded-lg">Bowls</a>
+          <a href="#categories" onclick="fpGoCat('wraps')" class="px-3 py-2 text-sm text-gray-500 hover:text-primary-800 hover:bg-primary-50 rounded-lg">Wrapping Paper</a>
+          <a href="#categories" onclick="fpGoCat('cutlery')" class="px-3 py-2 text-sm text-gray-500 hover:text-primary-800 hover:bg-primary-50 rounded-lg">Cutlery</a>
+        </div>
+        <a href="#restaurant-types" class="px-4 py-3 text-[15px] font-medium text-gray-700 hover:text-primary-800 hover:bg-primary-50 rounded-lg transition-colors block">Solutions</a>
+        <a href="#how-it-works" class="px-4 py-3 text-[15px] font-medium text-gray-700 hover:text-primary-800 hover:bg-primary-50 rounded-lg transition-colors block">Why foodPac</a>
+        <a href="#ai-design" class="px-4 py-3 text-[15px] font-medium text-gray-700 hover:text-primary-800 hover:bg-primary-50 rounded-lg transition-colors block">How It Works</a>
+        <a href="about.html" class="px-4 py-3 text-[15px] font-medium text-gray-700 hover:text-primary-800 hover:bg-primary-50 rounded-lg transition-colors block">About</a>
+        <a href="cart.html" class="px-4 py-3 text-[15px] font-medium text-gray-700 hover:text-primary-800 hover:bg-primary-50 rounded-lg transition-colors flex items-center gap-2">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
+              d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
+          </svg>
+          My Cart
+        </a>
+      </nav>
+      <a href="contact.html"
+         class="flex items-center justify-center px-6 py-3 bg-accent-500 text-white text-sm font-bold rounded-xl">
+        Get a Free Quote
+      </a>
+    </div>
+  </header>
 
   <!-- ── HERO (白色首屏) ────────────────────────────────────── -->
   <section class="bg-white overflow-hidden">
@@ -196,7 +391,7 @@
           </ul>
         </div>
 
-        <!-- Hero collage -->
+        <!-- Hero collage — 自有图片 -->
         <div class="hidden lg:block lg:col-span-6 relative">
           <div class="absolute -top-10 -right-14 w-96 h-96 bg-primary-50 rounded-full blur-3xl"></div>
           <div class="relative grid grid-cols-12 grid-rows-6 gap-4 h-[540px]">
@@ -454,12 +649,12 @@
     </div>
   </section>
 
-  <!-- ── TESTIMONIALS ──────────────────────────────────────── -->
+  <!-- ── TESTIMONIALS (占位样例 — 需替换为真实客户) ─────────── -->
   <section class="py-24 bg-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="text-center mb-12">
         <h2 class="text-4xl lg:text-5xl font-extrabold text-gray-900 tracking-tight mb-3">Loved by Restaurants Like Yours</h2>
-        <p class="text-lg text-gray-500">Real stories from independent restaurants across Canada.</p>
+        <p class="text-lg text-gray-500">Real stories from independent restaurants across Canada. <span class="text-xs text-gray-400">(预览占位内容)</span></p>
       </div>
       <div class="grid md:grid-cols-2 gap-6">
         <figure class="bg-gray-50 rounded-3xl overflow-hidden border border-gray-100 grid sm:grid-cols-5">
@@ -556,7 +751,40 @@
     </div>
   </section>
 
-  <div id="footer"></div>
+  <!-- ── FOOTER (simplified static for preview) ────────────── -->
+  <footer class="bg-primary-950 text-white/70 py-14 text-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid sm:grid-cols-2 lg:grid-cols-4 gap-10">
+      <div>
+        <p class="text-2xl font-extrabold text-white mb-3">food<span class="text-accent-500">Pac</span></p>
+        <p class="leading-relaxed">Professional takeaway packaging for independent restaurants across Canada.</p>
+      </div>
+      <div>
+        <p class="font-bold text-white mb-3">Products</p>
+        <ul class="space-y-2">
+          <li><a href="products.html?cat=boxes" class="hover:text-white">Takeout Boxes</a></li>
+          <li><a href="products.html?cat=cups" class="hover:text-white">Cups &amp; Lids</a></li>
+          <li><a href="products.html?cat=bags" class="hover:text-white">Paper Bags</a></li>
+          <li><a href="products.html?cat=bowls" class="hover:text-white">Bowls</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="font-bold text-white mb-3">Company</p>
+        <ul class="space-y-2">
+          <li><a href="about.html" class="hover:text-white">About Us</a></li>
+          <li><a href="#how-it-works" class="hover:text-white">How It Works</a></li>
+          <li><a href="contact.html" class="hover:text-white">Contact</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="font-bold text-white mb-3">Contact</p>
+        <ul class="space-y-2">
+          <li>hi@foodpac.ai</li>
+          <li>Toronto, Ontario, Canada</li>
+        </ul>
+      </div>
+    </div>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-10 pt-8 border-t border-white/10 text-xs">© 2026 foodPac. All rights reserved.</div>
+  </footer>
 
   <!-- ══════════ DESIGN ONLINE：表单弹窗 ══════════ -->
   <div id="fp-design-modal" class="hidden fixed inset-0 bg-black/60 z-[9990] flex items-center justify-center p-4">
@@ -675,7 +903,7 @@
       </div>
       <h3 class="text-xl font-bold text-gray-900 mb-2">Sign in to keep designing</h3>
       <p class="text-gray-500 text-sm mb-6">You've used your 2 free generations. Sign in with Google for unlimited designs — everything you've already created will be merged into your account.</p>
-      <button id="fp-login-google"
+      <button onclick="window.location.href='/oauth2/authorization/google'"
               class="w-full py-3 bg-primary-800 hover:bg-primary-900 text-white font-bold rounded-xl transition-colors mb-3">
         Sign in with Google
       </button>
@@ -743,18 +971,6 @@
       </form>
     </div>
   </div>
-
-  <!-- ══════════ 共享导航 / 页脚（含登录状态、购物车角标）══════════ -->
-  <script type="module">
-    import { initNav, initFooter } from './js/components.js';
-    import { loginWithGoogle } from './js/auth.js';
-
-    initNav();
-    initFooter();
-
-    // 登录提示弹窗复用统一的 Google 登录流程（保存 authRedirect 后跳转）
-    document.getElementById('fp-login-google')?.addEventListener('click', loginWithGoogle);
-  </script>
 
   <script>
     // ══════════ Design Online（表单式设计）══════════
@@ -1146,21 +1362,13 @@
   </script>
 
   <script>
-    // 分类 tab + 产品数据（价格为样例，后续可改为从 products.js / 后端读取）
+    // 分类 tab + 产品数据（价格为占位样例，正式版从 products.js / 后端读取）
     const PRODUCTS = {
       boxes: [
-        { name:'Kraft Take-Out Box',         img:'prod-box-lunat-takeout.svg', price:'0.19', moq:'1,000', tag:'Best Seller', tagCls:'bg-accent-500' },
-        { name:'Chinese Take-Out Box',       img:'prod-box-lunat-chinese.svg', price:'0.14', moq:'1,000', tag:'Eco Pick', tagCls:'bg-primary-700' },
-        { name:'Compostable Burger Box',     img:'prod-box-lunat-burger.svg',  price:'0.21', moq:'1,000', tag:'Eco Pick', tagCls:'bg-primary-700' },
-        { name:'French Fry Holder',          img:'prod-box-lunat-fry.svg',     price:'0.08', moq:'2,000', tag:'Economical', tagCls:'bg-gray-700' },
-        { name:'Hot Dog Box',                img:'prod-box-lunat-hotdog.svg',  price:'0.12', moq:'2,000', tag:'', tagCls:'' },
-        { name:'Fried Chicken Box',          img:'prod-box-lunat-chicken.svg', price:'0.25', moq:'1,000', tag:'New', tagCls:'bg-sky-600' },
-        { name:'Dessert Box w/ Clear Lid',   img:'prod-box-lunat-dessert.svg', price:'0.18', moq:'1,000', tag:'New', tagCls:'bg-sky-600' },
-        { name:'Donut Box w/ Window',        img:'prod-box-lunat-donut.svg',   price:'0.33', moq:'1,000', tag:'', tagCls:'' },
-        { name:'Kraft Corrugated Pizza Box', img:'prod-box-lunat-pizza.svg',   price:'0.46', moq:'1,000', tag:'Best Seller', tagCls:'bg-accent-500' },
-        { name:'Paper Gable Box',            img:'prod-box-lunat-gable.svg',   price:'0.31', moq:'1,000', tag:'', tagCls:'' },
-        { name:'Paper Food Tray',            img:'prod-box-lunat-tray.svg',    price:'0.06', moq:'2,000', tag:'Economical', tagCls:'bg-gray-700' },
-        { name:'Tuck-Top Bento Box',         img:'prod-box-lunat-bento.svg',   price:'0.20', moq:'1,000', tag:'', tagCls:'' },
+        { name:'Kraft Takeout Box',        img:'prod-box-kraft.jpg',  price:'0.22', moq:'1,000', tag:'Best Seller', tagCls:'bg-accent-500' },
+        { name:'Hinged-Lid Clamshell',     img:'prod-box-hinged.jpg', price:'0.26', moq:'1,000', tag:'', tagCls:'' },
+        { name:'Noodle & Rice Box',        img:'prod-box-noodle.jpg', price:'0.24', moq:'1,000', tag:'Eco Pick', tagCls:'bg-primary-700' },
+        { name:'Window Pastry Box',        img:'prod-box-window.jpg', price:'0.35', moq:'1,000', tag:'New', tagCls:'bg-sky-600' },
       ],
       cups: [
         { name:'Hot Drink Cup (8/12/16 oz)',  img:'prod-cup-hot.jpg',    price:'0.14', moq:'1,000', tag:'Best Seller', tagCls:'bg-accent-500' },
@@ -1208,13 +1416,22 @@
         </a>
       `).join('');
     }
-    // 导航下拉（components.js）→ 首页内切换分类 tab 并滚动到产品列表
+    // 导航下拉 → 首页内切换分类 tab 并滚动到产品列表
+    // （正式版 components.js 里：非首页跳转 products.html?cat=xxx）
     window.fpGoCat = (cat) => {
       const btn = document.querySelector(`.cat-tab[data-cat="${cat}"]`);
       if (btn) btn.click();
       document.getElementById('categories')?.scrollIntoView({ behavior: 'smooth' });
       document.getElementById('mobileMenu')?.classList.add('hidden');
     };
+
+    // Mobile menu toggle（与 components.js 行为一致）
+    document.getElementById('menuToggle')?.addEventListener('click', () => {
+      document.getElementById('mobileMenu')?.classList.toggle('hidden');
+    });
+    document.querySelectorAll('#mobileMenu a').forEach(a =>
+      a.addEventListener('click', () => document.getElementById('mobileMenu')?.classList.add('hidden'))
+    );
 
     document.querySelectorAll('.cat-tab').forEach(btn => {
       btn.addEventListener('click', () => {
