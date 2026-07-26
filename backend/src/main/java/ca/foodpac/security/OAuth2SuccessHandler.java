@@ -69,7 +69,8 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         // Keep Google picture in extra JSON as a backup / future option
         if (googlePicture != null && user.getExtra() == null) {
-            user.setExtra(String.format("{\"googlePicture\":\"%s\"}", googlePicture));
+            String escaped = googlePicture.replace("\\", "\\\\").replace("\"", "\\\"");
+            user.setExtra(String.format("{\"googlePicture\":\"%s\"}", escaped));
         }
 
         user = userRepository.save(user);

@@ -24,7 +24,9 @@ public class User {
     private String email;
 
     private String name;
-    private String picture;   // DiceBear avatar URL (generated on first login)
+    /** Avatar URL — Google profile picture URLs can exceed 255 chars, so TEXT */
+    @Column(columnDefinition = "TEXT")
+    private String picture;
 
     private String phone;
     private String company;
