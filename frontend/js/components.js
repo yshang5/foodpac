@@ -246,8 +246,20 @@ export async function initNav(activePage = '') {
   );
 
   // Populate auth UI
-  const user = await getCurrentUser();
+  let user = await getCurrentUser();
   _renderUserMenu(user);
+
+  // Slow-network fallback: the first /auth/me may have timed out even though
+  // the user IS logged in. Retry once after the page settles and re-render.
+  if (!user) {
+    setTimeout(async () => {
+      const retried = await getCurrentUser(true);
+      if (retried) {
+        _renderUserMenu(retried);
+        _refreshCartBadge();
+      }
+    }, 4000);
+  }
 
   if (user) {
     // Process any pending "add to cart" from before login

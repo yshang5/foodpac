@@ -26,7 +26,8 @@ export async function getCurrentUser(forceRefresh = false) {
 
   try {
     const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), 3000); // 3 s timeout
+    // 10 s: slow networks (proxied clients) regularly exceed 3 s to first byte
+    const timer = setTimeout(() => controller.abort(), 10000);
     const res = await fetch(`${API_BASE}/auth/me`, {
       credentials: 'include', // send the HttpOnly JWT cookie
       signal: controller.signal,
@@ -35,11 +36,12 @@ export async function getCurrentUser(forceRefresh = false) {
     if (res.ok) {
       _currentUser = await res.json();
     } else {
-      _currentUser = null;
+      _currentUser = null; // definitive 401 — safe to cache
     }
   } catch {
-    // backend not running yet (dev / static preview) or request timed out
-    _currentUser = null;
+    // Network failure / timeout — NOT a definitive "logged out".
+    // Don't cache, so a later call (or the nav's retry) can succeed.
+    return null;
   }
   return _currentUser;
 }
