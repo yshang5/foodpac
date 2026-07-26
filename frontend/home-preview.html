@@ -64,10 +64,11 @@
       white-space: nowrap; opacity: 0; pointer-events: none;
       transition: opacity .18s ease, transform .18s ease;
     }
-    .fp-hero-cell:hover .fp-try-btn, .fp-try-btn:hover,
-    .fp-hero-cell.designing .fp-try-btn {
+    .fp-hero-cell:hover .fp-try-btn, .fp-try-btn:hover {
       opacity: 1; pointer-events: auto; transform: translate(-50%, 0);
     }
+    /* 生成中：按钮与光点都不出现（悬浮也不出） */
+    .fp-hero-cell.designing .fp-try-btn { display: none; }
     /* 毛玻璃生成态 */
     .fp-glass {
       position: absolute; inset: 0; z-index: 15;
