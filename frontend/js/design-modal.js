@@ -13,9 +13,9 @@
  *   window.fpChipBusy(on)     — toggle the chip generating animation
  */
 
-import { loginWithGoogle } from './auth.js?v=20260727h';
-import { _refreshCartBadge } from './components.js?v=20260727h';
-import { STYLE_LIBRARY, styleImg, getStyle, setStyle } from './styles.js?v=20260727h';
+import { loginWithGoogle } from './auth.js?v=20260727i';
+import { _refreshCartBadge } from './components.js?v=20260727i';
+import { STYLE_LIBRARY, styleImg, getStyle, setStyle } from './styles.js?v=20260727i';
 
 const FP_CSS = `
   .fp-swatch.sel { outline: 3px solid #1b5e20; outline-offset: 2px; }
@@ -86,7 +86,7 @@ const FP_HTML = `
             <button type="button" data-c="#c1683c" class="fp-swatch w-8 h-8 rounded-lg" style="background:#c1683c" title="Terracotta"></button>
             <button type="button" data-c="#a13e34" class="fp-swatch w-8 h-8 rounded-lg" style="background:#a13e34" title="Brick Red"></button>
             <button type="button" data-c="#46618c" class="fp-swatch w-8 h-8 rounded-lg" style="background:#46618c" title="Porcelain Blue"></button>
-            <button type="button" data-c="#3d7368" class="fp-swatch w-8 h-8 rounded-lg" style="background:#3d7368" title="Deep Teal"></button>
+            <button type="button" data-c="#c49a2f" class="fp-swatch w-8 h-8 rounded-lg" style="background:#c49a2f" title="Mustard"></button>
             <button type="button" data-c="#8a6240" class="fp-swatch w-8 h-8 rounded-lg" style="background:#8a6240" title="Caramel"></button>
             <button type="button" data-c="#3a3a3a" class="fp-swatch w-8 h-8 rounded-lg" style="background:#3a3a3a" title="Charcoal"></button>
             <label class="fp-swatch h-8 px-3 rounded-lg cursor-pointer border border-gray-300 bg-white hover:bg-gray-50 flex items-center gap-2 relative transition-colors" title="Custom color">

@@ -1,6 +1,6 @@
-import { API_BASE } from './api.js?v=20260727h';
-import { getCurrentUser, loginWithGoogle } from './auth.js?v=20260727h';
-import { _refreshCartBadge } from './components.js?v=20260727h';
+import { API_BASE } from './api.js?v=20260727i';
+import { getCurrentUser, loginWithGoogle } from './auth.js?v=20260727i';
+import { _refreshCartBadge } from './components.js?v=20260727i';
 
 const MATERIAL_LABELS = {
   KRAFT:      'Kraft Paper',
