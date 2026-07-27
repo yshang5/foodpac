@@ -229,25 +229,25 @@
           <div class="absolute -top-10 -right-14 w-96 h-96 bg-primary-50 rounded-full blur-3xl"></div>
           <div class="relative grid grid-cols-12 grid-rows-6 gap-4 h-[540px]">
             <div class="fp-hero-cell relative col-span-7 row-span-4 rounded-3xl overflow-hidden shadow-xl border border-gray-100" data-hero="hero-box">
-              <img src="assets/images/hero-box.jpg?v=2" alt="Custom takeout boxes" class="w-full h-full object-cover">
+              <img alt="Custom takeout boxes" class="w-full h-full object-cover">
               <span class="fp-dot" onclick="fpHeroOpen()" style="left:47%; top:56%"></span>
               <button onclick="fpHeroOpen()" class="fp-try-btn px-4 py-2 bg-gray-900/85 hover:bg-gray-900 text-white text-xs font-bold rounded-full shadow-xl" style="left:47%; top:62%">✨ Try Your Brand Here</button>
               <div class="fp-glass"></div>
             </div>
             <div class="fp-hero-cell relative col-span-5 row-span-3 rounded-3xl overflow-hidden shadow-xl border border-gray-100" data-hero="hero-cup">
-              <img src="assets/images/hero-cup.jpg?v=2" alt="Custom cups" class="w-full h-full object-cover">
+              <img alt="Custom cups" class="w-full h-full object-cover">
               <span class="fp-dot" onclick="fpHeroOpen()" style="left:50%; top:55%"></span>
               <button onclick="fpHeroOpen()" class="fp-try-btn px-4 py-2 bg-gray-900/85 hover:bg-gray-900 text-white text-xs font-bold rounded-full shadow-xl" style="left:50%; top:52%">✨ Try Your Brand Here</button>
               <div class="fp-glass"></div>
             </div>
             <div class="fp-hero-cell relative col-span-5 row-span-3 rounded-3xl overflow-hidden shadow-xl border border-gray-100" data-hero="hero-bag">
-              <img src="assets/images/hero-bag.jpg?v=2" alt="Custom kraft bags" class="w-full h-full object-cover">
+              <img alt="Custom kraft bags" class="w-full h-full object-cover">
               <span class="fp-dot" onclick="fpHeroOpen()" style="left:52%; top:52%"></span>
               <button onclick="fpHeroOpen()" class="fp-try-btn px-4 py-2 bg-gray-900/85 hover:bg-gray-900 text-white text-xs font-bold rounded-full shadow-xl" style="left:52%; top:60%">✨ Try Your Brand Here</button>
               <div class="fp-glass"></div>
             </div>
             <div class="fp-hero-cell relative col-span-7 row-span-2 rounded-3xl overflow-hidden shadow-xl border border-gray-100" data-hero="hero-ai">
-              <img src="assets/images/hero-ai.jpg?v=2" alt="AI packaging design" class="w-full h-full object-cover">
+              <img alt="AI packaging design" class="w-full h-full object-cover">
               <span class="fp-dot" onclick="fpHeroOpen()" style="left:40%; top:52%"></span>
               <button onclick="fpHeroOpen()" class="fp-try-btn px-4 py-2 bg-gray-900/85 hover:bg-gray-900 text-white text-xs font-bold rounded-full shadow-xl" style="left:40%; top:64%">✨ Try Your Brand Here</button>
               <div class="fp-glass"></div>
@@ -264,6 +264,32 @@
             </div>
           </button>
         </div>
+
+        <script>
+          // 首帧前同步随机风格并直接写入 img src —— 避免旧图先显再切换的闪动。
+          // 库清单需与 js/styles.js 的 STYLE_LIBRARY 保持同步；
+          // fp_pref_type 由模块脚本按用户餐厅类型异步写入，下次刷新生效。
+          (function () {
+            var LIBS = {
+              chinese:  ['s1-imperial', 's2-pagoda', 's3-minimal', 's5-ink', 's6-pop', 's7-porcelain'],
+              fastfood: ['s1-diner', 's2-classic', 's3-kraft', 's4-mono', 's5-soda', 's6-comic']
+            };
+            var type = null;
+            try { type = localStorage.getItem('fp_pref_type'); } catch (e) {}
+            if (!LIBS[type]) {
+              var keys = Object.keys(LIBS);
+              type = keys[Math.floor(Math.random() * keys.length)];
+            }
+            var styles = LIBS[type];
+            var style = styles[Math.floor(Math.random() * styles.length)];
+            var parts = { 'hero-box': 'box', 'hero-cup': 'cup', 'hero-bag': 'bag', 'hero-ai': 'family' };
+            for (var cell in parts) {
+              var img = document.querySelector('.fp-hero-cell[data-hero="' + cell + '"] img');
+              if (img) img.src = 'assets/styles/' + type + '/' + style + '-' + parts[cell] + '.jpg';
+            }
+            try { localStorage.setItem('fp_style', JSON.stringify({ type: type, style: style })); } catch (e) {}
+          })();
+        </script>
 
       </div>
     </div>
@@ -665,7 +691,7 @@
     import { initNav, initFooter } from './js/components.js?v=20260727l';
     import { initDesignModal } from './js/design-modal.js?v=20260727l';
     import { getProducts } from './js/products.js?v=20260727l';
-    import { getStyle, setStyle, shuffleStyle, styleImg, randomStyle, randomStyleIn, styleTypeForRestaurant } from './js/styles.js?v=20260727l';
+    import { getStyle, shuffleStyle, styleImg, styleTypeForRestaurant } from './js/styles.js?v=20260727l';
 
     initNav();
     initFooter();
@@ -698,18 +724,18 @@
     };
     window.addEventListener('fp:style', e => fpApplyHeroStyle(e.detail));
 
-    // 每次刷新随机展示一组风格；用户此前填过餐厅类型 → 在对应菜系内随机
-    const fpFirst = randomStyle();
-    setStyle(fpFirst.type.id, fpFirst.style.id);
+    // 首屏内联脚本已在首帧前随机好并写入 fp_style（无闪动）——这里只同步徽章文案
+    fpApplyHeroStyle(getStyle(), false);
+    // 记录用户菜系偏好供下次刷新使用（本次不再切换，避免二次闪动）
     fetch('/api/v1/design/kits', { credentials: 'include' })
       .then(r => r.ok ? r.json() : null)
       .then(d => {
         const rt = (d?.kits || []).map(k => k.restaurantType).find(Boolean);
         const tid = styleTypeForRestaurant(rt);
-        if (tid && tid !== getStyle().type.id) {
-          const s = randomStyleIn(tid);
-          setStyle(s.type.id, s.style.id);
-        }
+        try {
+          if (tid) localStorage.setItem('fp_pref_type', tid);
+          else localStorage.removeItem('fp_pref_type');
+        } catch {}
       }).catch(() => {});
 
     // 分类 tab 产品数据：与产品页共用 products.js（每类展示前 8 个）
