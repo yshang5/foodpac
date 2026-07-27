@@ -22,6 +22,8 @@ const FP_CSS = `
   .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
   .no-scrollbar::-webkit-scrollbar { display: none; }
   #fp-dock-chip.generating .fp-chip-icon { animation: fp-chip-spin 1.1s linear infinite; }
+  .fp-genglass { background: rgba(255,255,255,.35); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+  .fp-genspin { animation: fp-chip-spin 1.1s linear infinite; }
   #fp-dock-chip.generating { animation: fp-chip-glow 1.4s ease-in-out infinite; }
   @keyframes fp-chip-spin { to { transform: rotate(360deg); } }
   @keyframes fp-chip-glow {
@@ -588,7 +590,9 @@ export function initDesignModal() {
         } else {
           fpJobId = jobId;
           localStorage.setItem('fp_last_job', jobId);
-          document.getElementById('fp-dock-grid').insertAdjacentHTML('afterbegin', fpSkeletons(4));
+          document.getElementById('fp-dock-grid').insertAdjacentHTML('afterbegin',
+            ['box', 'cup', 'bag', 'family'].map(pt =>
+              fpGenCard(styleImg(st.type.id, st.style.id, pt))).join(''));
           fpToggleDock(true);
           fpStartPolling();
         }
@@ -601,12 +605,20 @@ export function initDesignModal() {
       }
     });
 
-    function fpSkeletons(n) {
-      return Array.from({ length: n }, () => `
+    /** 生成中的占位卡：参考图打底 + 毛玻璃 + logo 转圈 Generating… */
+    function fpGenCard(imgUrl) {
+      return `
         <div class="fp-skel shrink-0 w-40 lg:w-full">
-          <div class="aspect-[4/3] rounded-xl bg-gray-100 animate-pulse"></div>
+          <div class="relative aspect-[4/3] rounded-xl overflow-hidden border border-gray-200">
+            ${imgUrl ? `<img src="${imgUrl}" alt="" class="w-full h-full object-cover">` : ''}
+            <div class="absolute inset-0 fp-genglass flex flex-col items-center justify-center gap-2">
+              <img src="assets/images/logo-icon-v2.png?v=9" alt=""
+                   class="fp-genspin w-9 h-9 rounded-full bg-white/90 object-contain p-1 shadow">
+              <span class="text-xs font-bold text-gray-700 bg-white/80 rounded-full px-3 py-1">Generating…</span>
+            </div>
+          </div>
           <div class="h-3 w-24 bg-gray-100 rounded mt-2 animate-pulse"></div>
-        </div>`).join('');
+        </div>`;
     }
 
     function fpStartPolling() {
@@ -677,7 +689,9 @@ export function initDesignModal() {
     window.fpRedo = async (id) => {
       fpToggleDock(true);
       const grid = document.getElementById('fp-dock-grid');
-      grid.insertAdjacentHTML('afterbegin', fpSkeletons(1));
+      // 原设计图作为占位背景
+      const srcImg = document.querySelector(`#fp-item-${CSS.escape(id)} img`)?.src || '';
+      grid.insertAdjacentHTML('afterbegin', fpGenCard(srcImg));
       const skel = grid.querySelector('.fp-skel');
       fpChipBusy(true);
       document.getElementById('fp-dock-status').textContent = 'Generating a new version…';
