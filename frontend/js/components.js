@@ -11,9 +11,9 @@
  *   </script>
  */
 
-import { getCurrentUser, loginWithGoogle, logout } from './auth.js?v=20260727r';
-import { avatarHtml } from './avatar.js?v=20260727r';
-import { API_BASE } from './api.js?v=20260727r';
+import { getCurrentUser, loginWithGoogle, logout } from './auth.js?v=20260727s';
+import { avatarHtml } from './avatar.js?v=20260727s';
+import { API_BASE } from './api.js?v=20260727s';
 
 const CART_PENDING_KEY = '_fp_pendingCart';
 

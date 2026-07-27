@@ -13,9 +13,9 @@
  *   window.fpChipBusy(on)     — toggle the chip generating animation
  */
 
-import { loginWithGoogle } from './auth.js?v=20260727r';
-import { _refreshCartBadge } from './components.js?v=20260727r';
-import { STYLE_LIBRARY, styleImg, getStyle, setStyle } from './styles.js?v=20260727r';
+import { loginWithGoogle } from './auth.js?v=20260727s';
+import { _refreshCartBadge } from './components.js?v=20260727s';
+import { STYLE_LIBRARY, styleImg, getStyle, setStyle } from './styles.js?v=20260727s';
 
 const FP_CSS = `
   .fp-swatch.sel { outline: 3px solid #1b5e20; outline-offset: 2px; }
@@ -674,9 +674,10 @@ export function initDesignModal() {
         job.results.forEach(r => {
           if (fpSeen.has(r.id)) return;
           fpSeen.add(r.id);
+          // 新结果保持时间倒序：优先原位替换顶部的占位卡，否则插到最前
           const skel = grid.querySelector('.fp-skel');
-          if (skel) skel.remove();
-          grid.insertAdjacentHTML('beforeend', fpCard(r));
+          if (skel) skel.outerHTML = fpCard(r);
+          else grid.insertAdjacentHTML('afterbegin', fpCard(r));
         });
         fpChipSync();
         const st = document.getElementById('fp-dock-status');
