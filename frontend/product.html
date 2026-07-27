@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Product – foodPac</title>
   <meta name="description" content="Custom branded food packaging for Canadian restaurants — free AI design, low minimums, nationwide delivery." />
-  <link rel="stylesheet" href="css/tailwind.css?v=20260727p">
+  <link rel="stylesheet" href="css/tailwind.css?v=20260727q">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/main.css">
@@ -194,6 +194,14 @@
     </div>
   </section>
 
+  <!-- ── YOU MAY ALSO LIKE（按餐厅类型凑套装推荐）─────────── -->
+  <section class="py-14 bg-gray-50 border-t border-gray-100">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-3xl font-extrabold text-gray-900 text-center mb-10">You may also like</h2>
+      <div id="p-reco" class="grid grid-cols-2 md:grid-cols-4 gap-6"></div>
+    </div>
+  </section>
+
   <div id="footer"></div>
 
   <!-- ══════════ 设计选择弹窗 ══════════ -->
@@ -319,9 +327,9 @@
   </style>
 
   <script type="module">
-    import { initNav, initFooter, _refreshCartBadge } from './js/components.js?v=20260727p';
-    import { getProducts } from './js/products.js?v=20260727p';
-    import { initDesignModal } from './js/design-modal.js?v=20260727p';
+    import { initNav, initFooter, _refreshCartBadge } from './js/components.js?v=20260727q';
+    import { getProducts } from './js/products.js?v=20260727q';
+    import { initDesignModal } from './js/design-modal.js?v=20260727q';
 
     initNav('products');
     initFooter();
@@ -373,6 +381,41 @@
     document.getElementById('p-specs').innerHTML = Object.entries(specs).map(([k, v]) => `
       <tr><td class="px-5 py-3.5 font-semibold text-gray-700 bg-gray-50 w-1/3">${k}</td>
           <td class="px-5 py-3.5 text-gray-600">${v}</td></tr>`).join('');
+
+    // ── You may also like：按餐厅类型凑套装（同菜系优先、跨品类、每品类≤2、共8个）──
+    (function renderReco() {
+      const cuis = p.cuisines || [];
+      const score = (x) => {
+        const xc = x.cuisines || [];
+        let s = 0;
+        if (cuis.length && xc.some(c => cuis.includes(c))) s += 10;   // 同餐厅类型
+        if (!xc.length) s += 4;                                       // 通用品兜底
+        if (x.category !== p.category) s += 3;                        // 跨品类凑套装
+        if (x.tag === 'Best Seller') s += 2;
+        return s;
+      };
+      const sorted = all.filter(x => x.id !== p.id)
+        .map(x => [score(x), x]).sort((a, b) => b[0] - a[0]);
+      const picked = [], catCount = {};
+      for (const [s, x] of sorted) {
+        if (s <= 0) continue;
+        if ((catCount[x.category] || 0) >= 2) continue;
+        picked.push(x);
+        catCount[x.category] = (catCount[x.category] || 0) + 1;
+        if (picked.length >= 8) break;
+      }
+      document.getElementById('p-reco').innerHTML = picked.map(x => `
+        <a href="product.html?id=${x.id}" class="group block bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden card-hover">
+          <div class="aspect-square bg-gray-50 overflow-hidden">
+            <img src="${x.image}" alt="${x.name}" loading="lazy"
+                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+          </div>
+          <div class="p-4">
+            <h3 class="font-bold text-gray-900 text-sm leading-snug mb-1.5 group-hover:text-primary-800 transition-colors">${x.name}</h3>
+            <p class="text-xs text-gray-500">From <span class="font-extrabold text-gray-900">$${x.price}</span> + Shipping&nbsp;&nbsp;<span class="text-gray-300">|</span>&nbsp;&nbsp;MOQ: ${x.moq}</p>
+          </div>
+        </a>`).join('');
+    })();
 
     // 悬浮条：产品信息填充
     document.getElementById('psb-img').src = p.image;
