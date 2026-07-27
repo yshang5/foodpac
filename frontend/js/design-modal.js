@@ -13,9 +13,9 @@
  *   window.fpChipBusy(on)     — toggle the chip generating animation
  */
 
-import { loginWithGoogle } from './auth.js?v=20260727j';
-import { _refreshCartBadge } from './components.js?v=20260727j';
-import { STYLE_LIBRARY, styleImg, getStyle, setStyle } from './styles.js?v=20260727j';
+import { loginWithGoogle } from './auth.js?v=20260727k';
+import { _refreshCartBadge } from './components.js?v=20260727k';
+import { STYLE_LIBRARY, styleImg, getStyle, setStyle } from './styles.js?v=20260727k';
 
 const FP_CSS = `
   .fp-swatch.sel { outline: 3px solid #1b5e20; outline-offset: 2px; }
@@ -209,14 +209,14 @@ const FP_HTML = `
         inset-x-0 bottom-0 rounded-t-2xl max-h-[45vh]
         lg:inset-x-auto lg:right-5 lg:top-32 lg:bottom-8 lg:w-96 lg:rounded-2xl lg:max-h-none
         flex flex-col overflow-hidden">
-    <div class="flex items-center justify-between px-5 py-3.5 bg-primary-800 text-white shrink-0">
-      <div>
-        <p class="font-bold text-sm">Your Designs <span id="fp-dock-count" class="text-primary-200 font-normal"></span></p>
-        <p id="fp-dock-status" class="text-primary-200 text-xs mt-0.5">Generating…</p>
+    <div class="flex items-center justify-between gap-3 px-5 py-3.5 bg-primary-800 text-white shrink-0">
+      <div class="min-w-0 flex-1">
+        <p class="font-bold text-sm truncate">Your Designs <span id="fp-dock-count" class="text-primary-200 font-normal"></span></p>
+        <p id="fp-dock-status" class="text-primary-200 text-xs mt-0.5 truncate">Generating…</p>
       </div>
-      <div class="flex items-center gap-2">
+      <div class="flex items-center gap-2 shrink-0">
         <button onclick="fpOpenDesign()"
-          class="px-3 py-1.5 bg-accent-500 hover:bg-accent-600 text-white text-xs font-bold rounded-lg transition-colors">+ New Design</button>
+          class="px-3 py-1.5 bg-accent-500 hover:bg-accent-600 text-white text-xs font-bold rounded-lg transition-colors whitespace-nowrap">+ New Design</button>
         <button onclick="fpToggleDock(false)" title="Minimize" class="text-white/70 hover:text-white text-2xl leading-none px-1.5">−</button>
       </div>
     </div>
@@ -667,7 +667,7 @@ export function initDesignModal() {
         document.getElementById('fp-chip-count').textContent = fpSeen.size;
         const st = document.getElementById('fp-dock-status');
         if (job.status === 'COMPLETED') {
-          st.textContent = 'Done — pick one to order, or redo with new info.';
+          st.textContent = 'Done — pick one to order.';
           clearInterval(fpPollTimer);
           fpChipBusy(false);
           grid.querySelectorAll('.fp-skel').forEach(s => s.remove());
@@ -748,7 +748,7 @@ export function initDesignModal() {
               skel.outerHTML = fpCard(r);
               document.getElementById('fp-dock-count').textContent = `(${fpSeen.size})`;
               document.getElementById('fp-chip-count').textContent = fpSeen.size;
-              document.getElementById('fp-dock-status').textContent = 'Done — pick one to order, or redo with new info.';
+              document.getElementById('fp-dock-status').textContent = 'Done — pick one to order.';
               fpChipBusy(false);
               window.dispatchEvent(new CustomEvent('fp:redo-done', { detail: r }));
             } else if (job.status === 'FAILED') {
