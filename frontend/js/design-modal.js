@@ -13,9 +13,9 @@
  *   window.fpChipBusy(on)     — toggle the chip generating animation
  */
 
-import { loginWithGoogle } from './auth.js?v=20260728a';
-import { _refreshCartBadge } from './components.js?v=20260728a';
-import { STYLE_LIBRARY, styleImg, getStyle, setStyle } from './styles.js?v=20260728a';
+import { loginWithGoogle } from './auth.js?v=20260728b';
+import { _refreshCartBadge } from './components.js?v=20260728b';
+import { STYLE_LIBRARY, styleImg, styleThumb, getStyle, setStyle } from './styles.js?v=20260728b';
 
 const FP_CSS = `
   .fp-swatch.sel { outline: 3px solid #1b5e20; outline-offset: 2px; }
@@ -467,7 +467,7 @@ export function initDesignModal() {
         return `
         <button type="button" data-s="${s.id}" class="group text-left">
           <div class="relative aspect-[3/2] bg-gray-100 animate-pulse rounded-xl overflow-hidden border-2 ${sel ? 'border-primary-700' : 'border-transparent group-hover:border-primary-300'} transition-colors">
-            <img src="${styleImg(type.id, s.id, 'family')}" alt="${s.label}" loading="lazy"
+            <img src="${styleThumb(type.id, s.id)}" alt="${s.label}" loading="lazy"
                  class="w-full h-full object-cover opacity-0 transition-opacity duration-300"
                  onload="this.classList.remove('opacity-0');this.parentElement.classList.remove('animate-pulse')">
             ${sel ? '<span class="absolute top-2 right-2 w-6 h-6 bg-primary-700 text-white rounded-full flex items-center justify-center text-xs font-bold">✓</span>' : ''}

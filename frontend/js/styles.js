@@ -190,6 +190,11 @@ export function styleImg(typeId, styleId, part) {
   return `assets/styles/${typeId}/${styleId}-${part}.jpg?${STYLE_VER}`;
 }
 
+/** 480px family thumbnail — use in grids/pickers; full-size for hero/reference. */
+export function styleThumb(typeId, styleId) {
+  return `assets/styles/${typeId}/${styleId}-family-thumb.jpg?${STYLE_VER}`;
+}
+
 export function findStyle(typeId, styleId) {
   const type = STYLE_LIBRARY.find(t => t.id === typeId);
   const style = type?.styles.find(s => s.id === styleId);

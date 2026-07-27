@@ -8,7 +8,7 @@
   <title>Restaurant Packaging Solutions – foodPac</title>
   <meta name="description" content="Complete branded takeout packaging solutions by restaurant type — curated design styles, matched product sets, AI-generated brand demos, delivered across Canada." />
   <link rel="canonical" href="https://foodpac.ai/solution.html" />
-  <link rel="stylesheet" href="css/tailwind.css?v=20260728a">
+  <link rel="stylesheet" href="css/tailwind.css?v=20260728b">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/main.css">
@@ -65,10 +65,10 @@
   <div id="footer"></div>
 
   <script type="module">
-    import { initNav, initFooter } from './js/components.js?v=20260728a';
-    import { getProducts } from './js/products.js?v=20260728a';
-    import { initDesignModal } from './js/design-modal.js?v=20260728a';
-    import { STYLE_LIBRARY, styleImg, setStyle, getStyle } from './js/styles.js?v=20260728a';
+    import { initNav, initFooter } from './js/components.js?v=20260728b';
+    import { getProducts } from './js/products.js?v=20260728b';
+    import { initDesignModal } from './js/design-modal.js?v=20260728b';
+    import { STYLE_LIBRARY, styleImg, styleThumb, setStyle, getStyle } from './js/styles.js?v=20260728b';
 
     initNav('solutions');
     initFooter();
@@ -117,9 +117,12 @@
       `Every box, cup and bag a ${lib.label.toLowerCase()} restaurant needs — pick a style, enter your brand once, and we'll generate your complete packaging set in minutes.`;
     const deco = lib.styles.slice(0, 4);
     document.getElementById('sol-deco').innerHTML = `
-      <div class="grid grid-cols-2 gap-2">${deco.map((s, i) => `
-        <img src="${styleImg(lib.id, s.id, i === 0 ? 'family' : ['box','cup','bag'][i-1])}" alt=""
-             loading="lazy" class="w-full aspect-square object-cover rounded-xl border border-white/25 shadow-lg">`).join('')}
+      <div class="grid grid-cols-2 gap-2">${deco.map((s) => `
+        <div class="aspect-square rounded-xl overflow-hidden border border-white/25 shadow-lg bg-white/10 animate-pulse">
+          <img src="${styleThumb(lib.id, s.id)}" alt="" loading="lazy"
+               class="w-full h-full object-cover opacity-0 transition-opacity duration-300"
+               onload="this.classList.remove(&quot;opacity-0&quot;);this.parentElement.classList.remove(&quot;animate-pulse&quot;)">
+        </div>`).join('')}
       </div>`;
 
     // ── Styles 选择行 ──
@@ -128,9 +131,10 @@
     function renderStyles() {
       document.getElementById('sol-style-grid').innerHTML = lib.styles.map(s => `
         <button type="button" data-s="${s.id}" class="sol-style group text-left">
-          <div class="relative aspect-[3/2] bg-gray-100 rounded-xl overflow-hidden border-2 ${s.id === solStyle ? 'border-primary-700' : 'border-transparent group-hover:border-primary-300'} transition-colors">
-            <img src="${styleImg(lib.id, s.id, 'family')}" alt="${s.label} packaging style" loading="lazy"
-                 class="w-full h-full object-cover">
+          <div class="relative aspect-[3/2] bg-gray-100 animate-pulse rounded-xl overflow-hidden border-2 ${s.id === solStyle ? 'border-primary-700' : 'border-transparent group-hover:border-primary-300'} transition-colors">
+            <img src="${styleThumb(lib.id, s.id)}" alt="${s.label} packaging style" loading="lazy"
+                 class="w-full h-full object-cover opacity-0 transition-opacity duration-300"
+                 onload="this.classList.remove(&quot;opacity-0&quot;);this.parentElement.classList.remove(&quot;animate-pulse&quot;)">
             ${s.id === solStyle ? '<span class="absolute top-2 right-2 w-6 h-6 bg-primary-700 text-white rounded-full flex items-center justify-center text-xs font-bold">✓</span>' : ''}
           </div>
           <p class="text-sm font-bold text-gray-800 mt-2 truncate">${s.label}</p>
@@ -155,8 +159,10 @@
       const item = solItems[base];
       return `
         <div class="sol-card bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden card-hover ${item ? 'cursor-pointer' : ''}" data-base="${base}">
-          <div class="relative aspect-square bg-gray-50 overflow-hidden">
-            <img src="${item ? item.imageUrl : x.image}" alt="${x.name}" loading="lazy" class="w-full h-full object-cover">
+          <div class="relative aspect-square bg-gray-100 animate-pulse overflow-hidden">
+            <img src="${item ? item.imageUrl : x.image}" alt="${x.name}" loading="lazy"
+                 class="w-full h-full object-cover opacity-0 transition-opacity duration-300"
+                 onload="this.classList.remove(&quot;opacity-0&quot;);this.parentElement.classList.remove(&quot;animate-pulse&quot;)">
             <div class="sol-glass hidden absolute inset-0 fp-genglass flex-col items-center justify-center gap-2">
               <img src="assets/images/logo-icon-v2.png?v=9" alt="" class="fp-genspin w-8 h-8 rounded-full bg-white/90 object-contain p-0.5 shadow">
               <span class="text-xs font-bold text-gray-700 bg-white/80 rounded-full px-3 py-1">Generating…</span>
