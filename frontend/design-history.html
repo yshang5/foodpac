@@ -7,7 +7,7 @@
   <link rel="apple-touch-icon" href="assets/images/apple-touch-icon.png">
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>My Design History – foodPac</title>
-  <link rel="stylesheet" href="css/tailwind.css?v=20260727f">
+  <link rel="stylesheet" href="css/tailwind.css?v=20260727l">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/main.css">
@@ -23,8 +23,8 @@
       <h1 class="text-4xl lg:text-5xl font-extrabold mb-4">My Design History</h1>
       <p class="text-white/75 text-lg max-w-2xl">Every AI design you've generated — pick up where you left off, or order straight away.</p>
     </div>
-    <!-- 最近 4 张生成图作为装饰 -->
-    <div id="dh-deco" class="hidden md:flex absolute right-8 lg:right-20 top-1/2 -translate-y-1/2 gap-3 z-0"></div>
+    <!-- 最近 4 张生成图作为装饰（与首页首屏同款 collage 网格） -->
+    <div id="dh-deco" class="hidden md:block absolute right-6 lg:right-16 top-1/2 -translate-y-1/2 z-0 w-72 lg:w-80"></div>
   </section>
 
   <!-- ── CONTENT ───────────────────────────────────────────── -->
@@ -89,10 +89,10 @@
 
 
   <script type="module">
-    import { initNav, initFooter } from './js/components.js?v=20260727f';
-    import { getCurrentUser, loginWithGoogle } from './js/auth.js?v=20260727f';
-    import { API_BASE } from './js/api.js?v=20260727f';
-    import { initDesignWidget } from './js/design-widget.js?v=20260727f';
+    import { initNav, initFooter } from './js/components.js?v=20260727l';
+    import { getCurrentUser, loginWithGoogle } from './js/auth.js?v=20260727l';
+    import { API_BASE } from './js/api.js?v=20260727l';
+    import { initDesignWidget } from './js/design-widget.js?v=20260727l';
 
     initNav();
     initFooter();
@@ -180,17 +180,21 @@
       $('dh-grid').innerHTML = dhView.map((r, i) => card(r, i)).join('');
     }
 
-    // ── Banner 装饰：最近 4 张生成图（小尺寸，错落两列）──
+    // ── Banner 装饰：最近 4 张生成图，首页首屏同款 collage（大/小/小/宽）──
     function renderDeco() {
-      const four = allItems.slice(0, 4);
+      const recent = allItems.slice(0, 4);
       const d = $('dh-deco');
-      if (four.length < 2) { d.innerHTML = ''; return; }
-      const im = (r, extra) => `
-        <img src="${r.imageUrl}" alt="" loading="lazy"
-             class="w-20 h-20 lg:w-24 lg:h-24 object-cover rounded-xl border-2 border-white/25 shadow-lg ${extra}">`;
+      if (recent.length < 2) { d.innerHTML = ''; return; }
+      const four = [0, 1, 2, 3].map(i => recent[i % recent.length]);
+      const CELLS = ['col-span-7 row-span-4', 'col-span-5 row-span-3',
+                     'col-span-5 row-span-3', 'col-span-7 row-span-2'];
       d.innerHTML = `
-        <div class="flex flex-col gap-3">${four.slice(0, 2).map(r => im(r, '-rotate-2')).join('')}</div>
-        <div class="flex flex-col gap-3 translate-y-5">${four.slice(2, 4).map(r => im(r, 'rotate-2')).join('')}</div>`;
+        <div class="grid grid-cols-12 grid-rows-6 gap-2 h-36 lg:h-44">${
+          CELLS.map((c, i) => `
+          <div class="${c} rounded-lg overflow-hidden border border-white/25 shadow-lg">
+            <img src="${four[i].imageUrl}" alt="" loading="lazy" class="w-full h-full object-cover">
+          </div>`).join('')}
+        </div>`;
     }
 
     // ── 图片放大浏览（前后箭头 / 键盘 / 点击背景关闭）──
