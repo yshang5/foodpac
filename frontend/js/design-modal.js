@@ -13,9 +13,9 @@
  *   window.fpChipBusy(on)     — toggle the chip generating animation
  */
 
-import { loginWithGoogle } from './auth.js?v=20260727a';
-import { _refreshCartBadge } from './components.js?v=20260727a';
-import { STYLE_LIBRARY, styleImg, getStyle, setStyle } from './styles.js?v=20260727a';
+import { loginWithGoogle } from './auth.js?v=20260727f';
+import { _refreshCartBadge } from './components.js?v=20260727f';
+import { STYLE_LIBRARY, styleImg, getStyle, setStyle } from './styles.js?v=20260727f';
 
 const FP_CSS = `
   .fp-swatch.sel { outline: 3px solid #1b5e20; outline-offset: 2px; }
@@ -81,16 +81,18 @@ const FP_HTML = `
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-2">Brand color</label>
-          <div class="flex items-center gap-3" id="fpd-swatches">
-            <button type="button" data-c="#2e7d32" class="fp-swatch sel w-9 h-9 rounded-lg" style="background:#2e7d32" title="Green (default)"></button>
-            <button type="button" data-c="#f57c00" class="fp-swatch w-9 h-9 rounded-lg" style="background:#f57c00" title="Orange"></button>
-            <button type="button" data-c="#c62828" class="fp-swatch w-9 h-9 rounded-lg" style="background:#c62828" title="Red"></button>
-            <button type="button" data-c="#1565c0" class="fp-swatch w-9 h-9 rounded-lg" style="background:#1565c0" title="Blue"></button>
-            <button type="button" data-c="#212121" class="fp-swatch w-9 h-9 rounded-lg" style="background:#212121" title="Black"></button>
-            <label class="fp-swatch h-9 px-3 rounded-lg cursor-pointer border border-gray-300 bg-white hover:bg-gray-50 flex items-center gap-2 relative transition-colors" title="Custom color">
-              <span id="fpd-custom-view" class="w-4 h-4 rounded border border-gray-200" style="background:#2e7d32"></span>
+          <div class="flex items-center flex-wrap gap-2.5" id="fpd-swatches">
+            <button type="button" data-c="#4a7c59" class="fp-swatch sel w-8 h-8 rounded-lg" style="background:#4a7c59" title="Forest (default)"></button>
+            <button type="button" data-c="#c1683c" class="fp-swatch w-8 h-8 rounded-lg" style="background:#c1683c" title="Terracotta"></button>
+            <button type="button" data-c="#a13e34" class="fp-swatch w-8 h-8 rounded-lg" style="background:#a13e34" title="Brick Red"></button>
+            <button type="button" data-c="#46618c" class="fp-swatch w-8 h-8 rounded-lg" style="background:#46618c" title="Porcelain Blue"></button>
+            <button type="button" data-c="#3d7368" class="fp-swatch w-8 h-8 rounded-lg" style="background:#3d7368" title="Deep Teal"></button>
+            <button type="button" data-c="#8a6240" class="fp-swatch w-8 h-8 rounded-lg" style="background:#8a6240" title="Caramel"></button>
+            <button type="button" data-c="#3a3a3a" class="fp-swatch w-8 h-8 rounded-lg" style="background:#3a3a3a" title="Charcoal"></button>
+            <label class="fp-swatch h-8 px-3 rounded-lg cursor-pointer border border-gray-300 bg-white hover:bg-gray-50 flex items-center gap-2 relative transition-colors" title="Custom color">
+              <span id="fpd-custom-view" class="w-4 h-4 rounded border border-gray-200" style="background:#4a7c59"></span>
               <span class="text-xs font-semibold text-gray-600">Custom</span>
-              <input type="color" id="fpd-custom" value="#2e7d32" class="absolute inset-0 opacity-0 cursor-pointer">
+              <input type="color" id="fpd-custom" value="#4a7c59" class="absolute inset-0 opacity-0 cursor-pointer">
             </label>
           </div>
         </div>
@@ -306,7 +308,7 @@ export function initDesignModal() {
 
     const fpEsc = (s) => String(s ?? '').replace(/[&<>"']/g,
       c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
-    const fpHex = (c) => /^#[0-9a-fA-F]{6}$/.test(c || '') ? c : '#2e7d32';
+    const fpHex = (c) => /^#[0-9a-fA-F]{6}$/.test(c || '') ? c : '#4a7c59';
 
     async function fpLoadKits() {
       try {
@@ -380,7 +382,7 @@ export function initDesignModal() {
       document.getElementById('fpd-logo').value = '';
       document.getElementById('fpd-qr').value = '';
       fpKitLogoFile = fpKitQrFile = null;
-      fpSelectSwatchFor('#2e7d32');
+      fpSelectSwatchFor('#4a7c59');
       fpSetFilePreview('fpd-logo-label', 'fpd-logo-preview', null, '', 'Upload your logo (PNG / JPG, max 5MB)');
       fpSetFilePreview('fpd-qr-label', 'fpd-qr-preview', null, '', 'Upload the QR customers scan to order');
       fpSyncSubmit();
@@ -465,7 +467,7 @@ export function initDesignModal() {
       document.getElementById('fpd-more-chevron').style.transform = open ? '' : 'rotate(180deg)';
     });
     // 颜色选择
-    let fpColor = '#2e7d32';
+    let fpColor = '#4a7c59';
     document.querySelectorAll('#fpd-swatches .fp-swatch[data-c]').forEach(b => {
       b.addEventListener('click', () => {
         document.querySelectorAll('#fpd-swatches .fp-swatch').forEach(s => s.classList.remove('sel'));
