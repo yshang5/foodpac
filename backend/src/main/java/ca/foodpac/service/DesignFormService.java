@@ -463,11 +463,13 @@ public class DesignFormService {
                     + "No other brand names, no watermarks, nothing added to or removed from the scene.");
 
             byte[] png = aiImageService.rebrand(template, ref, null, prompt);
-            String name = "gen-" + jobId + "-apply.png";
+            // productId = 产品图标识，产品页据此恢复"上次生成的图2"（与 bulk 一致）
+            String base = productImage.replaceAll("\\.(jpg|png)$", "");
+            String name = "gen-" + jobId + "-" + base + ".png";
             Files.write(STORAGE_DIR.resolve(name), png);
             itemRepo.save(DesignJobItem.builder()
                     .job(job)
-                    .productId("apply")
+                    .productId(base)
                     .productLabel(brandedLabel(brand, productLabel))
                     .productType(cartType)
                     .imageUrl("/api/v1/design/files/" + name)

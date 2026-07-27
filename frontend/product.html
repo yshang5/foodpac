@@ -630,6 +630,22 @@
     document.getElementById('pv-thumb-0').addEventListener('click', () => pvShow(0));
     document.getElementById('pv-thumb-1').addEventListener('click', () => pvShow(1));
 
+    // 恢复上次为本产品生成的品牌图（apply / solution 批量的最新结果；重新生成会覆盖）
+    (async () => {
+      try {
+        const res = await fetch(`${FP_API}/design/my-designs`, { credentials: 'include' });
+        if (!res.ok) return;
+        const { items } = await res.json();
+        const base = p.image.split('/').pop().replace(/\.(jpg|png)$/, '');
+        const mine = items.find(i => i.productId === base);   // 接口按时间倒序 → 第一个命中即最新
+        if (mine && !pvImages[1]) {
+          pvImages[1] = mine.imageUrl;
+          document.getElementById('pv-t1').src = mine.imageUrl;
+          document.getElementById('pv-thumb-1').classList.remove('hidden');
+        }
+      } catch {}
+    })();
+
     async function pvApply(d) {
       const glass = document.getElementById('pv-glass');
       document.getElementById('pvg-src').src = p.image;
