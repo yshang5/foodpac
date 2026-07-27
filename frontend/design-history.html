@@ -7,7 +7,7 @@
   <link rel="apple-touch-icon" href="assets/images/apple-touch-icon.png">
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>My Design History – foodPac</title>
-  <link rel="stylesheet" href="css/tailwind.css?v=20260727i">
+  <link rel="stylesheet" href="css/tailwind.css?v=20260727j">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/main.css">
@@ -74,10 +74,10 @@
 
 
   <script type="module">
-    import { initNav, initFooter } from './js/components.js?v=20260727i';
-    import { getCurrentUser, loginWithGoogle } from './js/auth.js?v=20260727i';
-    import { API_BASE } from './js/api.js?v=20260727i';
-    import { initDesignWidget } from './js/design-widget.js?v=20260727i';
+    import { initNav, initFooter } from './js/components.js?v=20260727j';
+    import { getCurrentUser, loginWithGoogle } from './js/auth.js?v=20260727j';
+    import { API_BASE } from './js/api.js?v=20260727j';
+    import { initDesignWidget } from './js/design-widget.js?v=20260727j';
 
     initNav();
     initFooter();
@@ -186,14 +186,46 @@
     }
     load();
 
+    // ── Redesign 占位卡：原图 + 毛玻璃 + logo 转圈（与 My Designs 面板一致）──
+    function dhGenCard(imgSrc) {
+      return `
+        <div class="dh-gen bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+          <div class="relative aspect-[4/3] bg-gray-50 overflow-hidden">
+            ${imgSrc ? `<img src="${imgSrc}" alt="" class="w-full h-full object-cover">` : ''}
+            <div class="absolute inset-0 fp-genglass flex flex-col items-center justify-center gap-2">
+              <img src="assets/images/logo-icon-v2.png?v=9" alt=""
+                   class="fp-genspin w-10 h-10 rounded-full bg-white/90 object-contain p-1 shadow">
+              <span class="text-xs font-bold text-gray-700 bg-white/80 rounded-full px-3 py-1">Generating…</span>
+            </div>
+          </div>
+          <div class="p-4"><div class="h-4 w-32 bg-gray-100 rounded animate-pulse"></div></div>
+        </div>`;
+    }
+    window.addEventListener('fp:redo-done', (e) => {
+      const r = { ...e.detail, createdAt: new Date().toISOString() };
+      allItems.unshift(r);
+      const gen = document.querySelector('.dh-gen');
+      if (gen) gen.outerHTML = card(r); else renderGrid();
+    });
+    window.addEventListener('fp:redo-fail', () =>
+      document.querySelector('.dh-gen')?.remove());
+
     // ── Order / Redesign: delegate to the shared design-modal flows ──
     document.getElementById('dh-grid').addEventListener('click', (e) => {
       const order = e.target.closest('.dh-order');
       if (order) { window.fpOrder(JSON.parse(order.dataset.order)); return; }
       const redo = e.target.closest('.dh-redo');
       if (redo) {
-        if (window.fpRedo) window.fpRedo(redo.dataset.redo);
-        else window.fpOpenDesign();
+        if (window.fpRedo) {
+          const src = redo.closest('.flex-col')?.parentElement?.querySelector('img')?.src
+                   || allItems.find(i => i.id === redo.dataset.redo)?.imageUrl || '';
+          const grid = $('dh-grid');
+          grid.insertAdjacentHTML('afterbegin', dhGenCard(src));
+          grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          window.fpRedo(redo.dataset.redo);
+        } else {
+          window.fpOpenDesign();
+        }
       }
     });
   </script>

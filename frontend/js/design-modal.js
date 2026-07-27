@@ -13,9 +13,9 @@
  *   window.fpChipBusy(on)     — toggle the chip generating animation
  */
 
-import { loginWithGoogle } from './auth.js?v=20260727i';
-import { _refreshCartBadge } from './components.js?v=20260727i';
-import { STYLE_LIBRARY, styleImg, getStyle, setStyle } from './styles.js?v=20260727i';
+import { loginWithGoogle } from './auth.js?v=20260727j';
+import { _refreshCartBadge } from './components.js?v=20260727j';
+import { STYLE_LIBRARY, styleImg, getStyle, setStyle } from './styles.js?v=20260727j';
 
 const FP_CSS = `
   .fp-swatch.sel { outline: 3px solid #1b5e20; outline-offset: 2px; }
@@ -721,6 +721,7 @@ export function initDesignModal() {
         skel.remove();
         fpChipBusy(false);
         if (msg) document.getElementById('fp-dock-status').textContent = msg;
+        window.dispatchEvent(new Event('fp:redo-fail'));   // 页面占位卡同步撤掉
       };
       try {
         const res = await fetch(`${FP_API}/design/redesign`, {
@@ -749,6 +750,7 @@ export function initDesignModal() {
               document.getElementById('fp-chip-count').textContent = fpSeen.size;
               document.getElementById('fp-dock-status').textContent = 'Done — pick one to order, or redo with new info.';
               fpChipBusy(false);
+              window.dispatchEvent(new CustomEvent('fp:redo-done', { detail: r }));
             } else if (job.status === 'FAILED') {
               clearInterval(timer);
               stop('Redesign failed — please try again.');
