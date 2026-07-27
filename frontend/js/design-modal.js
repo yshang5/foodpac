@@ -13,9 +13,9 @@
  *   window.fpChipBusy(on)     — toggle the chip generating animation
  */
 
-import { loginWithGoogle } from './auth.js?v=20260727f';
-import { _refreshCartBadge } from './components.js?v=20260727f';
-import { STYLE_LIBRARY, styleImg, getStyle, setStyle } from './styles.js?v=20260727f';
+import { loginWithGoogle } from './auth.js?v=20260727g';
+import { _refreshCartBadge } from './components.js?v=20260727g';
+import { STYLE_LIBRARY, styleImg, getStyle, setStyle } from './styles.js?v=20260727g';
 
 const FP_CSS = `
   .fp-swatch.sel { outline: 3px solid #1b5e20; outline-offset: 2px; }
@@ -500,6 +500,20 @@ export function initDesignModal() {
       }
     };
 
+    // ── 历史分页：默认最近 20 条，滚动到底继续加载 ──
+    let fpHistory = [];
+    function fpRenderMore(n = 20) {
+      const grid = document.getElementById('fp-dock-grid');
+      fpHistory.splice(0, n).forEach(r => grid.insertAdjacentHTML('beforeend', fpCard(r)));
+    }
+    document.getElementById('fp-dock-grid').addEventListener('scroll', (e) => {
+      if (!fpHistory.length) return;
+      const g = e.target;
+      const nearV = g.scrollHeight > g.clientHeight && g.scrollTop + g.clientHeight >= g.scrollHeight - 200;
+      const nearH = g.scrollWidth > g.clientWidth && g.scrollLeft + g.clientWidth >= g.scrollWidth - 200;
+      if (nearV || nearH) fpRenderMore(20);
+    });
+
     window.fpToggleDock = (show) => {
       document.getElementById('fp-dock').classList.toggle('hidden', !show);
       const chip = document.getElementById('fp-dock-chip');
@@ -595,9 +609,11 @@ export function initDesignModal() {
         } else {
           fpJobId = jobId;
           localStorage.setItem('fp_last_job', jobId);
-          document.getElementById('fp-dock-grid').insertAdjacentHTML('afterbegin',
+          const dockGrid = document.getElementById('fp-dock-grid');
+          dockGrid.insertAdjacentHTML('afterbegin',
             ['box', 'cup', 'bag', 'family'].map(pt =>
               fpGenCard(styleImg(st.type.id, st.style.id, pt))).join(''));
+          dockGrid.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
           fpToggleDock(true);
           fpStartPolling();
         }
@@ -694,9 +710,10 @@ export function initDesignModal() {
     window.fpRedo = async (id) => {
       fpToggleDock(true);
       const grid = document.getElementById('fp-dock-grid');
-      // 原设计图作为占位背景
+      // 原设计图作为占位背景；插入后滚回列表最头部
       const srcImg = document.querySelector(`#fp-item-${CSS.escape(id)} img`)?.src || '';
       grid.insertAdjacentHTML('afterbegin', fpGenCard(srcImg));
+      grid.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
       const skel = grid.querySelector('.fp-skel');
       fpChipBusy(true);
       document.getElementById('fp-dock-status').textContent = 'Generating a new version…';
@@ -829,12 +846,10 @@ export function initDesignModal() {
         const res = await fetch(`${FP_API}/design/my-designs`, { credentials: 'include' });
         if (res.ok) {
           const { items } = await res.json();
-          const grid = document.getElementById('fp-dock-grid');
-          items.forEach(r => {
-            if (fpSeen.has(r.id)) return;
-            fpSeen.add(r.id);
-            grid.insertAdjacentHTML('beforeend', fpCard(r));
-          });
+          // 分页：先渲染最近 20 条，其余滚动到底再续载
+          fpHistory = items.filter(r => !fpSeen.has(r.id));
+          fpHistory.forEach(r => fpSeen.add(r.id));
+          fpRenderMore(20);
           if (fpSeen.size > 0) {
             document.getElementById('fp-dock-count').textContent = `(${fpSeen.size})`;
             document.getElementById('fp-chip-count').textContent = fpSeen.size;
