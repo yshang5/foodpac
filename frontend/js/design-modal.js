@@ -13,9 +13,9 @@
  *   window.fpChipBusy(on)     — toggle the chip generating animation
  */
 
-import { loginWithGoogle } from './auth.js?v=20260727s';
-import { _refreshCartBadge } from './components.js?v=20260727s';
-import { STYLE_LIBRARY, styleImg, getStyle, setStyle } from './styles.js?v=20260727s';
+import { loginWithGoogle } from './auth.js?v=20260727t';
+import { _refreshCartBadge } from './components.js?v=20260727t';
+import { STYLE_LIBRARY, styleImg, getStyle, setStyle } from './styles.js?v=20260727t';
 
 const FP_CSS = `
   .fp-swatch.sel { outline: 3px solid #1b5e20; outline-offset: 2px; }
@@ -48,8 +48,10 @@ const FP_HTML = `
         <!-- 左侧：参考风格（全家福 + 换风格） -->
         <aside class="lg:w-[44%] shrink-0 bg-gray-50 border-b lg:border-b-0 lg:border-r border-gray-100 px-6 py-5 lg:overflow-y-auto">
           <p class="text-sm font-bold text-gray-800 mb-2.5">Reference style</p>
-          <img id="fps-family" src="" alt="Style reference"
-               class="w-full aspect-[3/2] object-cover rounded-xl border border-gray-200 shadow-sm bg-white">
+          <div class="relative aspect-[3/2] rounded-xl overflow-hidden border border-gray-200 shadow-sm bg-gray-100">
+            <img id="fps-family" src="" alt="Style reference"
+                 class="w-full h-full object-cover opacity-0 transition-opacity duration-300">
+          </div>
           <div class="flex items-center justify-between gap-3 mt-3">
             <div class="min-w-0">
               <p id="fps-name" class="text-sm font-bold text-gray-900 truncate"></p>
@@ -427,10 +429,21 @@ export function initDesignModal() {
     let fpsType = getStyle().type.id;    // 选择器当前分类 tab
     function fpsRefresh() {
       const cur = getStyle();
-      document.getElementById('fps-family').src = styleImg(cur.type.id, cur.style.id, 'family');
+      const fam = document.getElementById('fps-family');
+      const url = styleImg(cur.type.id, cur.style.id, 'family');
+      if (fam.getAttribute('src') !== url) {
+        // 骨架态：换图期间容器脉动，图片加载完淡入
+        fam.classList.add('opacity-0');
+        fam.parentElement.classList.add('animate-pulse');
+        fam.src = url;
+      }
       document.getElementById('fps-name').textContent = cur.style.label;
       document.getElementById('fps-type').textContent = cur.type.label;
     }
+    document.getElementById('fps-family').addEventListener('load', function () {
+      this.classList.remove('opacity-0');
+      this.parentElement.classList.remove('animate-pulse');
+    });
     window.fpOpenStylePicker = () => {
       fpsType = getStyle().type.id;
       fpsRender();
@@ -452,8 +465,10 @@ export function initDesignModal() {
         const sel = cur.type.id === type.id && cur.style.id === s.id;
         return `
         <button type="button" data-s="${s.id}" class="group text-left">
-          <div class="relative rounded-xl overflow-hidden border-2 ${sel ? 'border-primary-700' : 'border-transparent group-hover:border-primary-300'} transition-colors">
-            <img src="${styleImg(type.id, s.id, 'family')}" alt="${s.label}" loading="lazy" class="w-full aspect-[3/2] object-cover">
+          <div class="relative aspect-[3/2] bg-gray-100 animate-pulse rounded-xl overflow-hidden border-2 ${sel ? 'border-primary-700' : 'border-transparent group-hover:border-primary-300'} transition-colors">
+            <img src="${styleImg(type.id, s.id, 'family')}" alt="${s.label}" loading="lazy"
+                 class="w-full h-full object-cover opacity-0 transition-opacity duration-300"
+                 onload="this.classList.remove('opacity-0');this.parentElement.classList.remove('animate-pulse')">
             ${sel ? '<span class="absolute top-2 right-2 w-6 h-6 bg-primary-700 text-white rounded-full flex items-center justify-center text-xs font-bold">✓</span>' : ''}
           </div>
           <p class="text-xs font-semibold text-gray-700 mt-1.5 truncate">${s.label}</p>
