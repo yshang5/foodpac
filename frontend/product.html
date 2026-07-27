@@ -193,18 +193,23 @@
        class="fixed bottom-0 inset-x-0 z-40 bg-white border-t border-gray-200 shadow-[0_-8px_30px_rgba(0,0,0,0.08)] translate-y-full transition-transform duration-300">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center gap-4">
       <div class="flex items-center gap-3 min-w-0 flex-1">
-        <div class="flex items-center shrink-0">
+        <div class="flex items-center gap-1.5 shrink-0">
           <img id="psb-img" src="" alt="" class="w-12 h-12 rounded-lg object-cover border border-gray-200 bg-gray-50">
-          <img id="psb-design" src="" alt="Selected design" class="hidden w-12 h-12 rounded-lg object-cover border-2 border-primary-400 bg-white -ml-3 shadow-sm">
+          <svg id="psb-plus" class="hidden w-4 h-4 text-gray-400 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+          <img id="psb-design" src="" alt="Selected design" class="hidden w-12 h-12 rounded-lg object-cover border-2 border-primary-400 bg-white shadow-sm">
         </div>
         <div class="min-w-0 hidden sm:block">
           <p id="psb-name" class="font-bold text-gray-900 truncate leading-tight"></p>
-          <p id="psb-sub" class="text-xs text-gray-500">Production 2–3 wks + shipping</p>
+          <p id="psb-sub" class="text-xs text-gray-500 truncate">Choose size &amp; quantity</p>
         </div>
       </div>
       <div class="hidden lg:block text-right shrink-0">
         <p class="text-sm text-gray-600 leading-tight">From <span class="font-extrabold text-primary-800 text-lg">$<span id="psb-price"></span></span>/unit + Shipping</p>
         <p class="text-xs text-gray-500 mt-0.5">Minimum <span id="psb-moq" class="font-bold text-gray-700"></span> units</p>
+      </div>
+      <div class="hidden md:block text-right shrink-0 border-l border-gray-100 pl-4">
+        <p class="text-xs text-gray-400">Est. delivery</p>
+        <p class="text-sm font-semibold text-gray-700 whitespace-nowrap">2–3 wks + shipping</p>
       </div>
       <div class="flex items-center gap-2.5 shrink-0">
         <button id="psb-cart"
@@ -373,14 +378,17 @@
       const thumb = document.getElementById('p-design-thumb');
       const empty = document.getElementById('p-design-empty');
       const psb = document.getElementById('psb-design');
+      const plus = document.getElementById('psb-plus');
       if (d) {
         thumb.src = d.imageUrl; thumb.classList.remove('hidden'); empty.classList.add('hidden');
         document.getElementById('p-design-label').textContent = d.productLabel || 'Selected design';
         psb.src = d.imageUrl; psb.classList.remove('hidden');
+        plus.classList.remove('hidden');
       } else {
         thumb.classList.add('hidden'); empty.classList.remove('hidden');
         document.getElementById('p-design-label').textContent = 'No design selected — pick one or create with AI';
         psb.classList.add('hidden'); psb.removeAttribute('src');
+        plus.classList.add('hidden');
       }
     }
 
@@ -507,6 +515,24 @@
 
     // ── 底部悬浮购买条：CTA 滚出视口时出现 ──
     const stickyBar = document.getElementById('p-stickybar');
+    // 已选尺寸/数量显示在悬浮条左侧
+    function psbSubSync() {
+      const size = document.getElementById('p-size').value;
+      const qty = parseInt(document.getElementById('p-qty').value, 10);
+      const el = document.getElementById('psb-sub');
+      if (size || qty) {
+        el.textContent = [size || null, qty ? `Qty ${qty.toLocaleString()}` : null]
+          .filter(Boolean).join(' · ');
+        el.classList.remove('text-gray-500');
+        el.classList.add('text-primary-800', 'font-semibold');
+      } else {
+        el.textContent = 'Choose size & quantity';
+        el.classList.add('text-gray-500');
+        el.classList.remove('text-primary-800', 'font-semibold');
+      }
+    }
+    document.getElementById('p-size').addEventListener('change', psbSubSync);
+    document.getElementById('p-qty').addEventListener('input', psbSubSync);
     document.getElementById('psb-cart').addEventListener('click', fpAddToCart);
     document.getElementById('psb-quote').addEventListener('click', () =>
       document.getElementById('p-quote-btn').click());
