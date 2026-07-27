@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Product – foodPac</title>
   <meta name="description" content="Custom branded food packaging for Canadian restaurants — free AI design, low minimums, nationwide delivery." />
-  <link rel="stylesheet" href="css/tailwind.css?v=20260727n">
+  <link rel="stylesheet" href="css/tailwind.css?v=20260727o">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/main.css">
@@ -134,21 +134,46 @@
     </div>
   </section>
 
-  <!-- ── TABS: SPECS / FAQ ─────────────────────────────────── -->
+  <!-- ── SPECS / PRICING / FAQ（锚点长页，非 Tab 切换）──────── -->
   <section class="py-14">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex gap-2 mb-8" id="p-tabs">
+      <div class="flex gap-2 mb-10" id="p-tabs">
         <button data-tab="specs" class="p-tab active px-5 py-2.5 rounded-full border border-gray-200 text-sm font-semibold text-gray-600">Specifications</button>
+        <button data-tab="pricing" class="p-tab px-5 py-2.5 rounded-full border border-gray-200 text-sm font-semibold text-gray-600">Pricing</button>
         <button data-tab="faq" class="p-tab px-5 py-2.5 rounded-full border border-gray-200 text-sm font-semibold text-gray-600">FAQs</button>
       </div>
 
-      <div id="tab-specs">
+      <div id="sec-specs" class="scroll-mt-36">
+        <h2 class="text-2xl font-extrabold text-gray-900 mb-5">Specifications</h2>
         <table class="w-full text-sm border border-gray-100 rounded-2xl overflow-hidden">
           <tbody id="p-specs" class="divide-y divide-gray-100"></tbody>
         </table>
       </div>
 
-      <div id="tab-faq" class="hidden space-y-3">
+      <div id="sec-pricing" class="scroll-mt-36 mt-16">
+        <h2 class="text-2xl font-extrabold text-gray-900 mb-2">Pricing</h2>
+        <p class="text-sm text-gray-500 mb-5">CAD per unit, shipping extra. Volume discounts applied automatically — final pricing confirmed in your quote.</p>
+        <div class="overflow-x-auto rounded-2xl border border-gray-100">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="bg-primary-50 text-primary-900">
+                <th class="px-5 py-3.5 text-left font-bold">Size</th>
+                <th class="px-5 py-3.5 text-right font-bold">1,000+</th>
+                <th class="px-5 py-3.5 text-right font-bold">3,000+</th>
+                <th class="px-5 py-3.5 text-right font-bold">5,000+</th>
+                <th class="px-5 py-3.5 text-right font-bold">10,000+</th>
+              </tr>
+            </thead>
+            <tbody id="p-pricing" class="divide-y divide-gray-100">
+              <tr><td colspan="5" class="px-5 py-4 text-gray-400">Loading pricing…</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="text-xs text-gray-400 mt-3">Need larger volumes or a size you don't see? <button onclick="document.getElementById('p-quote-btn').click()" class="text-primary-800 font-semibold underline">Start a custom quote</button> and we'll price it within 24 hours.</p>
+      </div>
+
+      <div id="sec-faq" class="scroll-mt-36 mt-16 space-y-3">
+        <h2 class="text-2xl font-extrabold text-gray-900 mb-5">FAQs</h2>
         <details class="group bg-white rounded-2xl border border-gray-200">
           <summary class="flex items-center justify-between gap-4 px-5 py-4 cursor-pointer list-none font-bold text-gray-900 text-sm">How can I place an order?<span class="text-primary-700 group-open:rotate-45 transition-transform">+</span></summary>
           <p class="px-5 pb-4 text-gray-500 text-sm">Choose your size and quantity, attach a design (or create one with AI), then click "Start Custom Quote". Our team will contact you within 24 hours with a confirmed quote and print-ready artwork.</p>
@@ -294,9 +319,9 @@
   </style>
 
   <script type="module">
-    import { initNav, initFooter, _refreshCartBadge } from './js/components.js?v=20260727n';
-    import { getProducts } from './js/products.js?v=20260727n';
-    import { initDesignModal } from './js/design-modal.js?v=20260727n';
+    import { initNav, initFooter, _refreshCartBadge } from './js/components.js?v=20260727o';
+    import { getProducts } from './js/products.js?v=20260727o';
+    import { initDesignModal } from './js/design-modal.js?v=20260727o';
 
     initNav('products');
     initFooter();
@@ -355,21 +380,49 @@
     document.getElementById('psb-price').textContent = p.price;
     document.getElementById('psb-moq').textContent = p.moq;
 
-    // Sizes
+    // Sizes + Pricing（同一份数据：尺寸下拉 + 价格矩阵）
+    const QTY_TIERS = [[1000, 1], [3000, 0.90], [5000, 0.82], [10000, 0.72]];
+    const fmtPrice = (v) => {
+      const s = v.toFixed(3);
+      return '$' + (s.endsWith('0') ? s.slice(0, -1) : s);
+    };
+    function renderPricing(sizes) {
+      const tb = document.getElementById('p-pricing');
+      if (!sizes.length) {
+        tb.innerHTML = '<tr><td colspan="5" class="px-5 py-4 text-gray-400">Contact us for pricing.</td></tr>';
+        return;
+      }
+      tb.innerHTML = sizes.map(s => `
+        <tr class="hover:bg-gray-50">
+          <td class="px-5 py-3.5 font-semibold text-gray-800">${s.label}</td>
+          ${QTY_TIERS.map(([q, f]) => `
+          <td class="px-5 py-3.5 text-right ${f === 1 ? 'text-gray-700' : 'text-gray-600'}">
+            ${s.basePrice ? fmtPrice(s.basePrice * f) : '—'}
+          </td>`).join('')}
+        </tr>`).join('');
+    }
     fetch(`${FP_API}/products/sizes/${cat.type}`).then(r => r.json()).then(sizes => {
       document.getElementById('p-size').innerHTML = '<option value="">Select size…</option>' +
         sizes.map(s => `<option value="${s.label}">${s.label}</option>`).join('');
+      renderPricing(sizes);
     }).catch(() => {
       document.getElementById('p-size').innerHTML = '<option value="">Standard</option>';
+      renderPricing([]);
     });
 
-    // Tabs
+    // 快捷锚点：点击滚动到对应模块；滚动时高亮当前模块（非 Tab 切换）
     document.querySelectorAll('.p-tab').forEach(t => t.addEventListener('click', () => {
-      document.querySelectorAll('.p-tab').forEach(x => x.classList.remove('active'));
-      t.classList.add('active');
-      document.getElementById('tab-specs').classList.toggle('hidden', t.dataset.tab !== 'specs');
-      document.getElementById('tab-faq').classList.toggle('hidden', t.dataset.tab !== 'faq');
+      document.getElementById('sec-' + t.dataset.tab).scrollIntoView({ behavior: 'smooth', block: 'start' });
     }));
+    const spy = new IntersectionObserver((es) => {
+      es.forEach(e => {
+        if (!e.isIntersecting) return;
+        const key = e.target.id.replace('sec-', '');
+        document.querySelectorAll('.p-tab').forEach(x =>
+          x.classList.toggle('active', x.dataset.tab === key));
+      });
+    }, { rootMargin: '-35% 0px -55% 0px' });
+    ['specs', 'pricing', 'faq'].forEach(k => spy.observe(document.getElementById('sec-' + k)));
 
     // ── Custom Design ──
     let selectedDesign = null;

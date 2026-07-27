@@ -6,7 +6,7 @@
  * the user's email so it's always consistent across sessions.
  *
  * Usage:
- *   import { avatarHtml } from './avatar.js?v=20260727n';
+ *   import { avatarHtml } from './avatar.js?v=20260727o';
  *   someEl.innerHTML = avatarHtml(user, 40);
  */
 

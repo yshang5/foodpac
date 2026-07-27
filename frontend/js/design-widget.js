@@ -6,7 +6,7 @@
  * redirect to the homepage. The old Packify chat widget has been retired.
  */
 
-import { initDesignModal } from './design-modal.js?v=20260727n';
+import { initDesignModal } from './design-modal.js?v=20260727o';
 
 export function initDesignWidget() {
   // 悬浮入口由 design-modal 统一提供（0 设计 = Design Online；有设计 = + New | My Designs）

@@ -10,7 +10,7 @@
  *   GET  /oauth2/authorization/google → starts Google OAuth2 flow (backend redirect)
  */
 
-import { API_BASE } from './api.js?v=20260727n';
+import { API_BASE } from './api.js?v=20260727o';
 
 /** In-memory cache so we don't hammer /auth/me on every render */
 let _currentUser = undefined; // undefined = not yet fetched, null = not logged in

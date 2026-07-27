@@ -20,4 +20,7 @@ public class SizeOption {
 
     @Column(nullable = false)
     private Integer sortOrder;
+
+    /** Reference unit price in CAD at the 1,000-unit tier (edit in DB to reprice) */
+    private Double basePrice;
 }
