@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Product – foodPac</title>
   <meta name="description" content="Custom branded food packaging for Canadian restaurants — free AI design, low minimums, nationwide delivery." />
-  <link rel="stylesheet" href="css/tailwind.css?v=20260727m">
+  <link rel="stylesheet" href="css/tailwind.css?v=20260727c">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/main.css">
@@ -188,6 +188,38 @@
   </div>
 
   <!-- ══════════ 询价提交弹窗 ══════════ -->
+  <!-- ── 底部悬浮购买条（CTA 滚出视口时出现）───────────────── -->
+  <div id="p-stickybar"
+       class="fixed bottom-0 inset-x-0 z-40 bg-white border-t border-gray-200 shadow-[0_-8px_30px_rgba(0,0,0,0.08)] translate-y-full transition-transform duration-300">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center gap-4">
+      <div class="flex items-center gap-3 min-w-0 flex-1">
+        <div class="flex items-center shrink-0">
+          <img id="psb-img" src="" alt="" class="w-12 h-12 rounded-lg object-cover border border-gray-200 bg-gray-50">
+          <img id="psb-design" src="" alt="Selected design" class="hidden w-12 h-12 rounded-lg object-cover border-2 border-primary-400 bg-white -ml-3 shadow-sm">
+        </div>
+        <div class="min-w-0 hidden sm:block">
+          <p id="psb-name" class="font-bold text-gray-900 truncate leading-tight"></p>
+          <p id="psb-sub" class="text-xs text-gray-500">Production 2–3 wks + shipping</p>
+        </div>
+      </div>
+      <div class="hidden lg:block text-right shrink-0">
+        <p class="text-sm text-gray-600 leading-tight">From <span class="font-extrabold text-primary-800 text-lg">$<span id="psb-price"></span></span>/unit + Shipping</p>
+        <p class="text-xs text-gray-500 mt-0.5">Minimum <span id="psb-moq" class="font-bold text-gray-700"></span> units</p>
+      </div>
+      <div class="flex items-center gap-2.5 shrink-0">
+        <button id="psb-cart"
+                class="flex items-center gap-2 px-4 sm:px-5 py-3 bg-primary-800 hover:bg-primary-900 text-white text-sm font-bold rounded-xl transition-colors">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.3 4.6a1 1 0 00.9 1.4H19"/><circle cx="9" cy="20" r="1"/><circle cx="17" cy="20" r="1"/></svg>
+          <span class="hidden sm:inline">Add to Cart</span><span class="sm:hidden">Cart</span>
+        </button>
+        <button id="psb-quote"
+                class="px-4 sm:px-5 py-3 bg-accent-500 hover:bg-accent-600 text-white text-sm font-bold rounded-xl transition-colors shadow-lg shadow-accent-500/25 whitespace-nowrap">
+          Start Custom Quote
+        </button>
+      </div>
+    </div>
+  </div>
+
   <div id="p-quote-modal" class="hidden fixed inset-0 bg-black/60 z-[9986] flex items-center justify-center p-4">
     <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md max-h-[92vh] flex flex-col overflow-hidden">
       <div class="flex items-center justify-between px-6 py-4 bg-primary-800 text-white shrink-0">
@@ -252,12 +284,14 @@
   <style>
     .p-tab.active { background:#2e7d32; color:#fff; border-color:#2e7d32; }
     details summary::-webkit-details-marker { display:none; }
+    /* 悬浮条出现时，把右下角设计入口抬到它上面 */
+    body.has-stickybar #fp-dock-chip { bottom: 5.5rem; }
   </style>
 
   <script type="module">
-    import { initNav, initFooter, _refreshCartBadge } from './js/components.js?v=20260727m';
-    import { getProducts } from './js/products.js?v=20260727m';
-    import { initDesignModal } from './js/design-modal.js?v=20260727m';
+    import { initNav, initFooter, _refreshCartBadge } from './js/components.js?v=20260727c';
+    import { getProducts } from './js/products.js?v=20260727c';
+    import { initDesignModal } from './js/design-modal.js?v=20260727c';
 
     initNav('products');
     initFooter();
@@ -310,6 +344,12 @@
       <tr><td class="px-5 py-3.5 font-semibold text-gray-700 bg-gray-50 w-1/3">${k}</td>
           <td class="px-5 py-3.5 text-gray-600">${v}</td></tr>`).join('');
 
+    // 悬浮条：产品信息填充
+    document.getElementById('psb-img').src = p.image;
+    document.getElementById('psb-name').textContent = p.name;
+    document.getElementById('psb-price').textContent = p.price;
+    document.getElementById('psb-moq').textContent = p.moq;
+
     // Sizes
     fetch(`${FP_API}/products/sizes/${cat.type}`).then(r => r.json()).then(sizes => {
       document.getElementById('p-size').innerHTML = '<option value="">Select size…</option>' +
@@ -332,12 +372,15 @@
       selectedDesign = d;
       const thumb = document.getElementById('p-design-thumb');
       const empty = document.getElementById('p-design-empty');
+      const psb = document.getElementById('psb-design');
       if (d) {
         thumb.src = d.imageUrl; thumb.classList.remove('hidden'); empty.classList.add('hidden');
         document.getElementById('p-design-label').textContent = d.productLabel || 'Selected design';
+        psb.src = d.imageUrl; psb.classList.remove('hidden');
       } else {
         thumb.classList.add('hidden'); empty.classList.remove('hidden');
         document.getElementById('p-design-label').textContent = 'No design selected — pick one or create with AI';
+        psb.classList.add('hidden'); psb.removeAttribute('src');
       }
     }
 
@@ -411,21 +454,22 @@
       window.fpOpenDesign('form');
     };
 
-    // ── Add to Cart（左键：规格+设计直接进购物车）──
+    // ── Add to Cart（主按钮与悬浮条共用）──
     const ctaErr = document.getElementById('p-cta-error');
-    document.getElementById('p-cart-btn').addEventListener('click', async () => {
+    async function fpAddToCart() {
       ctaErr.classList.add('hidden');
       const size = document.getElementById('p-size').value;
       const qty = parseInt(document.getElementById('p-qty').value, 10);
       const minQty = parseInt(String(p.moq).replace(/\D/g, ''), 10) || 500;
-      if (!size) {
-        ctaErr.textContent = 'Please choose a size first.';
+      const fail = (msg) => {
+        ctaErr.textContent = msg;
         ctaErr.classList.remove('hidden');
-        return;
-      }
+        // 从悬浮条触发时把规格区滚回视野
+        document.getElementById('p-size').scrollIntoView({ behavior: 'smooth', block: 'center' });
+      };
+      if (!size) { fail('Please choose a size first.'); return; }
       if (!qty || qty < minQty) {
-        ctaErr.textContent = `Please enter a quantity of at least ${minQty.toLocaleString()}.`;
-        ctaErr.classList.remove('hidden');
+        fail(`Please enter a quantity of at least ${minQty.toLocaleString()}.`);
         return;
       }
       const btn = document.getElementById('p-cart-btn');
@@ -458,7 +502,19 @@
       } finally {
         btn.disabled = false;
       }
-    });
+    }
+    document.getElementById('p-cart-btn').addEventListener('click', fpAddToCart);
+
+    // ── 底部悬浮购买条：CTA 滚出视口时出现 ──
+    const stickyBar = document.getElementById('p-stickybar');
+    document.getElementById('psb-cart').addEventListener('click', fpAddToCart);
+    document.getElementById('psb-quote').addEventListener('click', () =>
+      document.getElementById('p-quote-btn').click());
+    new IntersectionObserver(([e]) => {
+      const show = !e.isIntersecting;
+      stickyBar.classList.toggle('translate-y-full', !show);
+      document.body.classList.toggle('has-stickybar', show);
+    }, { threshold: 0 }).observe(document.getElementById('p-cart-btn'));
 
     // ── Quote 提交 ──
     document.getElementById('p-quote-btn').addEventListener('click', () => {
