@@ -13,9 +13,9 @@
  *   window.fpChipBusy(on)     — toggle the chip generating animation
  */
 
-import { loginWithGoogle } from './auth.js?v=20260727t';
-import { _refreshCartBadge } from './components.js?v=20260727t';
-import { STYLE_LIBRARY, styleImg, getStyle, setStyle } from './styles.js?v=20260727t';
+import { loginWithGoogle } from './auth.js?v=20260727u';
+import { _refreshCartBadge } from './components.js?v=20260727u';
+import { STYLE_LIBRARY, styleImg, getStyle, setStyle } from './styles.js?v=20260727u';
 
 const FP_CSS = `
   .fp-swatch.sel { outline: 3px solid #1b5e20; outline-offset: 2px; }
@@ -570,7 +570,11 @@ export function initDesignModal() {
       const fd = new FormData();
       fd.append('file', file);
       const res = await fetch(`${FP_API}/design/uploads`, { method: 'POST', body: fd, credentials: 'include' });
-      if (!res.ok) throw new Error('upload failed');
+      if (res.status === 413) throw new Error('That image is too large — please upload a file under 5MB.');
+      if (!res.ok) {
+        const msg = (await res.json().catch(() => null))?.error;
+        throw new Error(msg || 'Image upload failed. Please try again.');
+      }
       return (await res.json()).file;
     }
 
@@ -648,7 +652,8 @@ export function initDesignModal() {
           fpStartPolling();
         }
       } catch (ex) {
-        err.textContent = 'Something went wrong. Please try again.';
+        err.textContent = ex?.message && ex.message !== 'Failed to fetch'
+          ? ex.message : 'Something went wrong. Please try again.';
         err.classList.remove('hidden');
       } finally {
         btn.textContent = '✨ Generate My Designs';
