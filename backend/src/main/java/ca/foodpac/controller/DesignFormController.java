@@ -205,6 +205,53 @@ public class DesignFormController {
         return ResponseEntity.ok(Map.of("jobId", job.getId(), "status", job.getStatus().name()));
     }
 
+    // ── Apply a chosen design to a product photo (detail-page image 2) ────────
+
+    public record ApplyRequest(String itemId, String productImage,
+                               String productLabel, String productType) {}
+
+    @PostMapping("/apply-product")
+    public ResponseEntity<?> applyProduct(@AuthenticationPrincipal User user,
+                                          @RequestBody ApplyRequest req,
+                                          HttpServletRequest httpReq,
+                                          HttpServletResponse httpRes) {
+        var item = itemRepo.findById(req.itemId() == null ? "" : req.itemId()).orElse(null);
+        if (item == null || item.isDeleted()) return ResponseEntity.notFound().build();
+        try {
+            DesignFormService.productImagePath(req.productImage());
+        } catch (IOException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", "Unknown product image"));
+        }
+        String label = trim(req.productLabel());
+        if (label == null || label.length() > 60)
+            return ResponseEntity.badRequest().body(Map.of("error", "Bad product label"));
+        String type = req.productType() != null && req.productType().matches("[A-Z]{2,10}")
+                ? req.productType() : "BOX";
+
+        String anonToken = null;
+        if (user == null) {
+            anonToken = readCookie(httpReq);
+            if (anonToken != null && service.guestLimitReached(anonToken))
+                return ResponseEntity.status(401).body(Map.of("error", "LOGIN_REQUIRED",
+                        "message", "Sign in to keep designing."));
+            if (anonToken == null) {
+                anonToken = UUID.randomUUID().toString();
+                httpRes.addHeader("Set-Cookie", String.format(
+                        "%s=%s; Path=/; Max-Age=31536000; HttpOnly%s; SameSite=Lax",
+                        ANON_COOKIE, anonToken, cookieSecure ? "; Secure" : ""));
+            }
+        }
+        DesignJob src = item.getJob();
+        boolean owned = user != null
+                ? src.getUser() != null && src.getUser().getId().equals(user.getId())
+                : anonToken != null && anonToken.equals(src.getAnonToken());
+        if (!owned) return ResponseEntity.status(403).body(Map.of("error", "Forbidden"));
+
+        DesignJob job = service.createApplyJob(user, anonToken, item,
+                req.productImage(), label, type);
+        return ResponseEntity.ok(Map.of("jobId", job.getId(), "status", job.getStatus().name()));
+    }
+
     // ── Poll job progress ─────────────────────────────────────────────────────
 
     @GetMapping("/jobs/{id}")

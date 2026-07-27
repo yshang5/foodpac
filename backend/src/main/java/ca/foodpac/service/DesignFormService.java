@@ -397,6 +397,86 @@ public class DesignFormService {
         }
     }
 
+    // ── Apply a chosen design to one product photo (detail-page "image 2") ────
+
+    public static final Path PRODUCT_IMG_DIR = Path.of(
+            System.getenv().getOrDefault("PRODUCT_IMG_DIR", "/data/product-images"));
+
+    /** Validated product photo path (prod-*.jpg shipped with the frontend). */
+    public static Path productImagePath(String name) throws IOException {
+        if (name == null || !name.matches("prod-[a-z0-9-]{1,60}\\.(jpg|png)"))
+            throw new IOException("bad product image");
+        Path p = PRODUCT_IMG_DIR.resolve(name).normalize();
+        if (!p.startsWith(PRODUCT_IMG_DIR) || !Files.isRegularFile(p))
+            throw new IOException("missing product image " + name);
+        return p;
+    }
+
+    /**
+     * Repaint one product photo with the brand identity of an existing design.
+     * Produces a single item; the detail page shows it as "image 2" next to
+     * the original photo (repeat calls simply produce a fresh item).
+     */
+    public DesignJob createApplyJob(User user, String anonToken, DesignJobItem srcItem,
+                                    String productImage, String productLabel, String cartType) {
+        DesignJob job = DesignJob.builder()
+                .user(user)
+                .anonToken(user == null ? anonToken : null)
+                .kind("APPLY")
+                .brandText(srcItem.getJob().getBrandText())
+                .status(DesignJob.Status.PENDING)
+                .build();
+        job = jobRepo.save(job);
+        String jobId = job.getId();
+        String srcFile = srcItem.getImageUrl().substring(srcItem.getImageUrl().lastIndexOf('/') + 1);
+        executor.submit(() -> runApply(jobId, srcFile, productImage, productLabel, cartType));
+        return job;
+    }
+
+    private void runApply(String jobId, String srcFile, String productImage,
+                          String productLabel, String cartType) {
+        DesignJob job = jobRepo.findById(jobId).orElse(null);
+        if (job == null) return;
+        try {
+            job.setStatus(DesignJob.Status.RUNNING);
+            jobRepo.save(job);
+            Files.createDirectories(STORAGE_DIR);
+
+            byte[] template = Files.readAllBytes(productImagePath(productImage));
+            byte[] ref = readStored(srcFile);
+            if (ref == null) throw new IOException("missing source design " + srcFile);
+
+            String brand = job.getBrandText();
+            String prompt = ("The FIRST image is a product photo of " + productLabel + " packaging. "
+                    + "The SECOND image is a finished brand packaging design used as the style "
+                    + "reference. Recreate the FIRST photo exactly — same product shape, camera "
+                    + "angle, lighting, shadows and background — but replace its printed artwork "
+                    + "with the brand identity from the SECOND image: the same brand name"
+                    + (brand != null ? " (\"" + brand + "\" — spell it EXACTLY)" : " (spell it exactly as shown)")
+                    + ", colors, typography, patterns and logo treatment, adapted naturally to this "
+                    + "product's printable surfaces. No other brand names, no watermarks, nothing "
+                    + "added to the scene.");
+
+            byte[] png = aiImageService.rebrand(template, ref, null, prompt);
+            String name = "gen-" + jobId + "-apply.png";
+            Files.write(STORAGE_DIR.resolve(name), png);
+            itemRepo.save(DesignJobItem.builder()
+                    .job(job)
+                    .productId("apply")
+                    .productLabel(brandedLabel(brand, productLabel))
+                    .productType(cartType)
+                    .imageUrl("/api/v1/design/files/" + name)
+                    .build());
+            job.setStatus(DesignJob.Status.COMPLETED);
+            jobRepo.save(job);
+        } catch (Exception e) {
+            log.error("Apply job {} failed", jobId, e);
+            job.setStatus(DesignJob.Status.FAILED);
+            job.setError(e.getMessage());
+            jobRepo.save(job);
+        }
+    }
+
     // ── Style-template generation (box/cup/bag/family of the chosen style) ────
 
     /**

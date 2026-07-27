@@ -52,6 +52,7 @@ services:
     volumes:
       - design_data:/data/design       # uploaded logos/QRs + generated mockups
       - ./frontend/assets/styles:/data/styles:ro   # style-template library (shared with frontend)
+      - ./frontend/assets/images:/data/product-images:ro   # product photos for apply-to-product
     expose:
       - "8080"             # only reachable from within Docker network (via Nginx)
     depends_on:

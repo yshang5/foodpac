@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Product – foodPac</title>
   <meta name="description" content="Custom branded food packaging for Canadian restaurants — free AI design, low minimums, nationwide delivery." />
-  <link rel="stylesheet" href="css/tailwind.css?v=20260727v">
+  <link rel="stylesheet" href="css/tailwind.css?v=20260727w">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/main.css">
@@ -30,10 +30,32 @@
   <section class="py-10">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid lg:grid-cols-2 gap-12">
 
-      <!-- 左：主图 -->
-      <div>
-        <div class="rounded-3xl overflow-hidden bg-gray-50 border border-gray-100">
+      <!-- 左：主图 + 缩略列（原图 / 应用参考后的图2） -->
+      <div class="flex gap-3">
+        <div class="flex flex-col gap-3 w-16 lg:w-20 shrink-0">
+          <button type="button" id="pv-thumb-0"
+                  class="aspect-square rounded-xl overflow-hidden border-2 border-primary-600 bg-gray-50">
+            <img id="pv-t0" src="" alt="Product photo" class="w-full h-full object-cover">
+          </button>
+          <button type="button" id="pv-thumb-1"
+                  class="hidden aspect-square rounded-xl overflow-hidden border-2 border-transparent hover:border-primary-300 bg-gray-50 transition-colors">
+            <img id="pv-t1" src="" alt="Your design applied" class="w-full h-full object-cover">
+          </button>
+        </div>
+        <div class="flex-1 relative rounded-3xl overflow-hidden bg-gray-50 border border-gray-100">
           <img id="p-image" src="" alt="" class="w-full aspect-square object-cover">
+          <!-- 应用参考图时的毛玻璃生成态 -->
+          <div id="pv-glass" class="hidden absolute inset-0 fp-genglass flex-col items-center justify-center gap-4">
+            <div class="flex items-center gap-3">
+              <img id="pvg-src" src="" alt="" class="w-16 h-16 rounded-xl object-cover border-2 border-white shadow-lg bg-white">
+              <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+              <img id="pvg-ref" src="" alt="" class="w-16 h-16 rounded-xl object-cover border-2 border-primary-400 shadow-lg bg-white">
+            </div>
+            <div class="flex items-center gap-2.5 bg-white/85 rounded-full px-4 py-2 shadow">
+              <img src="assets/images/logo-icon-v2.png?v=9" alt="" class="fp-genspin w-5 h-5 rounded-full object-contain">
+              <span class="text-sm font-bold text-gray-800">Applying your design…</span>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -217,13 +239,13 @@
   <div id="p-picker" class="hidden fixed inset-0 bg-black/60 z-[9985] flex items-center justify-center p-4">
     <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[85vh] flex flex-col overflow-hidden">
       <div class="flex items-center justify-between px-6 py-4 bg-primary-800 text-white shrink-0">
-        <p class="font-bold">Choose a Design</p>
+        <p class="font-bold">Choose a Design <span class="text-primary-200 font-normal">as a template</span></p>
         <button id="p-picker-close" class="text-white/70 hover:text-white text-2xl leading-none">×</button>
       </div>
       <div id="p-picker-filters" class="hidden flex flex-wrap gap-2 px-6 pt-4 pb-4 border-b border-gray-100 shrink-0"></div>
       <div id="p-picker-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-4 p-6 overflow-y-auto"></div>
       <div class="px-6 py-4 border-t border-gray-100 shrink-0 flex justify-between items-center">
-        <p class="text-xs text-gray-400">Pick a design, or create a new one</p>
+        <p class="text-xs text-gray-400">Pick a design as a template — we'll apply it to this product</p>
         <button id="p-picker-new" class="px-5 py-2.5 bg-accent-500 hover:bg-accent-600 text-white text-sm font-bold rounded-lg transition-colors">✨ Create New Design</button>
       </div>
     </div>
@@ -339,9 +361,9 @@
   </style>
 
   <script type="module">
-    import { initNav, initFooter, _refreshCartBadge } from './js/components.js?v=20260727v';
-    import { getProducts } from './js/products.js?v=20260727v';
-    import { initDesignModal } from './js/design-modal.js?v=20260727v';
+    import { initNav, initFooter, _refreshCartBadge } from './js/components.js?v=20260727w';
+    import { getProducts } from './js/products.js?v=20260727w';
+    import { initDesignModal } from './js/design-modal.js?v=20260727w';
 
     initNav('products');
     initFooter();
@@ -378,6 +400,7 @@
     document.getElementById('bc-cat').href = `products.html?cat=${p.category}`;
     document.getElementById('bc-name').textContent = p.name;
     document.getElementById('p-image').src = p.image;
+    document.getElementById('pv-t0').src = p.image;
     document.getElementById('p-image').alt = p.name;
     document.getElementById('p-name').textContent = p.name;
     document.getElementById('p-price').textContent = p.price;
@@ -520,6 +543,7 @@
         document.getElementById('p-design-label').textContent = d.productLabel || 'Selected design';
         psb.src = d.imageUrl; psb.classList.remove('hidden');
         plus.classList.remove('hidden');
+        pvApply(d);   // 把所选模板应用到本产品 → 生成/覆盖图2
       } else {
         thumb.classList.add('hidden'); empty.classList.remove('hidden');
         document.getElementById('p-design-label').textContent = 'No design selected — pick one or create with AI';
@@ -591,6 +615,74 @@
       pkRenderGrid();
       document.getElementById('p-picker').classList.remove('hidden');
     }
+    // ── 选中模板 → 应用到本产品，生成"图2"（重复选择则覆盖）──
+    let pvImages = [p.image, null];
+    let pvApplyToken = 0;
+    function pvShow(i) {
+      if (!pvImages[i]) return;
+      document.getElementById('p-image').src = pvImages[i];
+      [0, 1].forEach(n => {
+        const t = document.getElementById('pv-thumb-' + n);
+        t.classList.toggle('border-primary-600', n === i);
+        t.classList.toggle('border-transparent', n !== i);
+      });
+    }
+    document.getElementById('pv-thumb-0').addEventListener('click', () => pvShow(0));
+    document.getElementById('pv-thumb-1').addEventListener('click', () => pvShow(1));
+
+    async function pvApply(d) {
+      const glass = document.getElementById('pv-glass');
+      document.getElementById('pvg-src').src = p.image;
+      document.getElementById('pvg-ref').src = d.imageUrl;
+      pvShow(0);
+      glass.classList.remove('hidden');
+      glass.classList.add('flex');
+      const token = ++pvApplyToken;   // 重复选择时旧轮询作废
+      const off = () => { glass.classList.add('hidden'); glass.classList.remove('flex'); };
+      try {
+        const res = await fetch(`${FP_API}/design/apply-product`, {
+          method: 'POST', credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            itemId: d.id,
+            productImage: p.image.split('/').pop(),
+            productLabel: p.name,
+            productType: cat.type
+          })
+        });
+        if (res.status === 401) {
+          off();
+          document.getElementById('fp-login-modal').classList.remove('hidden');
+          return;
+        }
+        if (!res.ok) throw new Error();
+        const { jobId } = await res.json();
+        const timer = setInterval(async () => {
+          if (token !== pvApplyToken) { clearInterval(timer); return; }
+          try {
+            const jr = await fetch(`${FP_API}/design/jobs/${jobId}`, { credentials: 'include' });
+            if (!jr.ok) { clearInterval(timer); off(); return; }
+            const job = await jr.json();
+            const r = job.results[0];
+            if (r) {
+              clearInterval(timer);
+              window.fpAddResult?.(r);          // 同步进 My Designs
+              pvImages[1] = r.imageUrl;         // 图2：始终被最新结果覆盖
+              document.getElementById('pv-t1').src = r.imageUrl;
+              document.getElementById('pv-thumb-1').classList.remove('hidden');
+              off();
+              pvShow(1);
+            } else if (job.status === 'FAILED') {
+              clearInterval(timer);
+              off();
+            }
+          } catch {}
+        }, 2500);
+      } catch {
+        off();
+      }
+    }
+
     document.getElementById('p-design-btn').addEventListener('click', openPicker);
     document.getElementById('p-picker-close').onclick = () => document.getElementById('p-picker').classList.add('hidden');
     document.getElementById('p-picker-new').onclick = () => {
