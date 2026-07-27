@@ -181,9 +181,13 @@ export const STYLE_LIBRARY = [
   },
 ];
 
+/** Bump when template images are replaced in place — busts the CDN cache.
+ *  Keep in sync with the inline hero script in index.html. */
+export const STYLE_VER = 'v2';
+
 /** parts: 'family' | 'box' | 'cup' | 'bag' */
 export function styleImg(typeId, styleId, part) {
-  return `assets/styles/${typeId}/${styleId}-${part}.jpg`;
+  return `assets/styles/${typeId}/${styleId}-${part}.jpg?${STYLE_VER}`;
 }
 
 export function findStyle(typeId, styleId) {
