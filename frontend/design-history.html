@@ -7,7 +7,7 @@
   <link rel="apple-touch-icon" href="assets/images/apple-touch-icon.png">
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>My Design History – foodPac</title>
-  <link rel="stylesheet" href="css/tailwind.css?v=20260727k">
+  <link rel="stylesheet" href="css/tailwind.css?v=20260727f">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/main.css">
@@ -17,12 +17,14 @@
   <div id="navbar"></div>
 
   <!-- ── PAGE HERO ─────────────────────────────────────────── -->
-  <section class="hero-gradient text-white py-14">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+  <section class="hero-gradient text-white py-14 relative overflow-hidden">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
       <p class="text-primary-200 text-sm font-medium mb-3 uppercase tracking-wider">My Account</p>
       <h1 class="text-4xl lg:text-5xl font-extrabold mb-4">My Design History</h1>
-      <p class="text-white/75 text-lg">Every AI design you've generated — pick up where you left off, or order straight away.</p>
+      <p class="text-white/75 text-lg max-w-2xl">Every AI design you've generated — pick up where you left off, or order straight away.</p>
     </div>
+    <!-- 最近 4 张生成图作为装饰 -->
+    <div id="dh-deco" class="hidden md:flex absolute right-8 lg:right-20 top-1/2 -translate-y-1/2 gap-3 z-0"></div>
   </section>
 
   <!-- ── CONTENT ───────────────────────────────────────────── -->
@@ -70,14 +72,27 @@
     </div>
   </section>
 
+  <!-- ── 图片放大浏览（前后箭头切换）─────────────────────── -->
+  <div id="dh-lightbox" class="hidden fixed inset-0 bg-black/85 z-[9998] flex items-center justify-center p-4">
+    <button id="dhl-close" class="absolute top-4 right-6 text-white/70 hover:text-white text-4xl leading-none z-10">×</button>
+    <button id="dhl-prev" class="absolute left-3 sm:left-6 w-11 h-11 rounded-full bg-white/10 hover:bg-white/25 text-white flex items-center justify-center z-10 transition-colors">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
+    <img id="dhl-img" src="" alt="" class="max-w-[88vw] max-h-[80vh] rounded-2xl shadow-2xl object-contain select-none">
+    <button id="dhl-next" class="absolute right-3 sm:right-6 w-11 h-11 rounded-full bg-white/10 hover:bg-white/25 text-white flex items-center justify-center z-10 transition-colors">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>
+    </button>
+    <p id="dhl-label" class="absolute bottom-5 inset-x-0 text-center text-white/85 text-sm font-semibold"></p>
+  </div>
+
   <div id="footer"></div>
 
 
   <script type="module">
-    import { initNav, initFooter } from './js/components.js?v=20260727k';
-    import { getCurrentUser, loginWithGoogle } from './js/auth.js?v=20260727k';
-    import { API_BASE } from './js/api.js?v=20260727k';
-    import { initDesignWidget } from './js/design-widget.js?v=20260727k';
+    import { initNav, initFooter } from './js/components.js?v=20260727f';
+    import { getCurrentUser, loginWithGoogle } from './js/auth.js?v=20260727f';
+    import { API_BASE } from './js/api.js?v=20260727f';
+    import { initDesignWidget } from './js/design-widget.js?v=20260727f';
 
     initNav();
     initFooter();
@@ -98,7 +113,7 @@
       return d.toLocaleString('en-CA', { year:'numeric', month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' });
     }
 
-    function card(r) {
+    function card(r, i) {
       const orderBtn = r.productType === 'HERO' ? '' : `
         <button data-order='${JSON.stringify(r).replace(/'/g, '&#39;')}'
           class="dh-order flex-1 py-2.5 bg-accent-500 hover:bg-accent-600 text-white text-sm font-bold rounded-lg transition-colors">
@@ -107,7 +122,8 @@
       return `
         <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden card-hover flex flex-col">
           <div class="aspect-[4/3] bg-gray-50 overflow-hidden">
-            <img src="${r.imageUrl}" alt="${r.productLabel}" loading="lazy" class="w-full h-full object-cover">
+            <img src="${r.imageUrl}" alt="${r.productLabel}" loading="lazy" data-zoom="${i}"
+                 class="w-full h-full object-cover cursor-zoom-in">
           </div>
           <div class="p-4 flex flex-col flex-1">
             <p class="font-bold text-gray-900 text-sm truncate">${r.productLabel}</p>
@@ -157,11 +173,47 @@
       }));
     }
 
+    let dhView = [];
     function renderGrid() {
       const kit = dhKits.find(x => x.brandText === dhActive);
-      const items = dhActive === 'ALL' || !kit ? allItems : allItems.filter(i => matchKit(i, kit));
-      $('dh-grid').innerHTML = items.map(card).join('');
+      dhView = dhActive === 'ALL' || !kit ? allItems.slice() : allItems.filter(i => matchKit(i, kit));
+      $('dh-grid').innerHTML = dhView.map((r, i) => card(r, i)).join('');
     }
+
+    // ── Banner 装饰：最近 4 张生成图（小尺寸，错落两列）──
+    function renderDeco() {
+      const four = allItems.slice(0, 4);
+      const d = $('dh-deco');
+      if (four.length < 2) { d.innerHTML = ''; return; }
+      const im = (r, extra) => `
+        <img src="${r.imageUrl}" alt="" loading="lazy"
+             class="w-20 h-20 lg:w-24 lg:h-24 object-cover rounded-xl border-2 border-white/25 shadow-lg ${extra}">`;
+      d.innerHTML = `
+        <div class="flex flex-col gap-3">${four.slice(0, 2).map(r => im(r, '-rotate-2')).join('')}</div>
+        <div class="flex flex-col gap-3 translate-y-5">${four.slice(2, 4).map(r => im(r, 'rotate-2')).join('')}</div>`;
+    }
+
+    // ── 图片放大浏览（前后箭头 / 键盘 / 点击背景关闭）──
+    let dhLbIdx = 0;
+    function dhLbShow(i) {
+      if (!dhView.length) return;
+      dhLbIdx = (i + dhView.length) % dhView.length;
+      const r = dhView[dhLbIdx];
+      $('dhl-img').src = r.imageUrl;
+      $('dhl-label').textContent = r.productLabel || '';
+      $('dh-lightbox').classList.remove('hidden');
+    }
+    const dhLbClose = () => $('dh-lightbox').classList.add('hidden');
+    $('dhl-close').addEventListener('click', dhLbClose);
+    $('dhl-prev').addEventListener('click', () => dhLbShow(dhLbIdx - 1));
+    $('dhl-next').addEventListener('click', () => dhLbShow(dhLbIdx + 1));
+    $('dh-lightbox').addEventListener('click', (e) => { if (e.target === e.currentTarget) dhLbClose(); });
+    document.addEventListener('keydown', (e) => {
+      if ($('dh-lightbox').classList.contains('hidden')) return;
+      if (e.key === 'Escape') dhLbClose();
+      else if (e.key === 'ArrowLeft') dhLbShow(dhLbIdx - 1);
+      else if (e.key === 'ArrowRight') dhLbShow(dhLbIdx + 1);
+    });
 
     async function load() {
       const user = await getCurrentUser();
@@ -180,6 +232,7 @@
         renderGrid();
         show('dh-grid');
         renderFilters();
+        renderDeco();
       } catch {
         show(user ? 'dh-empty' : 'dh-login');
       }
@@ -204,14 +257,17 @@
     window.addEventListener('fp:redo-done', (e) => {
       const r = { ...e.detail, createdAt: new Date().toISOString() };
       allItems.unshift(r);
-      const gen = document.querySelector('.dh-gen');
-      if (gen) gen.outerHTML = card(r); else renderGrid();
+      renderGrid();          // 重排 zoom 索引并把新卡放到最前
+      renderDeco();
+      document.querySelector('.dh-gen')?.remove();
     });
     window.addEventListener('fp:redo-fail', () =>
       document.querySelector('.dh-gen')?.remove());
 
     // ── Order / Redesign: delegate to the shared design-modal flows ──
     document.getElementById('dh-grid').addEventListener('click', (e) => {
+      const zoom = e.target.closest('img[data-zoom]');
+      if (zoom) { dhLbShow(parseInt(zoom.dataset.zoom, 10)); return; }
       const order = e.target.closest('.dh-order');
       if (order) { window.fpOrder(JSON.parse(order.dataset.order)); return; }
       const redo = e.target.closest('.dh-redo');
