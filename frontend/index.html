@@ -18,7 +18,7 @@
   <meta name="twitter:title" content="Custom Restaurant Takeout Packaging Canada | AI Design in 5 Minutes – foodPac" />
   <meta name="twitter:description" content="Branded takeout packaging for Canadian restaurants. AI-powered design in 5 minutes, 100% compostable materials, low 1,000-unit minimums, delivered across Canada." />
   <meta name="twitter:image" content="https://foodpac.ai/assets/images/hero-box.jpg?v=2" />
-  <link rel="stylesheet" href="css/tailwind.css?v=20260727g">
+  <link rel="stylesheet" href="css/tailwind.css?v=20260727h">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
@@ -662,10 +662,10 @@
   </script>
 
   <script type="module">
-    import { initNav, initFooter } from './js/components.js?v=20260727g';
-    import { initDesignModal } from './js/design-modal.js?v=20260727g';
-    import { getProducts } from './js/products.js?v=20260727g';
-    import { getStyle, shuffleStyle, styleImg } from './js/styles.js?v=20260727g';
+    import { initNav, initFooter } from './js/components.js?v=20260727h';
+    import { initDesignModal } from './js/design-modal.js?v=20260727h';
+    import { getProducts } from './js/products.js?v=20260727h';
+    import { getStyle, setStyle, shuffleStyle, styleImg, randomStyle, randomStyleIn, styleTypeForRestaurant } from './js/styles.js?v=20260727h';
 
     initNav();
     initFooter();
@@ -697,7 +697,20 @@
       shuffleStyle();   // 触发 fp:style 事件 → 下面的监听换图
     };
     window.addEventListener('fp:style', e => fpApplyHeroStyle(e.detail));
-    fpApplyHeroStyle(getStyle(), false);
+
+    // 每次刷新随机展示一组风格；用户此前填过餐厅类型 → 在对应菜系内随机
+    const fpFirst = randomStyle();
+    setStyle(fpFirst.type.id, fpFirst.style.id);
+    fetch('/api/v1/design/kits', { credentials: 'include' })
+      .then(r => r.ok ? r.json() : null)
+      .then(d => {
+        const rt = (d?.kits || []).map(k => k.restaurantType).find(Boolean);
+        const tid = styleTypeForRestaurant(rt);
+        if (tid && tid !== getStyle().type.id) {
+          const s = randomStyleIn(tid);
+          setStyle(s.type.id, s.style.id);
+        }
+      }).catch(() => {});
 
     // 分类 tab 产品数据：与产品页共用 products.js（每类展示前 8 个）
     const TAG_CLS = { orange:'bg-accent-500', green:'bg-primary-700', blue:'bg-sky-600', gray:'bg-gray-700' };

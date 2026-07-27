@@ -55,6 +55,28 @@ export function randomStyle(excludeTypeId, excludeStyleId) {
   return pool[Math.floor(Math.random() * pool.length)];
 }
 
+/** Random style WITHIN one library type (falls back to global random). */
+export function randomStyleIn(typeId) {
+  const t = STYLE_LIBRARY.find(x => x.id === typeId);
+  if (!t) return randomStyle();
+  const s = t.styles[Math.floor(Math.random() * t.styles.length)];
+  return { type: t, style: s };
+}
+
+/**
+ * Form "Restaurant type" value → style library type id (null = no match yet).
+ * Extend the matchers as more cuisine style sets ship.
+ */
+const RESTAURANT_MATCHERS = [
+  { re: /chinese|cantonese|dim sum|sichuan|hunan|hot pot/i, type: 'chinese' },
+  { re: /burger|fast food|fried chicken|food truck/i, type: 'fastfood' },
+];
+export function styleTypeForRestaurant(rt) {
+  if (!rt) return null;
+  const m = RESTAURANT_MATCHERS.find(x => x.re.test(rt));
+  return m && STYLE_LIBRARY.some(t => t.id === m.type) ? m.type : null;
+}
+
 const LS_KEY = 'fp_style';
 let _current = null;
 
