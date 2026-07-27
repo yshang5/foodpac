@@ -13,9 +13,9 @@
  *   window.fpChipBusy(on)     — toggle the chip generating animation
  */
 
-import { loginWithGoogle } from './auth.js?v=20260727l';
-import { _refreshCartBadge } from './components.js?v=20260727l';
-import { STYLE_LIBRARY, styleImg, getStyle, setStyle } from './styles.js?v=20260727l';
+import { loginWithGoogle } from './auth.js?v=20260727m';
+import { _refreshCartBadge } from './components.js?v=20260727m';
+import { STYLE_LIBRARY, styleImg, getStyle, setStyle } from './styles.js?v=20260727m';
 
 const FP_CSS = `
   .fp-swatch.sel { outline: 3px solid #1b5e20; outline-offset: 2px; }
@@ -30,8 +30,6 @@ const FP_CSS = `
     0%,100% { box-shadow: 0 10px 15px -3px rgba(0,0,0,.25); }
     50%     { box-shadow: 0 0 18px 4px rgba(245,124,0,.6); }
   }
-  /* When the Design Online FAB is present, stack the chip above it */
-  body:has(#fp-fab) #fp-dock-chip { bottom: 5.5rem; }
 `;
 
 const FP_HTML = `
@@ -223,12 +221,18 @@ const FP_HTML = `
     <div id="fp-dock-grid" class="flex lg:flex-col gap-4 p-4 overflow-x-auto lg:overflow-x-hidden lg:overflow-y-auto no-scrollbar"></div>
   </div>
 
-  <!-- 收起后的悬浮胶囊 -->
-  <button id="fp-dock-chip" onclick="fpToggleDock(true)"
-    class="hidden fixed bottom-5 right-5 z-[9980] items-center gap-2.5 px-5 py-3 bg-primary-800 hover:bg-primary-900 text-white text-sm font-bold rounded-2xl shadow-xl">
-    <img src="assets/images/logo-icon-v2.png?v=9" alt="" class="fp-chip-icon w-5 h-5 rounded-full bg-white/90 object-contain">
-    My Designs <span id="fp-chip-count" class="bg-accent-500 text-white text-xs font-bold rounded-full px-2 py-0.5"></span>
-  </button>
+  <!-- 悬浮入口：无设计 = Design Online 单按钮；有设计 = + New | My Designs (n) -->
+  <div id="fp-dock-chip"
+    class="hidden fixed bottom-5 right-5 z-[9980] items-stretch rounded-2xl shadow-xl overflow-hidden">
+    <button id="fp-chip-new" onclick="fpOpenDesign()" title="Start a new design"
+      class="hidden items-center px-4 bg-accent-500 hover:bg-accent-600 text-white text-sm font-bold border-r border-white/25 whitespace-nowrap">+ New</button>
+    <button id="fp-chip-main"
+      class="flex items-center gap-2.5 px-4 py-3 bg-primary-800 hover:bg-primary-900 text-white text-sm font-bold whitespace-nowrap">
+      <img src="assets/images/logo-icon-v2.png?v=9" alt="" class="fp-chip-icon w-5 h-5 rounded-full bg-white/90 object-contain">
+      <span id="fp-chip-label">Design Online</span>
+      <span id="fp-chip-count" class="hidden bg-accent-500 text-white text-xs font-bold rounded-full px-2 py-0.5"></span>
+    </button>
+  </div>
 
   <!-- ══════════ 下单弹窗（选中设计 → 选规格 → 加购）══════════ -->
   <div id="fp-order-modal" class="hidden fixed inset-0 bg-black/60 z-[9992] flex items-center justify-center p-4">
@@ -487,17 +491,27 @@ export function initDesignModal() {
     const fpChipBusy = window.fpChipBusy = (on) =>
       document.getElementById('fp-dock-chip')?.classList.toggle('generating', on);
 
+    /** 悬浮入口形态：0 设计 = 单个 Design Online；有设计 = + New | My Designs (n) */
+    function fpChipSync() {
+      const n = fpSeen.size;
+      document.getElementById('fp-dock-count').textContent = n ? `(${n})` : '';
+      const neu = document.getElementById('fp-chip-new');
+      neu.classList.toggle('hidden', n === 0);
+      neu.classList.toggle('flex', n > 0);
+      document.getElementById('fp-chip-label').textContent = n === 0 ? 'Design Online' : 'My Designs';
+      const cnt = document.getElementById('fp-chip-count');
+      cnt.textContent = n;
+      cnt.classList.toggle('hidden', n === 0);
+    }
+    document.getElementById('fp-chip-main').addEventListener('click', () =>
+      fpSeen.size === 0 ? window.fpOpenDesign() : window.fpToggleDock(true));
+
     /** Push an externally-generated result (e.g. hero swap) into My Designs */
     window.fpAddResult = (r) => {
       if (fpSeen.has(r.id)) return;
       fpSeen.add(r.id);
       document.getElementById('fp-dock-grid').insertAdjacentHTML('afterbegin', fpCard(r));
-      document.getElementById('fp-dock-count').textContent = `(${fpSeen.size})`;
-      document.getElementById('fp-chip-count').textContent = fpSeen.size;
-      const chip = document.getElementById('fp-dock-chip');
-      if (document.getElementById('fp-dock').classList.contains('hidden')) {
-        chip.classList.remove('hidden'); chip.classList.add('flex');
-      }
+      fpChipSync();
     };
 
     // ── 历史分页：默认最近 20 条，滚动到底继续加载 ──
@@ -517,8 +531,9 @@ export function initDesignModal() {
     window.fpToggleDock = (show) => {
       document.getElementById('fp-dock').classList.toggle('hidden', !show);
       const chip = document.getElementById('fp-dock-chip');
-      chip.classList.toggle('hidden', show || fpSeen.size === 0);
-      chip.classList.toggle('flex', !show && fpSeen.size > 0);
+      chip.classList.toggle('hidden', !!show);
+      chip.classList.toggle('flex', !show);
+      fpChipSync();
     };
 
     // 文件选择预览
@@ -663,8 +678,7 @@ export function initDesignModal() {
           if (skel) skel.remove();
           grid.insertAdjacentHTML('beforeend', fpCard(r));
         });
-        document.getElementById('fp-dock-count').textContent = `(${fpSeen.size})`;
-        document.getElementById('fp-chip-count').textContent = fpSeen.size;
+        fpChipSync();
         const st = document.getElementById('fp-dock-status');
         if (job.status === 'COMPLETED') {
           st.textContent = 'Done — pick one to order.';
@@ -746,8 +760,7 @@ export function initDesignModal() {
               clearInterval(timer);
               fpSeen.add(r.id);
               skel.outerHTML = fpCard(r);
-              document.getElementById('fp-dock-count').textContent = `(${fpSeen.size})`;
-              document.getElementById('fp-chip-count').textContent = fpSeen.size;
+              fpChipSync();
               document.getElementById('fp-dock-status').textContent = 'Done — pick one to order.';
               fpChipBusy(false);
               window.dispatchEvent(new CustomEvent('fp:redo-done', { detail: r }));
@@ -765,8 +778,7 @@ export function initDesignModal() {
     window.fpDeleteItem = async (id) => {
       document.getElementById(`fp-item-${id}`)?.remove();
       fpSeen.delete(id);
-      document.getElementById('fp-dock-count').textContent = `(${fpSeen.size})`;
-      document.getElementById('fp-chip-count').textContent = fpSeen.size;
+      fpChipSync();
       try { await fetch(`${FP_API}/design/job-items/${id}`, { method: 'DELETE', credentials: 'include' }); } catch {}
     };
 
@@ -837,6 +849,14 @@ export function initDesignModal() {
       }
     });
 
+    // 悬浮入口常驻（0 设计时 = Design Online 单按钮）
+    {
+      const chip = document.getElementById('fp-dock-chip');
+      chip.classList.remove('hidden');
+      chip.classList.add('flex');
+      fpChipSync();
+    }
+
     // 页面加载：登录用户先合并游客历史，然后加载完整 My Designs
     (async () => {
       try {
@@ -852,14 +872,9 @@ export function initDesignModal() {
           fpHistory = items.filter(r => !fpSeen.has(r.id));
           fpHistory.forEach(r => fpSeen.add(r.id));
           fpRenderMore(20);
-          if (fpSeen.size > 0) {
-            document.getElementById('fp-dock-count').textContent = `(${fpSeen.size})`;
-            document.getElementById('fp-chip-count').textContent = fpSeen.size;
+          fpChipSync();
+          if (fpSeen.size > 0)
             document.getElementById('fp-dock-status').textContent = 'Your saved designs';
-            const chip = document.getElementById('fp-dock-chip');
-            chip.classList.remove('hidden');
-            chip.classList.add('flex');
-          }
         }
       } catch {}
       // 上一个任务还在生成中则继续轮询

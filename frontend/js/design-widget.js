@@ -6,23 +6,11 @@
  * redirect to the homepage. The old Packify chat widget has been retired.
  */
 
-import { initDesignModal } from './design-modal.js?v=20260727l';
+import { initDesignModal } from './design-modal.js?v=20260727m';
 
 export function initDesignWidget() {
+  // 悬浮入口由 design-modal 统一提供（0 设计 = Design Online；有设计 = + New | My Designs）
   initDesignModal();
-
-  if (!document.getElementById('fp-fab')) {
-    document.body.insertAdjacentHTML('beforeend', `
-      <button id="fp-fab" onclick="fpOpenDesign()"
-        class="fixed bottom-6 right-6 z-50 flex items-center gap-2.5 px-5 py-3.5
-               bg-accent-500 hover:bg-accent-600 text-white text-sm font-bold rounded-2xl
-               shadow-lg shadow-accent-500/30 hover:shadow-xl hover:shadow-accent-500/40
-               hover:-translate-y-0.5 transition-all duration-200">
-        <img src="assets/images/logo-icon-v2.png?v=9" alt="" class="w-5 h-5 shrink-0 rounded-full bg-white/90 object-contain">
-        Design Online
-      </button>
-    `);
-  }
 
   // Any element marked data-open-design also opens the design modal
   document.querySelectorAll('[data-open-design]').forEach(el => {
