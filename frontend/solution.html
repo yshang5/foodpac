@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/x-icon" href="assets/images/favicon.ico?v=2">
+  <link rel="apple-touch-icon" href="assets/images/apple-touch-icon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Restaurant Packaging Solutions – foodPac</title>
+  <meta name="description" content="Complete branded takeout packaging solutions by restaurant type — curated design styles, matched product sets, AI-generated brand demos, delivered across Canada." />
+  <link rel="canonical" href="https://foodpac.ai/solution.html" />
+  <link rel="stylesheet" href="css/tailwind.css?v=20260727x">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/main.css">
+  <style>
+    .hero-gradient { background: linear-gradient(135deg, #0d3311 0%, #1b5e20 45%, #2e7d32 100%); }
+    .card-hover { transition: transform .2s ease, box-shadow .2s ease; }
+    .card-hover:hover { transform: translateY(-4px); box-shadow: 0 20px 40px rgba(0,0,0,.12); }
+  </style>
+</head>
+<body class="font-sans text-gray-800 bg-white">
+
+  <div id="navbar"></div>
+
+  <!-- ── BANNER ────────────────────────────────────────────── -->
+  <section class="hero-gradient text-white py-16 relative overflow-hidden">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <p class="text-primary-200 text-sm font-medium mb-3 uppercase tracking-wider">Industry Solution</p>
+      <h1 id="sol-title" class="text-4xl lg:text-5xl font-extrabold mb-4 max-w-2xl"></h1>
+      <p id="sol-sub" class="text-white/75 text-lg max-w-2xl mb-8"></p>
+      <button onclick="document.getElementById('sol-styles').scrollIntoView({behavior:'smooth'})"
+              class="inline-flex items-center gap-2.5 px-7 py-3.5 bg-accent-500 hover:bg-accent-600 text-white font-bold rounded-xl transition-colors shadow-xl shadow-black/20">
+        ✨ Pick a Style & Generate My Store Demo
+      </button>
+    </div>
+    <div id="sol-deco" class="hidden lg:block absolute right-10 xl:right-20 top-1/2 -translate-y-1/2 z-0 w-80"></div>
+  </section>
+
+  <!-- ── STYLES（6 组，一排 6 个全家福）───────────────────── -->
+  <section id="sol-styles" class="py-14 scroll-mt-36">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-wrap items-end justify-between gap-4 mb-8">
+        <div>
+          <h2 class="text-3xl font-extrabold text-gray-900 mb-1">1 · Choose Your Style</h2>
+          <p class="text-gray-500">Six curated packaging styles for this cuisine — pick the one that feels like your restaurant.</p>
+        </div>
+        <button id="sol-generate"
+                class="px-6 py-3 bg-accent-500 hover:bg-accent-600 text-white font-bold rounded-xl transition-colors shadow-lg shadow-accent-500/25">
+          ✨ Generate My Store Packaging Demo
+        </button>
+      </div>
+      <div id="sol-style-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4"></div>
+    </div>
+  </section>
+
+  <!-- ── PRODUCTS（该菜系关联产品）────────────────────────── -->
+  <section class="py-14 bg-gray-50 border-t border-gray-100">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-3xl font-extrabold text-gray-900 mb-1">2 · Everything Your Restaurant Needs</h2>
+      <p id="sol-prod-sub" class="text-gray-500 mb-8">Generate your demo above, then click any item to pick a size, see the price and add it to your cart.</p>
+      <div id="sol-products" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"></div>
+    </div>
+  </section>
+
+  <div id="footer"></div>
+
+  <script type="module">
+    import { initNav, initFooter } from './js/components.js?v=20260727x';
+    import { getProducts } from './js/products.js?v=20260727x';
+    import { initDesignModal } from './js/design-modal.js?v=20260727x';
+    import { STYLE_LIBRARY, styleImg, setStyle, getStyle } from './js/styles.js?v=20260727x';
+
+    initNav('solutions');
+    initFooter();
+    initDesignModal();
+
+    const FP_API = '/api/v1';
+    const params = new URLSearchParams(location.search);
+    const lib = STYLE_LIBRARY.find(t => t.id === params.get('type')) || STYLE_LIBRARY[0];
+
+    // ── SEO ──
+    const SEO_BLURBS = {
+      chinese: 'takeout pails, soup bowls, chopstick sets and carry bags',
+      fastfood: 'burger clamshells, fry holders, drink cups and carry bags',
+      japanese: 'bento boxes, soup bowls, chopstick sets and carry bags',
+      korean: 'fried chicken boxes, bento boxes, soup bowls and carry bags',
+      seasian: 'noodle boxes, pho bowls, boba cups and carry bags',
+      indian: 'compartment trays, curry containers, insulated bags and more',
+      mideast: 'wrap papers, compartment trays, fiber bowls and carry bags',
+      mexican: 'taco holders, food trays, salsa cups and carry bags',
+      italian: 'pizza boxes, pasta containers, cups and carry bags',
+      grill: 'clamshells, food trays, wrap papers and wet wipes',
+      seafood: 'clamshells, fry holders, wrap papers and carry bags',
+      cafe: 'hot cups, sleeves, pastry boxes and bakery bags',
+      bakery: 'pastry boxes, donut boxes, ice-cream cups and gift bags',
+      healthy: 'salad bowls, meal-prep containers, acai bowls and cutlery',
+    };
+    document.title = `${lib.label} Restaurant Packaging Solution | Custom Branded Takeout Packaging – foodPac`;
+    document.querySelector('meta[name="description"]').content =
+      `Complete branded takeout packaging for ${lib.label} restaurants in Canada: ${SEO_BLURBS[lib.id] || 'boxes, cups, bags and more'}. Six curated design styles, free AI brand demo in minutes, low 1,000-unit minimums.`;
+    document.querySelector('link[rel="canonical"]').href = `https://foodpac.ai/solution.html?type=${lib.id}`;
+    const ld = document.createElement('script');
+    ld.type = 'application/ld+json';
+    ld.textContent = JSON.stringify({
+      '@context': 'https://schema.org', '@type': 'Service',
+      name: `${lib.label} Restaurant Packaging Solution`,
+      provider: { '@type': 'Organization', name: 'foodPac', url: 'https://foodpac.ai/' },
+      areaServed: { '@type': 'Country', name: 'Canada' },
+      description: `Branded takeout packaging sets for ${lib.label} restaurants — curated designs, AI brand demos, nationwide delivery.`,
+      url: `https://foodpac.ai/solution.html?type=${lib.id}`,
+    });
+    document.head.appendChild(ld);
+
+    // ── Banner ──
+    document.getElementById('sol-title').textContent = `${lib.label} Packaging, Branded as Yours`;
+    document.getElementById('sol-sub').textContent =
+      `Every box, cup and bag a ${lib.label.toLowerCase()} restaurant needs — pick a style, enter your brand once, and we'll generate your complete packaging set in minutes.`;
+    const deco = lib.styles.slice(0, 4);
+    document.getElementById('sol-deco').innerHTML = `
+      <div class="grid grid-cols-2 gap-2">${deco.map((s, i) => `
+        <img src="${styleImg(lib.id, s.id, i === 0 ? 'family' : ['box','cup','bag'][i-1])}" alt=""
+             loading="lazy" class="w-full aspect-square object-cover rounded-xl border border-white/25 shadow-lg">`).join('')}
+      </div>`;
+
+    // ── Styles 选择行 ──
+    let solStyle = lib.styles[0].id;
+    setStyle(lib.id, solStyle);
+    function renderStyles() {
+      document.getElementById('sol-style-grid').innerHTML = lib.styles.map(s => `
+        <button type="button" data-s="${s.id}" class="sol-style group text-left">
+          <div class="relative aspect-[3/2] bg-gray-100 rounded-xl overflow-hidden border-2 ${s.id === solStyle ? 'border-primary-700' : 'border-transparent group-hover:border-primary-300'} transition-colors">
+            <img src="${styleImg(lib.id, s.id, 'family')}" alt="${s.label} packaging style" loading="lazy"
+                 class="w-full h-full object-cover">
+            ${s.id === solStyle ? '<span class="absolute top-2 right-2 w-6 h-6 bg-primary-700 text-white rounded-full flex items-center justify-center text-xs font-bold">✓</span>' : ''}
+          </div>
+          <p class="text-sm font-bold text-gray-800 mt-2 truncate">${s.label}</p>
+        </button>`).join('');
+      document.querySelectorAll('.sol-style').forEach(b => b.addEventListener('click', () => {
+        solStyle = b.dataset.s;
+        setStyle(lib.id, solStyle);
+        renderStyles();
+      }));
+    }
+    renderStyles();
+
+    // ── 关联产品（cuisines 命中 + 通用品补齐，cap 12）──
+    const all = getProducts('all');
+    const matched = all.filter(x => (x.cuisines || []).includes(lib.id));
+    const universal = all.filter(x => !x.cuisines || !x.cuisines.length);
+    const solProducts = matched.concat(universal).slice(0, 12);
+
+    let solItems = {};   // productId(去扩展名) → 生成结果 item
+    function cardHtml(x) {
+      const base = x.image.split('/').pop().replace(/\.(jpg|png)$/, '');
+      const item = solItems[base];
+      return `
+        <div class="sol-card bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden card-hover ${item ? 'cursor-pointer' : ''}" data-base="${base}">
+          <div class="relative aspect-square bg-gray-50 overflow-hidden">
+            <img src="${item ? item.imageUrl : x.image}" alt="${x.name}" loading="lazy" class="w-full h-full object-cover">
+            <div class="sol-glass hidden absolute inset-0 fp-genglass flex-col items-center justify-center gap-2">
+              <img src="assets/images/logo-icon-v2.png?v=9" alt="" class="fp-genspin w-8 h-8 rounded-full bg-white/90 object-contain p-0.5 shadow">
+              <span class="text-xs font-bold text-gray-700 bg-white/80 rounded-full px-3 py-1">Generating…</span>
+            </div>
+            ${item ? '<span class="absolute top-2 left-2 bg-primary-700 text-white text-xs font-bold px-2.5 py-1 rounded-full">Your brand</span>' : ''}
+          </div>
+          <div class="p-4">
+            <h3 class="font-bold text-gray-900 text-sm leading-snug mb-1">${x.name}</h3>
+            <p class="text-xs text-gray-500 mb-2.5">From <b class="text-gray-900">$${x.price}</b> + Shipping · MOQ ${x.moq}</p>
+            ${item
+              ? '<span class="inline-flex items-center gap-1.5 text-xs font-bold text-white bg-accent-500 rounded-lg px-3 py-1.5">🛒 Pick Size & Order</span>'
+              : `<a href="product.html?id=${x.id}" class="text-xs font-semibold text-primary-800 hover:underline">View product ›</a>`}
+          </div>
+        </div>`;
+    }
+    function renderProducts() {
+      document.getElementById('sol-products').innerHTML = solProducts.map(cardHtml).join('');
+      document.querySelectorAll('.sol-card').forEach(el => el.addEventListener('click', (e) => {
+        const item = solItems[el.dataset.base];
+        if (!item) return;               // 未生成时卡内链接自行跳转
+        e.preventDefault();
+        window.fpOrder(item);            // 复用下单弹窗：尺寸/数量/报价/加购
+      }));
+    }
+    renderProducts();
+
+    // ── 生成整套 Demo ──
+    document.getElementById('sol-generate').addEventListener('click', () => window.fpOpenDesign('solution'));
+
+    window.fpSolutionStart = async ({ brandText, brandColor, logoFile }) => {
+      const glasses = document.querySelectorAll('.sol-glass');
+      glasses.forEach(g => { g.classList.remove('hidden'); g.classList.add('flex'); });
+      window.fpChipBusy?.(true);
+      const stop = () => {
+        document.querySelectorAll('.sol-glass').forEach(g => { g.classList.add('hidden'); g.classList.remove('flex'); });
+        window.fpChipBusy?.(false);
+      };
+      try {
+        const res = await fetch(`${FP_API}/design/apply-bulk`, {
+          method: 'POST', credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            styleType: lib.id, styleId: solStyle,
+            brandText, brandColor, logoFile,
+            products: solProducts.map(x => ({
+              image: x.image.split('/').pop(),
+              label: x.name,
+              type: ({ boxes:'BOX', cups:'CUP', bags:'BAG', bowls:'BOWL', wraps:'WRAP', cutlery:'CUTLERY' })[x.category] || 'BOX'
+            }))
+          })
+        });
+        if (res.status === 401) {
+          stop();
+          document.getElementById('fp-login-modal').classList.remove('hidden');
+          return;
+        }
+        if (!res.ok) throw new Error();
+        const { jobId } = await res.json();
+        const timer = setInterval(async () => {
+          try {
+            const jr = await fetch(`${FP_API}/design/jobs/${jobId}`, { credentials: 'include' });
+            if (!jr.ok) { clearInterval(timer); stop(); return; }
+            const job = await jr.json();
+            job.results.forEach(r => {
+              if (!solItems[r.productId]) {
+                solItems[r.productId] = r;
+                window.fpAddResult?.(r);
+              }
+            });
+            if (job.status === 'COMPLETED' || job.status === 'FAILED') {
+              clearInterval(timer);
+              stop();
+              renderProducts();
+              document.getElementById('sol-prod-sub').innerHTML =
+                '<b class="text-primary-800">Your branded set is ready</b> — click any item to pick a size, see the price and add it to your cart.';
+            }
+          } catch {}
+        }, 3000);
+      } catch {
+        stop();
+      }
+    };
+  </script>
+</body>
+</html>

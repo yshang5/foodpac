@@ -11,17 +11,34 @@
  *   </script>
  */
 
-import { getCurrentUser, loginWithGoogle, logout } from './auth.js?v=20260727w';
-import { avatarHtml } from './avatar.js?v=20260727w';
-import { API_BASE } from './api.js?v=20260727w';
+import { getCurrentUser, loginWithGoogle, logout } from './auth.js?v=20260726f';
+import { avatarHtml } from './avatar.js?v=20260726f';
+import { API_BASE } from './api.js?v=20260726f';
 
 const CART_PENDING_KEY = '_fp_pendingCart';
 
 const NAV_LINKS = [
-  { key: 'solutions', label: 'Solutions',    href: 'index.html#restaurant-types' },
   { key: 'why',       label: 'Why foodPac',  href: 'index.html#how-it-works' },
   { key: 'how',       label: 'How It Works', href: 'index.html#ai-design' },
   { key: 'about',     label: 'About',        href: 'about.html' },
+];
+
+/** Industry solutions shown in the Solutions dropdown（与 styles.js 的库 id 一致） */
+const NAV_SOLUTIONS = [
+  { key: 'chinese',  icon: '🥡', label: 'Chinese Cuisine' },
+  { key: 'fastfood', icon: '🍔', label: 'Burgers & Fast Food' },
+  { key: 'japanese', icon: '🍣', label: 'Japanese & Sushi' },
+  { key: 'korean',   icon: '🍲', label: 'Korean' },
+  { key: 'seasian',  icon: '🍜', label: 'Thai & Vietnamese' },
+  { key: 'indian',   icon: '🍛', label: 'Indian' },
+  { key: 'mideast',  icon: '🥙', label: 'Middle Eastern & Greek' },
+  { key: 'mexican',  icon: '🌮', label: 'Mexican' },
+  { key: 'italian',  icon: '🍕', label: 'Italian & Pizza' },
+  { key: 'grill',    icon: '🍖', label: 'BBQ & Grill' },
+  { key: 'seafood',  icon: '🐟', label: 'Seafood & Fish' },
+  { key: 'cafe',     icon: '☕', label: 'Cafe & Brunch' },
+  { key: 'bakery',   icon: '🥐', label: 'Bakery & Desserts' },
+  { key: 'healthy',  icon: '🥗', label: 'Salad & Poke' },
 ];
 
 /** Product categories shown in the nav mega-dropdown */
@@ -114,7 +131,36 @@ export async function initNav(activePage = '') {
       </div>
     </div>`;
 
-  const links = productsDropdown + NAV_LINKS.map(({ key, label, href }) => {
+  // Solutions — industry dropdown (one entry per cuisine, links to solution.html)
+  const solutionItems = NAV_SOLUTIONS.map(({ key, icon, label }) => `
+    <a href="solution.html?type=${key}"
+       class="group/sol flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-primary-50 transition-colors">
+      <span class="text-xl leading-none">${icon}</span>
+      <span class="text-sm font-semibold text-gray-800 group-hover/sol:text-primary-800">${label}</span>
+      <span aria-hidden="true" class="ml-auto text-primary-700 opacity-0 group-hover/sol:opacity-100">›</span>
+    </a>`).join('');
+
+  const solutionsDropdown = `
+    <div class="group">
+      <a href="solution.html?type=chinese"
+         class="nav-link px-5 py-7 text-[15px] font-medium transition-colors inline-flex items-center gap-1
+           ${activePage === 'solutions' ? 'text-primary-800' : 'text-gray-700 hover:text-primary-800'}">
+        Solutions
+        <svg class="w-3.5 h-3.5 transition-transform group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+        </svg>
+      </a>
+      <div class="invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-150
+                  fixed left-1/2 -translate-x-1/2 top-[117px] z-[60] w-[min(640px,94vw)]
+                  bg-white rounded-2xl shadow-2xl border border-gray-100 p-4">
+        <p class="px-3 pt-1 pb-2 text-xs font-bold text-gray-400 uppercase tracking-wider">Packaging solutions by restaurant type</p>
+        <div class="grid grid-cols-2 gap-1">
+          ${solutionItems}
+        </div>
+      </div>
+    </div>`;
+
+  const links = productsDropdown + solutionsDropdown + NAV_LINKS.map(({ key, label, href }) => {
     const isActive = key === activePage;
     return `<a href="${href}"
       class="nav-link px-5 py-7 text-[15px] font-medium transition-colors inline-flex items-center
@@ -128,9 +174,16 @@ export async function initNav(activePage = '') {
         class="px-3 py-2 text-sm text-gray-500 hover:text-primary-800 hover:bg-primary-50 rounded-lg">${label}</a>`
   ).join('');
 
+  const mobileSolutionLinks = NAV_SOLUTIONS.map(({ key, icon, label }) =>
+    `<a href="solution.html?type=${key}"
+        class="px-3 py-2 text-sm text-gray-500 hover:text-primary-800 hover:bg-primary-50 rounded-lg">${icon} ${label}</a>`
+  ).join('');
+
   const mobileLinks = `
     <a href="products.html" class="px-4 py-3 text-[15px] font-medium text-gray-700 hover:text-primary-800 hover:bg-primary-50 rounded-lg transition-colors block">Products</a>
     <div class="grid grid-cols-2 gap-1 pl-6 pb-1">${mobileCategoryLinks}</div>
+    <a href="solution.html?type=chinese" class="px-4 py-3 text-[15px] font-medium text-gray-700 hover:text-primary-800 hover:bg-primary-50 rounded-lg transition-colors block">Solutions</a>
+    <div class="grid grid-cols-2 gap-1 pl-6 pb-1">${mobileSolutionLinks}</div>
   ` + NAV_LINKS.map(({ label, href }) =>
     `<a href="${href}" class="px-4 py-3 text-[15px] font-medium text-gray-700 hover:text-primary-800 hover:bg-primary-50 rounded-lg transition-colors block">${label}</a>`
   ).join('');

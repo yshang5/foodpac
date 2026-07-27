@@ -482,6 +482,100 @@ public class DesignFormService {
         }
     }
 
+    // ── Solutions: apply one style+brand to a whole product set (one job) ─────
+
+    /**
+     * One job that repaints every product photo of a solution page in the
+     * chosen style with the customer's brand — products stay geometrically
+     * untouched (they are the manufactured items), only the print changes.
+     * products entries: [imageFile, label, cartType].
+     */
+    public DesignJob createBulkJob(User user, String anonToken, String brandText,
+                                   String brandColor, String logoFile,
+                                   String styleType, String styleId,
+                                   java.util.List<String[]> products) {
+        DesignJob job = DesignJob.builder()
+                .user(user)
+                .anonToken(user == null ? anonToken : null)
+                .kind("BULK")
+                .brandText(brandText).brandColor(brandColor).logoFile(logoFile)
+                .styleType(styleType).styleId(styleId)
+                .status(DesignJob.Status.PENDING)
+                .build();
+        job = jobRepo.save(job);
+        String jobId = job.getId();
+        executor.submit(() -> runBulk(jobId, products));
+        return job;
+    }
+
+    private void runBulk(String jobId, java.util.List<String[]> products) {
+        DesignJob job = jobRepo.findById(jobId).orElse(null);
+        if (job == null) return;
+        try {
+            job.setStatus(DesignJob.Status.RUNNING);
+            jobRepo.save(job);
+            Files.createDirectories(STORAGE_DIR);
+
+            byte[] ref = Files.readAllBytes(
+                    styleTemplatePath(job.getStyleType(), job.getStyleId(), "family"));
+            byte[] logo = readStored(job.getLogoFile());
+            String brand = job.getBrandText();
+
+            var futures = products.stream()
+                    .map(p -> java.util.concurrent.CompletableFuture.runAsync(() -> {
+                        String image = p[0], label = p[1], cartType = p[2];
+                        try {
+                            byte[] template = Files.readAllBytes(productImagePath(image));
+                            String prompt = ("The FIRST image is the official product photo of our "
+                                + label + " — this is the EXACT physical item that will be "
+                                + "manufactured, so the product itself must NOT be modified in any "
+                                + "way: keep its geometry, proportions, die-line, folds, lids, "
+                                + "handles, closures, material, surface texture, finish, camera "
+                                + "angle, framing, lighting, shadows and background pixel-faithful "
+                                + "to the first image. The SECOND image shows a packaging design "
+                                + "system (placeholder brand 'Lunat') and is ONLY a graphic style "
+                                + "reference — ignore the products shown in it entirely. Transfer "
+                                + "that design language (patterns, borders, typography style, layout "
+                                + "spirit) onto the first product's printable surfaces, replacing "
+                                + "the brand name with \"" + brand + "\" (spell it EXACTLY)"
+                                + (job.getBrandColor() != null
+                                    ? " and shifting the printed color scheme to a cohesive palette built from "
+                                      + job.getBrandColor() + " (darker/lighter tints for hierarchy)"
+                                    : "")
+                                + (logo != null
+                                    ? ". The THIRD image is the brand logo — print it faithfully where the main logo sits"
+                                    : "")
+                                + ". If an element does not fit this product's surfaces, omit it "
+                                + "rather than altering the product. No other brand names, no "
+                                + "watermarks, nothing added to or removed from the scene.");
+                            byte[] png = aiImageService.rebrand(template, ref, logo, prompt);
+                            String base = image.replaceAll("\\.(jpg|png)$", "");
+                            String name = "gen-" + jobId + "-" + base + ".png";
+                            Files.write(STORAGE_DIR.resolve(name), png);
+                            itemRepo.save(DesignJobItem.builder()
+                                    .job(job)
+                                    .productId(base)
+                                    .productLabel(brandedLabel(brand, label))
+                                    .productType(cartType)
+                                    .imageUrl("/api/v1/design/files/" + name)
+                                    .build());
+                        } catch (Exception e) {
+                            log.warn("Bulk item {} failed: {}", image, e.getMessage());
+                        }
+                    }, imagePool))
+                    .toArray(java.util.concurrent.CompletableFuture[]::new);
+            java.util.concurrent.CompletableFuture.allOf(futures).join();
+
+            job.setStatus(DesignJob.Status.COMPLETED);
+            jobRepo.save(job);
+        } catch (Exception e) {
+            log.error("Bulk job {} failed", jobId, e);
+            job.setStatus(DesignJob.Status.FAILED);
+            job.setError(e.getMessage());
+            jobRepo.save(job);
+        }
+    }
+
     // ── Style-template generation (box/cup/bag/family of the chosen style) ────
 
     /**

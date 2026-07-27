@@ -13,9 +13,9 @@
  *   window.fpChipBusy(on)     — toggle the chip generating animation
  */
 
-import { loginWithGoogle } from './auth.js?v=20260727w';
-import { _refreshCartBadge } from './components.js?v=20260727w';
-import { STYLE_LIBRARY, styleImg, getStyle, setStyle } from './styles.js?v=20260727w';
+import { loginWithGoogle } from './auth.js?v=20260727x';
+import { _refreshCartBadge } from './components.js?v=20260727x';
+import { STYLE_LIBRARY, styleImg, getStyle, setStyle } from './styles.js?v=20260727x';
 
 const FP_CSS = `
   .fp-swatch.sel { outline: 3px solid #1b5e20; outline-offset: 2px; }
@@ -263,6 +263,7 @@ const FP_HTML = `
                  class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm">
           <p class="text-xs text-gray-400 mt-1">Minimum order: 1,000 units</p>
         </div>
+        <p id="fpo-quote" class="hidden text-sm bg-primary-50 border border-primary-100 text-primary-900 rounded-lg px-4 py-2.5"></p>
         <div id="fpo-error" class="hidden text-sm text-red-700 bg-red-50 border border-red-200 rounded-lg px-4 py-2.5"></div>
         <button type="submit" id="fpo-submit"
                 class="w-full py-3 bg-primary-800 hover:bg-primary-900 text-white font-bold rounded-xl transition-colors disabled:opacity-60">
@@ -594,6 +595,15 @@ export function initDesignModal() {
       try {
         const st = getStyle();
         let res;
+        if (fpModalMode === 'solution' && window.fpSolutionStart) {
+          // 行业方案页：品牌信息交回页面，由页面发起整套商品的批量生成
+          btn.textContent = 'Uploading…';
+          let logoFile = fpKitLogoFile;
+          if (logoInput.files[0]) logoFile = await fpUpload(logoInput.files[0]);
+          fpCloseDesign();
+          window.fpSolutionStart({ brandText: brand, brandColor: fpColor, logoFile });
+          return;
+        }
         if (fpModalMode === 'hero') {
           // 首屏品牌试穿：重绘当前风格的 4 张图（快）
           res = await fetch(`${FP_API}/design/hero-swap`, {
@@ -814,15 +824,33 @@ export function initDesignModal() {
       document.getElementById('fp-order-modal').classList.remove('hidden');
       const sizeEl = document.getElementById('fpo-size');
       sizeEl.innerHTML = '<option value="">Loading sizes…</option>';
+      fpOrderSizes = [];
+      fpOrderQuote();
       try {
         const res = await fetch(`${FP_API}/products/sizes/${r.productType}`);
-        const sizes = await res.json();
+        fpOrderSizes = await res.json();
         sizeEl.innerHTML = '<option value="">Select size…</option>' +
-          sizes.map(s => `<option value="${s.label}">${s.label}</option>`).join('');
+          fpOrderSizes.map(s => `<option value="${s.label}">${s.label}</option>`).join('');
       } catch {
         sizeEl.innerHTML = '<option value="">Failed to load sizes</option>';
       }
     };
+
+    // ── 实时报价：尺寸 basePrice × 数量档折扣（与 Pricing 表一致）──
+    let fpOrderSizes = [];
+    function fpOrderQuote() {
+      const el = document.getElementById('fpo-quote');
+      const s = fpOrderSizes.find(x => x.label === document.getElementById('fpo-size').value);
+      const qty = parseInt(document.getElementById('fpo-qty').value, 10);
+      if (!s || !s.basePrice || !qty || qty < 1000) { el.classList.add('hidden'); return; }
+      const f = qty >= 10000 ? 0.72 : qty >= 5000 ? 0.82 : qty >= 3000 ? 0.90 : 1;
+      const unit = s.basePrice * f;
+      const u = unit.toFixed(3).replace(/0$/, '');
+      el.innerHTML = `Est. <b>$${u}</b>/unit × ${qty.toLocaleString()} ≈ <b>$${Math.round(unit * qty).toLocaleString()}</b> + shipping`;
+      el.classList.remove('hidden');
+    }
+    document.getElementById('fpo-size').addEventListener('change', fpOrderQuote);
+    document.getElementById('fpo-qty').addEventListener('input', fpOrderQuote);
 
     document.getElementById('fp-order-form').addEventListener('submit', async (e) => {
       e.preventDefault();

@@ -1,5 +1,5 @@
-import { API_BASE } from './api.js?v=20260727w';
-import { getCurrentUser, loginWithGoogle } from './auth.js?v=20260727w';
+import { API_BASE } from './api.js?v=20260727x';
+import { getCurrentUser, loginWithGoogle } from './auth.js?v=20260727x';
 
 const MATERIAL_LABELS = {
   KRAFT:      'Kraft Paper',

@@ -252,6 +252,59 @@ public class DesignFormController {
         return ResponseEntity.ok(Map.of("jobId", job.getId(), "status", job.getStatus().name()));
     }
 
+    // ── Solutions: bulk apply one style+brand to a product set ────────────────
+
+    public record BulkProduct(String image, String label, String type) {}
+    public record ApplyBulkRequest(String styleType, String styleId, String brandText,
+                                   String brandColor, String logoFile,
+                                   List<BulkProduct> products) {}
+
+    @PostMapping("/apply-bulk")
+    public ResponseEntity<?> applyBulk(@AuthenticationPrincipal User user,
+                                       @RequestBody ApplyBulkRequest req,
+                                       HttpServletRequest httpReq,
+                                       HttpServletResponse httpRes) {
+        if (req.brandText() == null || req.brandText().isBlank())
+            return ResponseEntity.badRequest().body(Map.of("error", "Brand name required"));
+        if (!service.styleExists(trim(req.styleType()), trim(req.styleId())))
+            return ResponseEntity.badRequest().body(Map.of("error", "Unknown style"));
+        if (req.products() == null || req.products().isEmpty() || req.products().size() > 12)
+            return ResponseEntity.badRequest().body(Map.of("error", "1–12 products required"));
+
+        List<String[]> products = new java.util.ArrayList<>();
+        for (BulkProduct p : req.products()) {
+            try {
+                DesignFormService.productImagePath(p.image());
+            } catch (IOException e) {
+                return ResponseEntity.badRequest().body(Map.of("error", "Unknown product image " + p.image()));
+            }
+            String label = trim(p.label());
+            if (label == null || label.length() > 60)
+                return ResponseEntity.badRequest().body(Map.of("error", "Bad product label"));
+            String type = p.type() != null && p.type().matches("[A-Z]{2,10}") ? p.type() : "BOX";
+            products.add(new String[]{ p.image(), label, type });
+        }
+        String color = req.brandColor() != null && req.brandColor().matches("#[0-9a-fA-F]{6}")
+                ? req.brandColor().toLowerCase() : null;
+
+        String anonToken = null;
+        if (user == null) {
+            anonToken = readCookie(httpReq);
+            if (anonToken != null && service.guestLimitReached(anonToken))
+                return ResponseEntity.status(401).body(Map.of("error", "LOGIN_REQUIRED",
+                        "message", "Sign in to keep designing."));
+            if (anonToken == null) {
+                anonToken = UUID.randomUUID().toString();
+                httpRes.addHeader("Set-Cookie", String.format(
+                        "%s=%s; Path=/; Max-Age=31536000; HttpOnly%s; SameSite=Lax",
+                        ANON_COOKIE, anonToken, cookieSecure ? "; Secure" : ""));
+            }
+        }
+        DesignJob job = service.createBulkJob(user, anonToken, req.brandText().trim(), color,
+                trim(req.logoFile()), trim(req.styleType()), trim(req.styleId()), products);
+        return ResponseEntity.ok(Map.of("jobId", job.getId(), "status", job.getStatus().name()));
+    }
+
     // ── Poll job progress ─────────────────────────────────────────────────────
 
     @GetMapping("/jobs/{id}")
