@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Product – foodPac</title>
   <meta name="description" content="Custom branded food packaging for Canadian restaurants — free AI design, low minimums, nationwide delivery." />
-  <link rel="stylesheet" href="css/tailwind.css?v=20260727k">
+  <link rel="stylesheet" href="css/tailwind.css?v=20260727c">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/main.css">
@@ -178,6 +178,7 @@
         <p class="font-bold">Choose a Design</p>
         <button id="p-picker-close" class="text-white/70 hover:text-white text-2xl leading-none">×</button>
       </div>
+      <div id="p-picker-filters" class="hidden flex flex-wrap gap-2 px-6 pt-4 shrink-0"></div>
       <div id="p-picker-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-4 p-6 overflow-y-auto"></div>
       <div class="px-6 py-4 border-t border-gray-100 shrink-0 flex justify-between items-center">
         <p class="text-xs text-gray-400">Pick a design, or create a new one</p>
@@ -254,9 +255,9 @@
   </style>
 
   <script type="module">
-    import { initNav, initFooter, _refreshCartBadge } from './js/components.js?v=20260727k';
-    import { getProducts } from './js/products.js?v=20260727k';
-    import { initDesignModal } from './js/design-modal.js?v=20260727k';
+    import { initNav, initFooter, _refreshCartBadge } from './js/components.js?v=20260727c';
+    import { getProducts } from './js/products.js?v=20260727c';
+    import { initDesignModal } from './js/design-modal.js?v=20260727c';
 
     initNav('products');
     initFooter();
@@ -340,13 +341,41 @@
       }
     }
 
-    async function openPicker() {
-      let items = [];
-      try {
-        const res = await fetch(`${FP_API}/design/my-designs`, { credentials: 'include' });
-        if (res.ok) items = (await res.json()).items;
-      } catch {}
-      if (!items.length) { window.fpOpenDesign('form'); return; }
+    // ── 选择器的 brand-kit 分类（与 Design History 一致：All + 各品牌色点 chip）──
+    let pkItems = [], pkKits = [], pkActive = 'ALL';
+    const pkEsc = (s) => String(s ?? '').replace(/[&<>"']/g,
+      c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+    const pkMatch = (item, kit) => {
+      const l = (item.productLabel || '').toLowerCase(), b = (kit.brandText || '').toLowerCase();
+      return b && (l === b || l.startsWith(b + ' '));
+    };
+
+    function pkRenderFilters() {
+      const bar = document.getElementById('p-picker-filters');
+      const chips = [{ key: 'ALL', label: 'All', color: null }].concat(
+        pkKits.filter(k => pkItems.some(i => pkMatch(i, k)))
+              .map(k => ({ key: k.brandText, label: k.brandText,
+                           color: /^#[0-9a-fA-F]{6}$/.test(k.brandColor || '') ? k.brandColor : '#4a7c59' })));
+      if (chips.length < 2) { bar.classList.add('hidden'); return; }
+      bar.classList.remove('hidden');
+      bar.innerHTML = chips.map(c => `
+        <button type="button" data-k="${pkEsc(c.key)}"
+                class="pk-chip flex items-center gap-2 px-3.5 py-1.5 rounded-full text-sm font-semibold border transition-colors ${
+                  pkActive === c.key
+                    ? 'bg-primary-800 border-primary-800 text-white'
+                    : 'bg-white border-gray-200 text-gray-700 hover:border-primary-300'}">
+          ${c.color ? `<span class="w-2.5 h-2.5 rounded-full ${pkActive === c.key ? 'ring-1 ring-white/60' : ''}" style="background:${pkEsc(c.color)}"></span>` : ''}${pkEsc(c.label)}
+        </button>`).join('');
+      bar.querySelectorAll('.pk-chip').forEach(b => b.addEventListener('click', () => {
+        pkActive = b.dataset.k;
+        pkRenderFilters();
+        pkRenderGrid();
+      }));
+    }
+
+    function pkRenderGrid() {
+      const kit = pkKits.find(x => x.brandText === pkActive);
+      const items = pkActive === 'ALL' || !kit ? pkItems : pkItems.filter(i => pkMatch(i, kit));
       const grid = document.getElementById('p-picker-grid');
       grid.innerHTML = items.map(r => `
         <button type="button" data-id="${r.id}" class="pk-item text-left group">
@@ -354,9 +383,25 @@
           <p class="text-xs text-gray-600 mt-1.5 truncate">${r.productLabel}</p>
         </button>`).join('');
       grid.querySelectorAll('.pk-item').forEach(el => el.addEventListener('click', () => {
-        setDesign(items.find(x => x.id === el.dataset.id));
+        setDesign(pkItems.find(x => x.id === el.dataset.id));
         document.getElementById('p-picker').classList.add('hidden');
       }));
+    }
+
+    async function openPicker() {
+      pkItems = []; pkKits = [];
+      try {
+        const [res, kres] = await Promise.all([
+          fetch(`${FP_API}/design/my-designs`, { credentials: 'include' }),
+          fetch(`${FP_API}/design/kits`, { credentials: 'include' }),
+        ]);
+        if (res.ok) pkItems = (await res.json()).items;
+        if (kres.ok) pkKits = (await kres.json()).kits || [];
+      } catch {}
+      if (!pkItems.length) { window.fpOpenDesign('form'); return; }
+      pkActive = 'ALL';
+      pkRenderFilters();
+      pkRenderGrid();
       document.getElementById('p-picker').classList.remove('hidden');
     }
     document.getElementById('p-design-btn').addEventListener('click', openPicker);
