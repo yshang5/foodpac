@@ -13,9 +13,9 @@
  *   window.fpChipBusy(on)     — toggle the chip generating animation
  */
 
-import { loginWithGoogle } from './auth.js?v=20260727z';
-import { _refreshCartBadge } from './components.js?v=20260727z';
-import { STYLE_LIBRARY, styleImg, getStyle, setStyle } from './styles.js?v=20260727z';
+import { loginWithGoogle } from './auth.js?v=20260728a';
+import { _refreshCartBadge } from './components.js?v=20260728a';
+import { STYLE_LIBRARY, styleImg, getStyle, setStyle } from './styles.js?v=20260728a';
 
 const FP_CSS = `
   .fp-swatch.sel { outline: 3px solid #1b5e20; outline-offset: 2px; }
@@ -301,9 +301,9 @@ export function initDesignModal() {
       fpModalMode = mode;
       fpsRefresh();
       // 自动带入最近一个品牌的设计 kit（表单还空着时）；
-      // hero 入口的参考风格 = 首页当前展示的风格，不被 kit 里存的旧风格覆盖
+      // hero/solution 入口的参考风格 = 页面当前选中的风格，不被 kit 里存的旧风格覆盖
       if (fpKits.length && !document.getElementById('fpd-brand').value.trim())
-        fpApplyKit(fpKits[0], mode === 'hero');
+        fpApplyKit(fpKits[0], mode === 'hero' || mode === 'solution');
       document.getElementById('fp-design-modal').classList.remove('hidden');
       fpSyncSubmit();
       setTimeout(() => document.getElementById('fpd-brand').focus(), 50);
@@ -328,7 +328,7 @@ export function initDesignModal() {
       // 弹窗已开且表单还空着（如 ?design=1 深链）→ 补一次自动带入
       if (fpKits.length && !document.getElementById('fp-design-modal').classList.contains('hidden')
           && !document.getElementById('fpd-brand').value.trim())
-        fpApplyKit(fpKits[0], fpModalMode === 'hero');
+        fpApplyKit(fpKits[0], fpModalMode === 'hero' || fpModalMode === 'solution');
     }
 
     function fpSelectSwatchFor(color) {
