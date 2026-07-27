@@ -53,6 +53,6 @@ export async function fetchProducts(category) {
   // return request(`/products${qs}`);
 
   // Temporary: use local data from products.js
-  const { getProducts } = await import('./products.js?v=20260727y');
+  const { getProducts } = await import('./products.js?v=20260727z');
   return getProducts(category);
 }

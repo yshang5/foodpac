@@ -11,9 +11,9 @@
  *   </script>
  */
 
-import { getCurrentUser, loginWithGoogle, logout } from './auth.js?v=20260726f';
-import { avatarHtml } from './avatar.js?v=20260726f';
-import { API_BASE } from './api.js?v=20260726f';
+import { getCurrentUser, loginWithGoogle, logout } from './auth.js?v=20260727z';
+import { avatarHtml } from './avatar.js?v=20260727z';
+import { API_BASE } from './api.js?v=20260727z';
 
 const CART_PENDING_KEY = '_fp_pendingCart';
 
@@ -151,10 +151,10 @@ export async function initNav(activePage = '') {
         </svg>
       </a>
       <div class="invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-150
-                  fixed left-1/2 -translate-x-1/2 top-[117px] z-[60] w-[min(640px,94vw)]
+                  fixed left-1/2 -translate-x-1/2 top-[117px] z-[60] w-[min(1080px,94vw)]
                   bg-white rounded-2xl shadow-2xl border border-gray-100 p-4">
         <p class="px-3 pt-1 pb-2 text-xs font-bold text-gray-400 uppercase tracking-wider">Packaging solutions by restaurant type</p>
-        <div class="grid grid-cols-2 gap-1">
+        <div class="grid grid-cols-4 gap-1">
           ${solutionItems}
         </div>
       </div>
