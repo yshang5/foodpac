@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Product – foodPac</title>
   <meta name="description" content="Custom branded food packaging for Canadian restaurants — free AI design, low minimums, nationwide delivery." />
-  <link rel="stylesheet" href="css/tailwind.css?v=20260728b">
+  <link rel="stylesheet" href="css/tailwind.css?v=20260728c">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/main.css">
@@ -361,9 +361,9 @@
   </style>
 
   <script type="module">
-    import { initNav, initFooter, _refreshCartBadge } from './js/components.js?v=20260728b';
-    import { getProducts } from './js/products.js?v=20260728b';
-    import { initDesignModal } from './js/design-modal.js?v=20260728b';
+    import { initNav, initFooter, _refreshCartBadge } from './js/components.js?v=20260728c';
+    import { getProducts } from './js/products.js?v=20260728c';
+    import { initDesignModal } from './js/design-modal.js?v=20260728c';
 
     initNav('products');
     initFooter();
@@ -636,7 +636,7 @@
         const res = await fetch(`${FP_API}/design/my-designs`, { credentials: 'include' });
         if (!res.ok) return;
         const { items } = await res.json();
-        const base = p.image.split('/').pop().replace(/\.(jpg|png)$/, '');
+        const base = p.image.split('/').pop().split('?')[0].replace(/\.(jpg|png)$/, '');
         const mine = items.find(i => i.productId === base);   // 接口按时间倒序 → 第一个命中即最新
         if (mine && !pvImages[1]) {
           pvImages[1] = mine.imageUrl;
@@ -661,7 +661,7 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             itemId: d.id,
-            productImage: p.image.split('/').pop(),
+            productImage: p.image.split('/').pop().split('?')[0],
             productLabel: p.name,
             productType: cat.type
           })

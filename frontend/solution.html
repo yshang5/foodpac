@@ -8,7 +8,7 @@
   <title>Restaurant Packaging Solutions – foodPac</title>
   <meta name="description" content="Complete branded takeout packaging solutions by restaurant type — curated design styles, matched product sets, AI-generated brand demos, delivered across Canada." />
   <link rel="canonical" href="https://foodpac.ai/solution.html" />
-  <link rel="stylesheet" href="css/tailwind.css?v=20260728b">
+  <link rel="stylesheet" href="css/tailwind.css?v=20260728c">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/main.css">
@@ -65,10 +65,10 @@
   <div id="footer"></div>
 
   <script type="module">
-    import { initNav, initFooter } from './js/components.js?v=20260728b';
-    import { getProducts } from './js/products.js?v=20260728b';
-    import { initDesignModal } from './js/design-modal.js?v=20260728b';
-    import { STYLE_LIBRARY, styleImg, styleThumb, setStyle, getStyle } from './js/styles.js?v=20260728b';
+    import { initNav, initFooter } from './js/components.js?v=20260728c';
+    import { getProducts } from './js/products.js?v=20260728c';
+    import { initDesignModal } from './js/design-modal.js?v=20260728c';
+    import { STYLE_LIBRARY, styleImg, styleThumb, setStyle, getStyle } from './js/styles.js?v=20260728c';
 
     initNav('solutions');
     initFooter();
@@ -155,7 +155,7 @@
 
     let solItems = {};   // productId(去扩展名) → 生成结果 item
     function cardHtml(x) {
-      const base = x.image.split('/').pop().replace(/\.(jpg|png)$/, '');
+      const base = x.image.split('/').pop().split('?')[0].replace(/\.(jpg|png)$/, '');
       const item = solItems[base];
       return `
         <div class="sol-card bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden card-hover ${item ? 'cursor-pointer' : ''}" data-base="${base}">
@@ -178,14 +178,17 @@
           </div>
         </div>`;
     }
-    function renderProducts() {
-      document.getElementById('sol-products').innerHTML = solProducts.map(cardHtml).join('');
-      document.querySelectorAll('.sol-card').forEach(el => el.addEventListener('click', (e) => {
+    function bindCard(el) {
+      el.addEventListener('click', (e) => {
         const item = solItems[el.dataset.base];
         if (!item) return;               // 未生成时卡内链接自行跳转
         e.preventDefault();
         window.fpOrder(item);            // 复用下单弹窗：尺寸/数量/报价/加购
-      }));
+      });
+    }
+    function renderProducts() {
+      document.getElementById('sol-products').innerHTML = solProducts.map(cardHtml).join('');
+      document.querySelectorAll('.sol-card').forEach(bindCard);
     }
     renderProducts();
 
@@ -208,7 +211,7 @@
             styleType: lib.id, styleId: solStyle,
             brandText, brandColor, logoFile,
             products: solProducts.map(x => ({
-              image: x.image.split('/').pop(),
+              image: x.image.split('/').pop().split('?')[0],
               label: x.name,
               type: ({ boxes:'BOX', cups:'CUP', bags:'BAG', bowls:'BOWL', wraps:'WRAP', cutlery:'CUTLERY' })[x.category] || 'BOX'
             }))
@@ -230,12 +233,19 @@
               if (!solItems[r.productId]) {
                 solItems[r.productId] = r;
                 window.fpAddResult?.(r);
+                // 逐个替换：这件完成就立即翻转为品牌图
+                const x = solProducts.find(px =>
+                  px.image.split('/').pop().split('?')[0].replace(/\.(jpg|png)$/, '') === r.productId);
+                const card = document.querySelector(`.sol-card[data-base="${r.productId}"]`);
+                if (x && card) {
+                  card.outerHTML = cardHtml(x);
+                  bindCard(document.querySelector(`.sol-card[data-base="${r.productId}"]`));
+                }
               }
             });
             if (job.status === 'COMPLETED' || job.status === 'FAILED') {
               clearInterval(timer);
               stop();
-              renderProducts();
               document.getElementById('sol-prod-sub').innerHTML =
                 '<b class="text-primary-800">Your branded set is ready</b> — click any item to pick a size, see the price and add it to your cart.';
             }

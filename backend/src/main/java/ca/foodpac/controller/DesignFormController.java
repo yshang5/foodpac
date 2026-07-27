@@ -217,8 +217,9 @@ public class DesignFormController {
                                           HttpServletResponse httpRes) {
         var item = itemRepo.findById(req.itemId() == null ? "" : req.itemId()).orElse(null);
         if (item == null || item.isDeleted()) return ResponseEntity.notFound().build();
+        String productImage = req.productImage() == null ? "" : req.productImage().replaceAll("\\?.*$", "");
         try {
-            DesignFormService.productImagePath(req.productImage());
+            DesignFormService.productImagePath(productImage);
         } catch (IOException e) {
             return ResponseEntity.badRequest().body(Map.of("error", "Unknown product image"));
         }
@@ -248,7 +249,7 @@ public class DesignFormController {
         if (!owned) return ResponseEntity.status(403).body(Map.of("error", "Forbidden"));
 
         DesignJob job = service.createApplyJob(user, anonToken, item,
-                req.productImage(), label, type);
+                productImage, label, type);
         return ResponseEntity.ok(Map.of("jobId", job.getId(), "status", job.getStatus().name()));
     }
 
@@ -273,8 +274,9 @@ public class DesignFormController {
 
         List<String[]> products = new java.util.ArrayList<>();
         for (BulkProduct p : req.products()) {
+            String img = p.image() == null ? "" : p.image().replaceAll("\\?.*$", "");
             try {
-                DesignFormService.productImagePath(p.image());
+                DesignFormService.productImagePath(img);
             } catch (IOException e) {
                 return ResponseEntity.badRequest().body(Map.of("error", "Unknown product image " + p.image()));
             }
@@ -282,7 +284,7 @@ public class DesignFormController {
             if (label == null || label.length() > 60)
                 return ResponseEntity.badRequest().body(Map.of("error", "Bad product label"));
             String type = p.type() != null && p.type().matches("[A-Z]{2,10}") ? p.type() : "BOX";
-            products.add(new String[]{ p.image(), label, type });
+            products.add(new String[]{ img, label, type });
         }
         String color = req.brandColor() != null && req.brandColor().matches("#[0-9a-fA-F]{6}")
                 ? req.brandColor().toLowerCase() : null;

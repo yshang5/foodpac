@@ -404,6 +404,7 @@ public class DesignFormService {
 
     /** Validated product photo path (prod-*.jpg shipped with the frontend). */
     public static Path productImagePath(String name) throws IOException {
+        if (name != null) name = name.replaceAll("\\?.*$", "");   // strip cache-bust query
         if (name == null || !name.matches("prod-[a-z0-9-]{1,60}\\.(jpg|png)"))
             throw new IOException("bad product image");
         Path p = PRODUCT_IMG_DIR.resolve(name).normalize();
