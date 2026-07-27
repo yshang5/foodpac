@@ -192,6 +192,26 @@
     }
     renderProducts();
 
+    // 千人千面：恢复该用户此前为这些产品生成的品牌图（最新一次；重新生成才覆盖）
+    (async () => {
+      try {
+        const res = await fetch(`${FP_API}/design/my-designs`, { credentials: 'include' });
+        if (!res.ok) return;
+        const { items } = await res.json();
+        let restored = 0;
+        solProducts.forEach(x => {
+          const base = x.image.split('/').pop().split('?')[0].replace(/\.(jpg|png)$/, '');
+          const mine = items.find(i => i.productId === base);   // 接口时间倒序 → 第一个命中即最新
+          if (mine && !solItems[base]) { solItems[base] = mine; restored++; }
+        });
+        if (restored) {
+          renderProducts();
+          document.getElementById('sol-prod-sub').innerHTML =
+            '<b class="text-primary-800">Your branded set is ready</b> — click any item to pick a size, see the price and add it to your cart.';
+        }
+      } catch {}
+    })();
+
     // ── 生成整套 Demo ──
     document.getElementById('sol-generate').addEventListener('click', () => window.fpOpenDesign('solution'));
 
