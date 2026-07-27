@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Product – foodPac</title>
   <meta name="description" content="Custom branded food packaging for Canadian restaurants — free AI design, low minimums, nationwide delivery." />
-  <link rel="stylesheet" href="css/tailwind.css?v=20260728c">
+  <link rel="stylesheet" href="css/tailwind.css?v=20260728d">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/main.css">
@@ -30,15 +30,15 @@
   <section class="py-10">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid lg:grid-cols-2 gap-12">
 
-      <!-- 左：主图 + 缩略列（原图 / 应用参考后的图2） -->
-      <div class="flex gap-3">
-        <div class="flex flex-col gap-3 w-16 lg:w-20 shrink-0">
+      <!-- 左：主图 + 缩略（移动端横排在主图下方，桌面左侧竖列） -->
+      <div class="flex flex-col-reverse sm:flex-row gap-3">
+        <div class="flex sm:flex-col gap-3 sm:w-16 lg:w-20 shrink-0">
           <button type="button" id="pv-thumb-0"
-                  class="aspect-square rounded-xl overflow-hidden border-2 border-primary-600 bg-gray-50">
+                  class="w-16 sm:w-full aspect-square rounded-xl overflow-hidden border-2 border-primary-600 bg-gray-50 shrink-0">
             <img id="pv-t0" src="" alt="Product photo" class="w-full h-full object-cover">
           </button>
           <button type="button" id="pv-thumb-1"
-                  class="hidden aspect-square rounded-xl overflow-hidden border-2 border-transparent hover:border-primary-300 bg-gray-50 transition-colors">
+                  class="hidden w-16 sm:w-full aspect-square rounded-xl overflow-hidden border-2 border-transparent hover:border-primary-300 bg-gray-50 transition-colors shrink-0">
             <img id="pv-t1" src="" alt="Your design applied" class="w-full h-full object-cover">
           </button>
         </div>
@@ -361,9 +361,9 @@
   </style>
 
   <script type="module">
-    import { initNav, initFooter, _refreshCartBadge } from './js/components.js?v=20260728c';
-    import { getProducts } from './js/products.js?v=20260728c';
-    import { initDesignModal } from './js/design-modal.js?v=20260728c';
+    import { initNav, initFooter, _refreshCartBadge } from './js/components.js?v=20260728d';
+    import { getProducts } from './js/products.js?v=20260728d';
+    import { initDesignModal } from './js/design-modal.js?v=20260728d';
 
     initNav('products');
     initFooter();
