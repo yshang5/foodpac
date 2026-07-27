@@ -447,15 +447,20 @@ public class DesignFormService {
             if (ref == null) throw new IOException("missing source design " + srcFile);
 
             String brand = job.getBrandText();
-            String prompt = ("The FIRST image is a product photo of " + productLabel + " packaging. "
-                    + "The SECOND image is a finished brand packaging design used as the style "
-                    + "reference. Recreate the FIRST photo exactly — same product shape, camera "
-                    + "angle, lighting, shadows and background — but replace its printed artwork "
-                    + "with the brand identity from the SECOND image: the same brand name"
+            String prompt = ("The FIRST image is the official product photo of our " + productLabel
+                    + " — this is the EXACT physical item that will be manufactured, so the product "
+                    + "itself must NOT be modified in any way: keep its geometry, proportions, "
+                    + "die-line, folds, lid, handles, closures, material, surface texture, finish, "
+                    + "camera angle, framing, lighting, shadows and background pixel-faithful to the "
+                    + "first image. The SECOND image is ONLY a graphic style reference — ignore the "
+                    + "product shown in it entirely; do NOT copy its shape, form factor or scene. "
+                    + "Your ONLY change: transfer the printed artwork style from the second image "
+                    + "onto the first product's printable surfaces — the same brand name"
                     + (brand != null ? " (\"" + brand + "\" — spell it EXACTLY)" : " (spell it exactly as shown)")
-                    + ", colors, typography, patterns and logo treatment, adapted naturally to this "
-                    + "product's printable surfaces. No other brand names, no watermarks, nothing "
-                    + "added to the scene.");
+                    + ", color palette, typography, patterns, borders and logo treatment, re-laid-out "
+                    + "naturally for this product's own panels. If an element from the reference does "
+                    + "not fit this product's surfaces, omit it rather than altering the product. "
+                    + "No other brand names, no watermarks, nothing added to or removed from the scene.");
 
             byte[] png = aiImageService.rebrand(template, ref, null, prompt);
             String name = "gen-" + jobId + "-apply.png";
