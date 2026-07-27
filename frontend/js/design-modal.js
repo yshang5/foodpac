@@ -291,8 +291,10 @@ export function initDesignModal() {
     window.fpOpenDesign = (mode = 'form') => {
       fpModalMode = mode;
       fpsRefresh();
-      // 自动带入最近一个品牌的设计 kit（表单还空着时）
-      if (fpKits.length && !document.getElementById('fpd-brand').value.trim()) fpApplyKit(fpKits[0]);
+      // 自动带入最近一个品牌的设计 kit（表单还空着时）；
+      // hero 入口的参考风格 = 首页当前展示的风格，不被 kit 里存的旧风格覆盖
+      if (fpKits.length && !document.getElementById('fpd-brand').value.trim())
+        fpApplyKit(fpKits[0], mode === 'hero');
       document.getElementById('fp-design-modal').classList.remove('hidden');
       fpSyncSubmit();
       setTimeout(() => document.getElementById('fpd-brand').focus(), 50);
@@ -316,7 +318,8 @@ export function initDesignModal() {
       t.classList.toggle('flex', fpKits.length > 0);
       // 弹窗已开且表单还空着（如 ?design=1 深链）→ 补一次自动带入
       if (fpKits.length && !document.getElementById('fp-design-modal').classList.contains('hidden')
-          && !document.getElementById('fpd-brand').value.trim()) fpApplyKit(fpKits[0]);
+          && !document.getElementById('fpd-brand').value.trim())
+        fpApplyKit(fpKits[0], fpModalMode === 'hero');
     }
 
     function fpSelectSwatchFor(color) {
@@ -346,7 +349,7 @@ export function initDesignModal() {
       }
     }
 
-    function fpApplyKit(kit) {
+    function fpApplyKit(kit, keepStyle = false) {
       document.getElementById('fpd-brand').value = kit.brandText || '';
       fpSelectSwatchFor(kit.brandColor);
       document.getElementById('fpd-type').value = kit.restaurantType || '';
@@ -361,7 +364,7 @@ export function initDesignModal() {
         'Saved logo from this kit', 'Upload your logo (PNG / JPG, max 5MB)');
       fpSetFilePreview('fpd-qr-label', 'fpd-qr-preview', fpKitQrFile,
         'Saved QR from this kit', 'Upload the QR customers scan to order');
-      if (kit.styleType && kit.styleId) setStyle(kit.styleType, kit.styleId);
+      if (!keepStyle && kit.styleType && kit.styleId) setStyle(kit.styleType, kit.styleId);
       // kit 带了扩展信息时展开 More Options，让用户看到自动填充的内容
       if (kit.slogan || kit.logoFile || kit.address || kit.phone || kit.qrFile || kit.restaurantType) {
         document.getElementById('fpd-more').classList.remove('hidden');
