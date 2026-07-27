@@ -62,6 +62,9 @@
         </button>
       </div>
 
+      <!-- Brand-kit filter -->
+      <div id="dh-filters" class="hidden flex flex-wrap gap-2 mb-6"></div>
+
       <!-- Grid -->
       <div id="dh-grid" class="hidden grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"></div>
     </div>
@@ -82,7 +85,12 @@
     document.getElementById('dh-login-btn')?.addEventListener('click', loginWithGoogle);
 
     const $ = (id) => document.getElementById(id);
-    const show = (id) => { ['dh-loading','dh-login','dh-empty','dh-grid'].forEach(x => $(x).classList.toggle('hidden', x !== id)); };
+    const show = (id) => {
+      ['dh-loading','dh-login','dh-empty','dh-grid'].forEach(x => $(x).classList.toggle('hidden', x !== id));
+      if (id !== 'dh-grid') $('dh-filters').classList.add('hidden');
+    };
+    const esc = (s) => String(s ?? '').replace(/[&<>"']/g,
+      c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
 
     function fmtTime(iso) {
       if (!iso) return '';
@@ -110,8 +118,8 @@
               ${fmtTime(r.createdAt)}
             </p>
             <div class="mt-auto flex gap-2">
-              <button onclick="fpOpenDesign()"
-                 class="flex-1 py-2.5 text-center border border-primary-300 text-primary-800 hover:bg-primary-50 text-sm font-bold rounded-lg transition-colors">
+              <button data-redo="${r.id}"
+                 class="dh-redo flex-1 py-2.5 text-center border border-primary-300 text-primary-800 hover:bg-primary-50 text-sm font-bold rounded-lg transition-colors">
                 Redesign
               </button>
               ${orderBtn}
@@ -120,29 +128,73 @@
         </div>`;
     }
 
+    // ── Brand-kit 分类筛选（默认 All）──
+    let allItems = [], dhKits = [], dhActive = 'ALL';
+    const matchKit = (item, kit) => {
+      const l = (item.productLabel || '').toLowerCase(), b = (kit.brandText || '').toLowerCase();
+      return b && (l === b || l.startsWith(b + ' '));
+    };
+
+    function renderFilters() {
+      const bar = $('dh-filters');
+      const chips = [{ key: 'ALL', label: 'All', color: null }].concat(
+        dhKits.filter(k => allItems.some(i => matchKit(i, k)))
+              .map(k => ({ key: k.brandText, label: k.brandText, color: k.brandColor })));
+      if (chips.length < 2) { bar.classList.add('hidden'); return; }
+      bar.classList.remove('hidden');
+      bar.innerHTML = chips.map(c => `
+        <button data-k="${esc(c.key)}"
+                class="dh-chip flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold border transition-colors ${
+                  dhActive === c.key
+                    ? 'bg-primary-800 border-primary-800 text-white'
+                    : 'bg-white border-gray-200 text-gray-700 hover:border-primary-300'}">
+          ${c.color ? `<span class="w-2.5 h-2.5 rounded-full ${dhActive === c.key ? 'ring-1 ring-white/60' : ''}" style="background:${esc(c.color)}"></span>` : ''}${esc(c.label)}
+        </button>`).join('');
+      bar.querySelectorAll('.dh-chip').forEach(b => b.addEventListener('click', () => {
+        dhActive = b.dataset.k;
+        renderFilters();
+        renderGrid();
+      }));
+    }
+
+    function renderGrid() {
+      const kit = dhKits.find(x => x.brandText === dhActive);
+      const items = dhActive === 'ALL' || !kit ? allItems : allItems.filter(i => matchKit(i, kit));
+      $('dh-grid').innerHTML = items.map(card).join('');
+    }
+
     async function load() {
       const user = await getCurrentUser();
       try {
-        const res = await fetch(`${API_BASE}/design/my-designs`, { credentials: 'include' });
+        const [res, kres] = await Promise.all([
+          fetch(`${API_BASE}/design/my-designs`, { credentials: 'include' }),
+          fetch(`${API_BASE}/design/kits`, { credentials: 'include' }),
+        ]);
         if (!res.ok) throw new Error();
-        const { items } = await res.json();
-        if (items.length === 0) {
+        allItems = (await res.json()).items;
+        if (kres.ok) dhKits = (await kres.json()).kits || [];
+        if (allItems.length === 0) {
           show(user ? 'dh-empty' : 'dh-login');
           return;
         }
-        $('dh-grid').innerHTML = items.map(card).join('');
+        renderGrid();
         show('dh-grid');
+        renderFilters();
       } catch {
         show(user ? 'dh-empty' : 'dh-login');
       }
     }
     load();
 
-    // ── Order: delegate to the shared design-modal order flow ──
+    // ── Order / Redesign: delegate to the shared design-modal flows ──
     document.getElementById('dh-grid').addEventListener('click', (e) => {
-      const btn = e.target.closest('.dh-order');
-      if (!btn) return;
-      window.fpOrder(JSON.parse(btn.dataset.order));
+      const order = e.target.closest('.dh-order');
+      if (order) { window.fpOrder(JSON.parse(order.dataset.order)); return; }
+      const redo = e.target.closest('.dh-redo');
+      if (redo) {
+        if (window.fpRedo) window.fpRedo(redo.dataset.redo);
+        else window.fpOpenDesign();
+      }
     });
   </script>
 </body>
