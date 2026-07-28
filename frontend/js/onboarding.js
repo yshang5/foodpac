@@ -3,7 +3,7 @@
  * can prefill everywhere. Two steps, each skippable; shows once per user
  * (flag persisted in user.extra JSON as {"onboarded":true}).
  */
-import { API_BASE } from './api.js?v=20260728p';
+import { API_BASE } from './api.js?v=20260728q';
 
 const TYPE_OPTIONS = [
   'Chinese', 'Cantonese / Dim Sum', 'Sichuan / Hunan', 'Hot Pot', 'Japanese / Sushi',

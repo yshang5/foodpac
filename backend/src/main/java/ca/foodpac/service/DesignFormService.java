@@ -358,6 +358,69 @@ public class DesignFormService {
         return job;
     }
 
+    // ── Edit: apply a user instruction to one existing design image ───────────
+
+    /**
+     * Creates an EDIT job that repaints the source item's image with the user's
+     * instruction. On success a NEW item is saved (newest → first in lists) and
+     * the source item is soft-deleted, so the edited image replaces the old one.
+     */
+    public DesignJob createEditJob(User user, String anonToken, DesignJobItem srcItem, String instruction) {
+        DesignJob s = srcItem.getJob();
+        DesignJob job = DesignJob.builder()
+                .user(user)
+                .anonToken(user == null ? anonToken : null)
+                .kind("EDIT")
+                .brandText(s.getBrandText()).brandColor(s.getBrandColor())
+                .restaurantType(s.getRestaurantType()).slogan(s.getSlogan())
+                .styleType(s.getStyleType()).styleId(s.getStyleId())
+                .status(DesignJob.Status.PENDING)
+                .build();
+        job = jobRepo.save(job);
+        String jobId = job.getId();
+        String srcId = srcItem.getId();
+        executor.submit(() -> runEdit(jobId, srcId, instruction));
+        return job;
+    }
+
+    private void runEdit(String jobId, String srcItemId, String instruction) {
+        DesignJob job = jobRepo.findById(jobId).orElse(null);
+        if (job == null) return;
+        try {
+            job.setStatus(DesignJob.Status.RUNNING);
+            jobRepo.save(job);
+            DesignJobItem src = itemRepo.findById(srcItemId)
+                    .orElseThrow(() -> new IOException("source item gone"));
+            String fileName = src.getImageUrl().substring(src.getImageUrl().lastIndexOf('/') + 1);
+            if (!fileName.matches("[A-Za-z0-9._-]+")) throw new IOException("bad source file name");
+            byte[] srcImage = Files.readAllBytes(STORAGE_DIR.resolve(fileName));
+            String prompt = "Edit this packaging design photo. Apply ONLY the following change requested by the user: \""
+                    + instruction + "\". Keep everything else exactly the same — the product's physical shape, "
+                    + "camera angle, lighting, background, and any existing branding the request does not mention. "
+                    + "Photorealistic result, consistent with the original photo.";
+            byte[] out = aiImageService.rebrand(srcImage, null, null, prompt);
+            Files.createDirectories(STORAGE_DIR);
+            String name = "edit-" + jobId + ".png";
+            Files.write(STORAGE_DIR.resolve(name), out);
+            itemRepo.save(DesignJobItem.builder()
+                    .job(job)
+                    .productId(src.getProductId())
+                    .productLabel(src.getProductLabel())
+                    .productType(src.getProductType())
+                    .imageUrl("/api/v1/design/files/" + name)
+                    .build());
+            // 编辑结果覆盖原图：旧条目软删，新条目 createdAt 最新 → 列表首位
+            src.setDeleted(true);
+            itemRepo.save(src);
+            job.setStatus(DesignJob.Status.COMPLETED);
+            jobRepo.save(job);
+        } catch (Exception e) {
+            job.setStatus(DesignJob.Status.FAILED);
+            job.setError(e.getMessage());
+            jobRepo.save(job);
+        }
+    }
+
     /** Regenerate one product of the legacy (pre-style) template set. */
     private void runLegacySingle(String jobId, String productId) {
         DesignJob job = jobRepo.findById(jobId).orElse(null);

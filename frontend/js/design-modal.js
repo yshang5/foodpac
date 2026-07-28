@@ -13,9 +13,9 @@
  *   window.fpChipBusy(on)     — toggle the chip generating animation
  */
 
-import { loginWithGoogle } from './auth.js?v=20260728p';
-import { _refreshCartBadge } from './components.js?v=20260728p';
-import { STYLE_LIBRARY, styleImg, styleThumb, getStyle, setStyle } from './styles.js?v=20260728p';
+import { loginWithGoogle } from './auth.js?v=20260728q';
+import { _refreshCartBadge } from './components.js?v=20260728q';
+import { STYLE_LIBRARY, styleImg, styleThumb, getStyle, setStyle } from './styles.js?v=20260728q';
 
 const FP_CSS = `
   .fp-swatch.sel { outline: 3px solid #1b5e20; outline-offset: 2px; }
@@ -184,6 +184,32 @@ const FP_HTML = `
       </div>
       <div id="fps-tabs" class="flex gap-2 px-6 pt-4 pb-1 overflow-x-auto no-scrollbar shrink-0"></div>
       <div id="fps-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-4 px-6 py-5 overflow-y-auto"></div>
+    </div>
+  </div>
+
+  <!-- ══════════ 编辑设计：大图 + 修改指令输入 ══════════ -->
+  <div id="fp-edit-modal" class="hidden fixed inset-0 bg-black/85 z-[9993] flex flex-col items-center justify-center p-4 sm:p-8">
+    <button id="fpe-close" class="absolute top-4 right-5 text-white/70 hover:text-white text-3xl leading-none z-10">×</button>
+    <div class="relative max-w-3xl">
+      <img id="fpe-img" src="" alt="Design being edited" class="max-w-full rounded-2xl shadow-2xl object-contain" style="max-height:62vh">
+      <div id="fpe-glass" class="hidden absolute inset-0 fp-genglass flex-col items-center justify-center gap-3 rounded-2xl">
+        <img src="assets/images/logo-icon-v2.png?v=9" alt="" class="fp-genspin w-10 h-10 rounded-full bg-white/90 object-contain p-1 shadow">
+        <span class="text-sm font-bold text-gray-800 bg-white/85 rounded-full px-4 py-1.5">Applying your edit…</span>
+      </div>
+    </div>
+    <div class="w-full max-w-3xl mt-5 shrink-0">
+      <div id="fpe-error" class="hidden mb-3 text-sm text-red-100 bg-red-900/70 border border-red-500/40 rounded-lg px-4 py-2.5"></div>
+      <div class="flex flex-col sm:flex-row gap-3">
+        <input type="text" id="fpe-input" maxlength="500"
+               placeholder="Describe the change — e.g. make the logo bigger, use a red background…"
+               class="flex-1 rounded-xl px-4 py-3 text-sm bg-white border border-gray-200">
+        <div class="flex gap-3 shrink-0">
+          <button id="fpe-confirm"
+                  class="flex-1 sm:flex-none px-8 py-3 bg-accent-500 hover:bg-accent-600 text-white text-sm font-bold rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed">Confirm</button>
+          <button id="fpe-cancel"
+                  class="flex-1 sm:flex-none px-6 py-3 bg-white/15 hover:bg-white/25 text-white text-sm font-bold rounded-xl transition-colors">Cancel</button>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -739,6 +765,10 @@ export function initDesignModal() {
               class="absolute top-2 right-2 w-7 h-7 bg-black/50 hover:bg-red-600 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
               <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M19 7l-.9 12.1A2 2 0 0116.1 21H7.9a2 2 0 01-2-1.9L5 7m3 0V5a2 2 0 012-2h4a2 2 0 012 2v2M3 7h18M10 11v6M14 11v6"/></svg>
             </button>
+            <button onclick="fpEditOpen('${r.id}', this.closest('.relative').querySelector('img').src)" title="Edit this design"
+              class="absolute top-11 right-2 w-7 h-7 bg-black/50 hover:bg-primary-700 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            </button>
           </div>
           <div class="flex items-center justify-between mt-2 gap-2">
             <p class="text-xs font-semibold text-gray-700 truncate">${r.productLabel}</p>
@@ -815,6 +845,96 @@ export function initDesignModal() {
       fpChipSync();
       try { await fetch(`${FP_API}/design/job-items/${id}`, { method: 'DELETE', credentials: 'include' }); } catch {}
     };
+
+    // ── 编辑设计：大图 + 修改指令，生成后原地刷新（新图沉入列表首位）──
+    let fpEditCtx = null;   // { id }  当前正在编辑的条目
+    let fpEditBusy = false;
+    const fpeEl = (id) => document.getElementById(id);
+
+    window.fpEditOpen = (id, src) => {
+      fpEditCtx = { id };
+      fpeEl('fpe-img').src = src || document.querySelector(`#fp-item-${CSS.escape(id)} img`)?.src || '';
+      fpeEl('fpe-input').value = '';
+      fpeEl('fpe-error').classList.add('hidden');
+      fpeEl('fp-edit-modal').classList.remove('hidden');
+      setTimeout(() => fpeEl('fpe-input').focus(), 50);
+    };
+    const fpEditClose = () => {
+      fpeEl('fp-edit-modal').classList.add('hidden');
+      fpEditCtx = null;
+    };
+    fpeEl('fpe-cancel').addEventListener('click', fpEditClose);
+    fpeEl('fpe-close').addEventListener('click', fpEditClose);
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !fpeEl('fp-edit-modal').classList.contains('hidden')) fpEditClose();
+    });
+
+    async function fpEditConfirm() {
+      if (fpEditBusy || !fpEditCtx) return;
+      const instruction = fpeEl('fpe-input').value.trim();
+      if (!instruction) { fpeEl('fpe-input').focus(); return; }
+      const glass = fpeEl('fpe-glass');
+      const err = fpeEl('fpe-error');
+      const fail = (msg) => {
+        fpEditBusy = false;
+        fpeEl('fpe-confirm').disabled = false;
+        glass.classList.add('hidden'); glass.classList.remove('flex');
+        if (msg) { err.textContent = msg; err.classList.remove('hidden'); }
+      };
+      fpEditBusy = true;
+      fpeEl('fpe-confirm').disabled = true;
+      err.classList.add('hidden');
+      glass.classList.remove('hidden'); glass.classList.add('flex');
+      const editingId = fpEditCtx.id;
+      try {
+        const res = await fetch(`${FP_API}/design/edit-item`, {
+          method: 'POST', credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ itemId: editingId, instruction })
+        });
+        if (res.status === 401) {
+          fail('');
+          document.getElementById('fp-login-modal').classList.remove('hidden');
+          return;
+        }
+        if (!res.ok) throw new Error();
+        const { jobId } = await res.json();
+        const timer = setInterval(async () => {
+          try {
+            const jr = await fetch(`${FP_API}/design/jobs/${jobId}`, { credentials: 'include' });
+            if (!jr.ok) { clearInterval(timer); fail('Edit failed — please try again.'); return; }
+            const job = await jr.json();
+            const r = job.results[0];
+            if (r) {
+              clearInterval(timer);
+              // 弹窗内原地换新图，停留在编辑页可继续改
+              if (fpEditCtx && fpEditCtx.id === editingId) {
+                fpEditCtx.id = r.id;
+                fpeEl('fpe-img').src = r.imageUrl;
+                fpeEl('fpe-input').value = '';
+              }
+              // 列表：旧卡移除、新卡置顶（最新在第一个）
+              document.getElementById(`fp-item-${editingId}`)?.remove();
+              fpSeen.delete(editingId);
+              fpSeen.add(r.id);
+              document.getElementById('fp-dock-grid')?.insertAdjacentHTML('afterbegin', fpCard(r));
+              fpChipSync();
+              window.dispatchEvent(new CustomEvent('fp:edit-done', { detail: { oldId: editingId, item: r } }));
+              fpEditBusy = false;
+              fpeEl('fpe-confirm').disabled = false;
+              glass.classList.add('hidden'); glass.classList.remove('flex');
+            } else if (job.status === 'FAILED') {
+              clearInterval(timer);
+              fail('Edit failed — please try again.');
+            }
+          } catch {}
+        }, 2000);
+      } catch {
+        fail('Edit failed — please try again.');
+      }
+    }
+    fpeEl('fpe-confirm').addEventListener('click', fpEditConfirm);
+    fpeEl('fpe-input').addEventListener('keydown', (e) => { if (e.key === 'Enter') fpEditConfirm(); });
 
     // ── 下单 ──
     let fpOrderCtx = null;

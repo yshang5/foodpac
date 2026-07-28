@@ -7,7 +7,7 @@
   <link rel="apple-touch-icon" href="assets/images/apple-touch-icon.png">
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>My Design History – foodPac</title>
-  <link rel="stylesheet" href="css/tailwind.css?v=20260728p">
+  <link rel="stylesheet" href="css/tailwind.css?v=20260728q">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/main.css">
@@ -89,10 +89,10 @@
 
 
   <script type="module">
-    import { initNav, initFooter } from './js/components.js?v=20260728p';
-    import { getCurrentUser, loginWithGoogle } from './js/auth.js?v=20260728p';
-    import { API_BASE } from './js/api.js?v=20260728p';
-    import { initDesignWidget } from './js/design-widget.js?v=20260728p';
+    import { initNav, initFooter } from './js/components.js?v=20260728q';
+    import { getCurrentUser, loginWithGoogle } from './js/auth.js?v=20260728q';
+    import { API_BASE } from './js/api.js?v=20260728q';
+    import { initDesignWidget } from './js/design-widget.js?v=20260728q';
 
     initNav();
     initFooter();
@@ -121,9 +121,17 @@
         </button>`;
       return `
         <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden card-hover flex flex-col">
-          <div class="aspect-[4/3] bg-gray-50 overflow-hidden">
+          <div class="relative aspect-[4/3] bg-gray-50 overflow-hidden">
             <img src="${r.imageUrl}" alt="${r.productLabel}" loading="lazy" data-zoom="${i}"
                  class="w-full h-full object-cover cursor-zoom-in">
+            <button data-del="${r.id}" title="Delete"
+              class="dh-del absolute top-2 right-2 w-8 h-8 bg-black/50 hover:bg-red-600 text-white rounded-full flex items-center justify-center transition-colors">
+              <svg class="w-4 h-4 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M19 7l-.9 12.1A2 2 0 0116.1 21H7.9a2 2 0 01-2-1.9L5 7m3 0V5a2 2 0 012-2h4a2 2 0 012 2v2M3 7h18M10 11v6M14 11v6"/></svg>
+            </button>
+            <button data-edit="${r.id}" title="Edit this design"
+              class="dh-edit absolute top-12 right-2 w-8 h-8 bg-black/50 hover:bg-primary-700 text-white rounded-full flex items-center justify-center transition-colors">
+              <svg class="w-4 h-4 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            </button>
           </div>
           <div class="p-4 flex flex-col flex-1">
             <p class="font-bold text-gray-900 text-sm truncate">${r.productLabel}</p>
@@ -268,8 +276,33 @@
     window.addEventListener('fp:redo-fail', () =>
       document.querySelector('.dh-gen')?.remove());
 
+    // 编辑完成：旧图移除，新图放到列表最前（最新在第一个）
+    window.addEventListener('fp:edit-done', (e) => {
+      const { oldId, item } = e.detail;
+      allItems = allItems.filter(i => i.id !== oldId);
+      allItems.unshift({ ...item, createdAt: new Date().toISOString() });
+      renderGrid();
+      renderFilters();
+      renderDeco();
+    });
+
     // ── Order / Redesign: delegate to the shared design-modal flows ──
     document.getElementById('dh-grid').addEventListener('click', (e) => {
+      const del = e.target.closest('.dh-del');
+      if (del) {
+        const id = del.dataset.del;
+        allItems = allItems.filter(i => i.id !== id);
+        window.fpDeleteItem ? window.fpDeleteItem(id)
+          : fetch(`${API_BASE}/design/job-items/${id}`, { method: 'DELETE', credentials: 'include' }).catch(() => {});
+        allItems.length ? (renderGrid(), renderFilters(), renderDeco()) : show('dh-empty');
+        return;
+      }
+      const edit = e.target.closest('.dh-edit');
+      if (edit) {
+        const item = allItems.find(i => i.id === edit.dataset.edit);
+        if (item && window.fpEditOpen) window.fpEditOpen(item.id, item.imageUrl);
+        return;
+      }
       const zoom = e.target.closest('img[data-zoom]');
       if (zoom) { dhLbShow(parseInt(zoom.dataset.zoom, 10)); return; }
       const order = e.target.closest('.dh-order');

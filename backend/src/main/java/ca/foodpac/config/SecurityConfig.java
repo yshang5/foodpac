@@ -56,6 +56,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/api/v1/design/generate").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/v1/design/hero-swap").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/v1/design/redesign").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/v1/design/edit-item").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/v1/design/apply-product").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/v1/design/apply-bulk").permitAll()
                 .requestMatchers(HttpMethod.GET,  "/api/v1/design/my-designs").permitAll()

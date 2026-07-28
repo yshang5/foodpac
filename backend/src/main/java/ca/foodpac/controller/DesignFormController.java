@@ -207,6 +207,40 @@ public class DesignFormController {
         return ResponseEntity.ok(Map.of("jobId", job.getId(), "status", job.getStatus().name()));
     }
 
+    // ── Edit one design image with a user instruction ─────────────────────────
+
+    public record EditItemRequest(String itemId, String instruction) {}
+
+    @PostMapping("/edit-item")
+    public ResponseEntity<?> editItem(@AuthenticationPrincipal User user,
+                                      @RequestBody EditItemRequest req,
+                                      HttpServletRequest httpReq,
+                                      HttpServletResponse httpRes) {
+        String instruction = req.instruction() == null ? "" : req.instruction().strip();
+        if (instruction.isEmpty() || instruction.length() > 500)
+            return ResponseEntity.badRequest().body(Map.of("error", "Please describe the change (max 500 chars)."));
+        var item = itemRepo.findById(req.itemId() == null ? "" : req.itemId()).orElse(null);
+        if (item == null || item.isDeleted()) return ResponseEntity.notFound().build();
+
+        String anonToken = null;
+        if (user == null) {
+            anonToken = readCookie(httpReq);
+            if (anonToken != null && service.guestLimitReached(anonToken))
+                return ResponseEntity.status(401).body(Map.of("error", "LOGIN_REQUIRED",
+                        "message", "Sign in to keep designing."));
+            if (anonToken == null) return ResponseEntity.status(403).body(Map.of("error", "Forbidden"));
+        }
+
+        DesignJob src = item.getJob();
+        boolean owned = user != null
+                ? src.getUser() != null && src.getUser().getId().equals(user.getId())
+                : anonToken.equals(src.getAnonToken());
+        if (!owned) return ResponseEntity.status(403).body(Map.of("error", "Forbidden"));
+
+        DesignJob job = service.createEditJob(user, anonToken, item, instruction);
+        return ResponseEntity.ok(Map.of("jobId", job.getId(), "status", job.getStatus().name()));
+    }
+
     // ── Apply a chosen design to a product photo (detail-page image 2) ────────
 
     public record ApplyRequest(String itemId, String productImage,
