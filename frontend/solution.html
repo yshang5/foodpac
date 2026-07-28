@@ -204,10 +204,12 @@
         const res = await fetch(`${FP_API}/design/my-designs`, { credentials: 'include' });
         if (!res.ok) return;
         const { items } = await res.json();
+        // 只恢复"在当前餐厅类型下"生成的图；其它类型的旧图不带过来，未生成前一律用默认产品图
+        const ownItems = items.filter(i => i.styleType === lib.id);
         let restored = 0;
         solProducts.forEach(x => {
           const base = x.image.split('/').pop().split('?')[0].replace(/\.(jpg|png)$/, '');
-          const mine = items.find(i => i.productId === base);   // 接口时间倒序 → 第一个命中即最新
+          const mine = ownItems.find(i => i.productId === base);   // 接口时间倒序 → 第一个命中即最新
           if (mine && !solItems[base]) { solItems[base] = mine; restored++; }
         });
         if (restored) {

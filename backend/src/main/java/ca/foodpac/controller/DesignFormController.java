@@ -114,6 +114,8 @@ public class DesignFormController {
                 "productLabel", i.getProductLabel(),
                 "productType", i.getProductType(),
                 "imageUrl", i.getImageUrl(),
+                // 生成时所属风格库（餐厅类型）——solution 页按此过滤"千人千面"恢复
+                "styleType", i.getJob().getStyleType() == null ? "" : i.getJob().getStyleType(),
                 "createdAt", i.getCreatedAt())).toList()));
     }
 
