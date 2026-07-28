@@ -11,11 +11,11 @@
  *   </script>
  */
 
-import { getCurrentUser, loginWithGoogle, logout } from './auth.js?v=20260728q';
-import { initOnboarding } from './onboarding.js?v=20260728q';
-import { initDropdowns } from './dropdown.js?v=20260728q';
-import { avatarHtml } from './avatar.js?v=20260728q';
-import { API_BASE } from './api.js?v=20260728q';
+import { getCurrentUser, loginWithGoogle, logout } from './auth.js?v=20260728r';
+import { initOnboarding } from './onboarding.js?v=20260728r';
+import { initDropdowns } from './dropdown.js?v=20260728r';
+import { avatarHtml } from './avatar.js?v=20260728r';
+import { API_BASE } from './api.js?v=20260728r';
 
 const CART_PENDING_KEY = '_fp_pendingCart';
 
@@ -97,6 +97,8 @@ export async function initNav(activePage = '') {
   // sticky 必须落在页面直属的 #navbar 容器上——注入的 <header> 的
   // sticky 会被只有自身高度的父容器困住而失效
   el.classList.add('sticky', 'top-0', 'z-50');
+  // 高于 My Designs 面板(z-9980)，低于各弹窗(z-9990+)——头像/导航下拉不被面板盖住
+  el.style.zIndex = '9985';
 
   _fixTailwindResponsive();
   initDropdowns();   // 全站统一自定义下拉框（含之后注入的弹窗）
