@@ -1,6 +1,6 @@
-import { API_BASE } from './api.js?v=20260728y';
-import { getCurrentUser, loginWithGoogle } from './auth.js?v=20260728y';
-import { _refreshCartBadge } from './components.js?v=20260728y';
+import { API_BASE } from './api.js?v=20260728z';
+import { getCurrentUser, loginWithGoogle } from './auth.js?v=20260728z';
+import { _refreshCartBadge } from './components.js?v=20260728z';
 
 const MATERIAL_LABELS = {
   KRAFT:      'Kraft Paper',
@@ -58,11 +58,15 @@ async function _loadCart() {
     if (items.length === 0) {
       list.classList.add('hidden');
       empty.classList.remove('hidden');
+      document.getElementById('requestQuoteBtnTop')?.classList.add('hidden');
       return 'empty';
     }
 
     empty.classList.add('hidden');
     list.classList.remove('hidden');
+    const topBtn = document.getElementById('requestQuoteBtnTop');
+    topBtn?.classList.remove('hidden');
+    topBtn?.classList.add('inline-flex');
 
     grid.innerHTML = items.map(item => {
       const materialLabel = item.material ? (MATERIAL_LABELS[item.material] || item.material) : '';
@@ -137,7 +141,9 @@ async function _loadCart() {
     // Update select-all checkbox state
     const selAll = document.getElementById('selectAllCb');
     if (selAll) {
-      selAll.indeterminate = selected.length > 0 && selected.length < total;
+      const partial = selected.length > 0 && selected.length < total;
+      selAll.indeterminate = partial;
+      selAll.dataset.partial = partial ? '1' : '';
       selAll.checked = selected.length === total && total > 0;
     }
 
@@ -146,9 +152,13 @@ async function _loadCart() {
       selBar?.classList.remove('hidden');
       if (selCount) selCount.textContent = `${selected.length} selected`;
       if (btn) btn.textContent = `Request Quote for ${selected.length} Item${selected.length !== 1 ? 's' : ''}`;
+      const tb = document.getElementById('requestQuoteBtnTop');
+      if (tb) tb.firstChild.textContent = `Request Quote for ${selected.length} Item${selected.length !== 1 ? 's' : ''} `;
     } else {
       selBar?.classList.add('hidden');
       if (btn) btn.textContent = 'Request a Quote';
+      const tb = document.getElementById('requestQuoteBtnTop');
+      if (tb) tb.firstChild.textContent = 'Request a Quote ';
     }
   };
 
@@ -173,11 +183,20 @@ async function _loadCart() {
     }
   };
 
-  // Select-all handler
+  // Select-all handler：部分选中状态下点击 = 取消全部选择
   document.getElementById('selectAllCb')?.addEventListener('change', (e) => {
+    const clearAll = e.target.dataset.partial === '1';
     document.querySelectorAll('.cart-checkbox').forEach(cb => {
-      cb.checked = e.target.checked;
+      cb.checked = clearAll ? false : e.target.checked;
     });
+    if (clearAll) e.target.checked = false;
+    window._fpSelectionChanged();
+  });
+
+  // 明确的"取消全部选择"入口
+  document.getElementById('clearSelBtn')?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    document.querySelectorAll('.cart-checkbox').forEach(cb => { cb.checked = false; });
     window._fpSelectionChanged();
   });
 }
@@ -194,6 +213,7 @@ function _initQuoteModal(user) {
   document.getElementById('q-company').value = user.company || '';
 
   document.getElementById('requestQuoteBtn').addEventListener('click', _openQuoteModal);
+  document.getElementById('requestQuoteBtnTop')?.addEventListener('click', _openQuoteModal);
   document.getElementById('quoteModalClose').addEventListener('click', _closeQuoteModal);
   document.getElementById('quoteSubmitBtn').addEventListener('click', _submitQuote);
 
