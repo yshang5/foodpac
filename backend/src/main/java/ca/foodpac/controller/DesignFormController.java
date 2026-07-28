@@ -387,10 +387,20 @@ public class DesignFormController {
     // ── Serve stored images (uploads + generated) ─────────────────────────────
 
     @GetMapping("/files/{name}")
-    public ResponseEntity<byte[]> file(@PathVariable String name) throws IOException {
+    public ResponseEntity<byte[]> file(@PathVariable String name,
+                                       @RequestParam(value = "w", required = false) Integer w) throws IOException {
         Path p = service.resolveFile(name);
         if (p == null) return ResponseEntity.notFound().build();
         String lower = name.toLowerCase();
+        // 缩略图：?w=96..640 → 服务端缩放并落盘缓存（jpg），缩略图/小图秒开
+        if (w != null && w >= 32 && w <= 640 && (lower.endsWith(".png") || lower.endsWith(".jpg") || lower.endsWith(".jpeg"))) {
+            byte[] thumb = service.thumbnail(name, w);
+            if (thumb != null)
+                return ResponseEntity.ok()
+                        .contentType(MediaType.IMAGE_JPEG)
+                        .header("Cache-Control", "public, max-age=604800")
+                        .body(thumb);
+        }
         MediaType type = lower.endsWith(".png") ? MediaType.IMAGE_PNG
                 : lower.endsWith(".webp") ? MediaType.parseMediaType("image/webp")
                 : lower.endsWith(".svg") ? MediaType.parseMediaType("image/svg+xml")

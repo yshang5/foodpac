@@ -619,6 +619,8 @@
       document.getElementById('p-picker').classList.remove('hidden');
     }
     // ── 选中模板 → 应用到本产品，生成"图2"（重复选择则覆盖）──
+    // 生成图缩略：走后端缩放缓存，加快左侧小图加载
+    const fpThumb = (u, w = 160) => u && u.startsWith('/api/v1/design/files/') ? `${u}?w=${w}` : u;
     let pvImages = [p.image, null];
     let pvApplyToken = 0;
     function pvShow(i) {
@@ -643,7 +645,7 @@
         const mine = items.find(i => i.productId === base);   // 接口按时间倒序 → 第一个命中即最新
         if (mine && !pvImages[1]) {
           pvImages[1] = mine.imageUrl;
-          document.getElementById('pv-t1').src = mine.imageUrl;
+          document.getElementById('pv-t1').src = fpThumb(mine.imageUrl);
           document.getElementById('pv-thumb-1').classList.remove('hidden');
           pvShow(1);   // 有个性化定制图时默认展示它，原图在缩略图 1
         }
@@ -688,7 +690,7 @@
               clearInterval(timer);
               window.fpAddResult?.(r);          // 同步进 My Designs
               pvImages[1] = r.imageUrl;         // 图2：始终被最新结果覆盖
-              document.getElementById('pv-t1').src = r.imageUrl;
+              document.getElementById('pv-t1').src = fpThumb(r.imageUrl);
               document.getElementById('pv-thumb-1').classList.remove('hidden');
               off();
               pvShow(1);

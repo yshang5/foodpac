@@ -146,6 +146,37 @@ public class DesignFormService {
         return Math.abs(((p >> 16) & 0xff) - r) + Math.abs(((p >> 8) & 0xff) - g) + Math.abs((p & 0xff) - b);
     }
 
+    /** Serve-and-cache a downscaled jpg of a stored image (thumbnails). */
+    public byte[] thumbnail(String name, int width) {
+        try {
+            // 宽度取整档，避免任意参数刷爆缓存
+            int w = width <= 96 ? 96 : width <= 160 ? 160 : width <= 320 ? 320 : 640;
+            Path src = resolveFile(name);
+            if (src == null) return null;
+            Path cache = STORAGE_DIR.resolve("thumb-" + w + "-" + name.replaceAll("\\.(png|jpe?g)$", "") + ".jpg");
+            if (Files.isRegularFile(cache)) return Files.readAllBytes(cache);
+            var img = javax.imageio.ImageIO.read(src.toFile());
+            if (img == null) return null;
+            int h = Math.max(1, (int) Math.round((double) img.getHeight() * w / img.getWidth()));
+            var out = new java.awt.image.BufferedImage(w, h, java.awt.image.BufferedImage.TYPE_INT_RGB);
+            var g = out.createGraphics();
+            g.setColor(java.awt.Color.WHITE);
+            g.fillRect(0, 0, w, h);   // png 透明区垫白，转 jpg 不发黑
+            g.setRenderingHint(java.awt.RenderingHints.KEY_INTERPOLATION,
+                    java.awt.RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+            g.drawImage(img, 0, 0, w, h, null);
+            g.dispose();
+            var buf = new java.io.ByteArrayOutputStream();
+            javax.imageio.ImageIO.write(out, "jpg", buf);
+            byte[] bytes = buf.toByteArray();
+            Files.write(cache, bytes);
+            return bytes;
+        } catch (Exception e) {
+            log.warn("thumbnail {} w{} failed: {}", name, width, e.getMessage());
+            return null;
+        }
+    }
+
     public Path resolveFile(String name) {
         // Prevent path traversal: only serve simple filenames we created
         if (name == null || !name.matches("[a-zA-Z0-9._-]+")) return null;
