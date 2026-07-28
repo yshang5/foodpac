@@ -8,7 +8,7 @@
   <title>Restaurant Packaging Solutions – foodPac</title>
   <meta name="description" content="Complete branded takeout packaging solutions by restaurant type — curated design styles, matched product sets, AI-generated brand demos, delivered across Canada." />
   <link rel="canonical" href="https://foodpac.ai/solution.html" />
-  <link rel="stylesheet" href="css/tailwind.css?v=20260728f">
+  <link rel="stylesheet" href="css/tailwind.css?v=20260728g">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/main.css">
@@ -61,10 +61,10 @@
   <div id="footer"></div>
 
   <script type="module">
-    import { initNav, initFooter } from './js/components.js?v=20260728f';
-    import { getProducts } from './js/products.js?v=20260728f';
-    import { initDesignModal } from './js/design-modal.js?v=20260728f';
-    import { STYLE_LIBRARY, styleImg, styleThumb, setStyle, getStyle } from './js/styles.js?v=20260728f';
+    import { initNav, initFooter } from './js/components.js?v=20260728g';
+    import { getProducts } from './js/products.js?v=20260728g';
+    import { initDesignModal } from './js/design-modal.js?v=20260728g';
+    import { STYLE_LIBRARY, styleImg, styleThumb, setStyle, getStyle } from './js/styles.js?v=20260728g';
 
     initNav('solutions');
     initFooter();
@@ -221,10 +221,15 @@
       const glasses = document.querySelectorAll('.sol-glass');
       glasses.forEach(g => { g.classList.remove('hidden'); g.classList.add('flex'); });
       window.fpChipBusy?.(true);
+      // 新一轮生成：作废页面上的旧图（含从其它餐厅类型带过来的同款盒），等新风格覆盖
+      const prevItems = solItems;
+      solItems = {};
+      const handled = new Set();
       const stop = () => {
         document.querySelectorAll('.sol-glass').forEach(g => { g.classList.add('hidden'); g.classList.remove('flex'); });
         window.fpChipBusy?.(false);
       };
+      const abort = () => { solItems = prevItems; stop(); };   // 请求没发出去则恢复旧图
       try {
         const res = await fetch(`${FP_API}/design/apply-bulk`, {
           method: 'POST', credentials: 'include',
@@ -240,7 +245,7 @@
           })
         });
         if (res.status === 401) {
-          stop();
+          abort();
           document.getElementById('fp-login-modal').classList.remove('hidden');
           return;
         }
@@ -252,8 +257,9 @@
             if (!jr.ok) { clearInterval(timer); stop(); return; }
             const job = await jr.json();
             job.results.forEach(r => {
-              if (!solItems[r.productId]) {
-                solItems[r.productId] = r;
+              if (!handled.has(r.id)) {
+                handled.add(r.id);
+                solItems[r.productId] = r;   // 新风格无条件覆盖旧图
                 window.fpAddResult?.(r);
                 // 逐个替换：这件完成就立即翻转为品牌图
                 const x = solProducts.find(px =>
@@ -278,7 +284,7 @@
           } catch {}
         }, 3000);
       } catch {
-        stop();
+        abort();
       }
     };
   </script>
