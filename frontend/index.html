@@ -550,7 +550,7 @@
           </div>
         </div>
         <div class="why-panel hidden bg-white rounded-3xl border border-primary-100 shadow-md overflow-hidden grid md:grid-cols-2" data-why="moq">
-          <img src="assets/images/why-moq.jpg?v=20260728k" alt="Many restaurant designs printed together on one shared press sheet" loading="lazy" class="w-full h-full object-cover" style="min-height:260px">
+          <img src="assets/images/why-moq.jpg?v=20260728m" alt="Many restaurant designs printed together on one shared press sheet" loading="lazy" class="w-full h-full object-cover" style="min-height:260px">
           <div class="p-8 lg:p-12 flex flex-col justify-center">
             <p class="text-accent-500 font-bold text-xs uppercase tracking-wider mb-2">Why we make this</p>
             <h3 class="text-2xl font-extrabold text-gray-900 mb-4">No trade secret — it's gang-run printing</h3>
@@ -569,22 +569,33 @@
 
       <script>
         (function () {
+          const KEYS = ['ai', 'eco', 'moq', 'warehouse'];
           const detail = document.getElementById('why-detail');
-          let open = null;
+          let open = null, idx = 0, timer = null;
+
+          function show(next) {
+            open = next;
+            detail.classList.toggle('hidden', !next);
+            document.querySelectorAll('.why-panel').forEach(p =>
+              p.classList.toggle('hidden', p.dataset.why !== next));
+            document.querySelectorAll('.why-card').forEach(c => {
+              const active = c.dataset.why === next;
+              c.style.outline = active ? '3px solid #2e7d32' : '';
+              c.style.outlineOffset = active ? '-1px' : '';
+              c.querySelector('.why-hint svg').style.transform = active ? 'rotate(180deg)' : '';
+            });
+          }
+
+          // 默认展开第一张，每 5s 轮播到下一张；用户手动点击后停止自动轮播
+          show(KEYS[0]);
+          timer = setInterval(() => { idx = (idx + 1) % KEYS.length; show(KEYS[idx]); }, 5000);
+
           document.querySelectorAll('.why-card').forEach((card) => {
             card.addEventListener('click', () => {
+              if (timer) { clearInterval(timer); timer = null; }
               const key = card.dataset.why;
               const next = open === key ? null : key;
-              open = next;
-              detail.classList.toggle('hidden', !next);
-              document.querySelectorAll('.why-panel').forEach(p =>
-                p.classList.toggle('hidden', p.dataset.why !== next));
-              document.querySelectorAll('.why-card').forEach(c => {
-                const active = c.dataset.why === next;
-                c.style.outline = active ? '3px solid #2e7d32' : '';
-                c.style.outlineOffset = active ? '-1px' : '';
-                c.querySelector('.why-hint svg').style.transform = active ? 'rotate(180deg)' : '';
-              });
+              show(next);
               if (next) detail.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
             });
           });
