@@ -533,10 +533,12 @@
         : '';
       return `
         <div class="product-card bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden card-hover flex flex-col" data-cat="${p.category}">
-          <a href="product.html?id=${p.id}" class="relative block h-48 bg-primary-50 overflow-hidden">
+          <a href="product.html?id=${p.id}" class="relative block h-48 bg-gray-100 animate-pulse overflow-hidden">
             ${tag}
-            <img src="${p.image}" alt="${p.name}" class="product-img w-full h-full object-cover"
-                 onerror="this.style.display='none'">
+            <img src="${p.image}" alt="${p.name}" loading="lazy"
+                 class="product-img w-full h-full object-cover opacity-0 transition-opacity duration-300"
+                 onload="this.classList.remove('opacity-0');this.parentElement.classList.remove('animate-pulse')"
+                 onerror="this.style.display='none';this.parentElement.classList.remove('animate-pulse')">
           </a>
           <div class="p-5 flex flex-col flex-1">
             <h3 class="font-bold text-gray-900 mb-1"><a href="product.html?id=${p.id}" class="hover:text-primary-800 transition-colors">${p.name}</a></h3>
