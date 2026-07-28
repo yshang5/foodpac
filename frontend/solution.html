@@ -8,7 +8,7 @@
   <title>Restaurant Packaging Solutions – foodPac</title>
   <meta name="description" content="Complete branded takeout packaging solutions by restaurant type — curated design styles, matched product sets, AI-generated brand demos, delivered across Canada." />
   <link rel="canonical" href="https://foodpac.ai/solution.html" />
-  <link rel="stylesheet" href="css/tailwind.css?v=20260728d">
+  <link rel="stylesheet" href="css/tailwind.css?v=20260728e">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/main.css">
@@ -27,11 +27,7 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
       <p class="text-primary-200 text-sm font-medium mb-3 uppercase tracking-wider">Industry Solution</p>
       <h1 id="sol-title" class="text-4xl lg:text-5xl font-extrabold mb-4 max-w-2xl"></h1>
-      <p id="sol-sub" class="text-white/75 text-lg max-w-2xl mb-8"></p>
-      <button onclick="document.getElementById('sol-styles').scrollIntoView({behavior:'smooth'})"
-              class="inline-flex items-center gap-2.5 px-7 py-3.5 bg-accent-500 hover:bg-accent-600 text-white font-bold rounded-xl transition-colors shadow-xl shadow-black/20">
-        ✨ Pick a Style & Generate My Store Demo
-      </button>
+      <p id="sol-sub" class="text-white/75 text-lg max-w-2xl"></p>
     </div>
     <div id="sol-deco" class="hidden lg:block absolute right-10 xl:right-20 top-1/2 -translate-y-1/2 z-0 w-80"></div>
   </section>
@@ -41,7 +37,7 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex flex-wrap items-end justify-between gap-4 mb-8">
         <div>
-          <h2 class="text-3xl font-extrabold text-gray-900 mb-1">1 · Choose Your Style</h2>
+          <h2 class="text-3xl font-extrabold text-gray-900 mb-1">1 · Choose the style you like</h2>
           <p class="text-gray-500">Six curated packaging styles for this cuisine — pick the one that feels like your restaurant.</p>
         </div>
         <button id="sol-generate"
@@ -65,10 +61,10 @@
   <div id="footer"></div>
 
   <script type="module">
-    import { initNav, initFooter } from './js/components.js?v=20260728d';
-    import { getProducts } from './js/products.js?v=20260728d';
-    import { initDesignModal } from './js/design-modal.js?v=20260728d';
-    import { STYLE_LIBRARY, styleImg, styleThumb, setStyle, getStyle } from './js/styles.js?v=20260728d';
+    import { initNav, initFooter } from './js/components.js?v=20260728e';
+    import { getProducts } from './js/products.js?v=20260728e';
+    import { initDesignModal } from './js/design-modal.js?v=20260728e';
+    import { STYLE_LIBRARY, styleImg, styleThumb, setStyle, getStyle } from './js/styles.js?v=20260728e';
 
     initNav('solutions');
     initFooter();
@@ -131,13 +127,13 @@
     function renderStyles() {
       document.getElementById('sol-style-grid').innerHTML = lib.styles.map(s => `
         <button type="button" data-s="${s.id}" class="sol-style group text-left">
-          <div class="relative aspect-[3/2] bg-gray-100 animate-pulse rounded-xl overflow-hidden border-2 ${s.id === solStyle ? 'border-primary-700' : 'border-transparent group-hover:border-primary-300'} transition-colors">
+          <div class="relative aspect-[3/2] bg-gray-100 animate-pulse rounded-xl overflow-hidden border-[3px] ${s.id === solStyle ? 'border-primary-600 ring-4 ring-primary-600/25 shadow-xl' : 'border-transparent group-hover:border-primary-300'} transition-all">
             <img src="${styleThumb(lib.id, s.id)}" alt="${s.label} packaging style" loading="lazy"
                  class="w-full h-full object-cover opacity-0 transition-opacity duration-300"
                  onload="this.classList.remove(&quot;opacity-0&quot;);this.parentElement.classList.remove(&quot;animate-pulse&quot;)">
-            ${s.id === solStyle ? '<span class="absolute top-2 right-2 w-6 h-6 bg-primary-700 text-white rounded-full flex items-center justify-center text-xs font-bold">✓</span>' : ''}
+            ${s.id === solStyle ? '<span class="absolute top-2 right-2 w-7 h-7 bg-primary-600 text-white rounded-full flex items-center justify-center text-sm font-bold shadow-lg">✓</span>' : ''}
           </div>
-          <p class="text-sm font-bold text-gray-800 mt-2 truncate">${s.label}</p>
+          <p class="text-sm font-bold mt-2 truncate ${s.id === solStyle ? 'text-primary-800' : 'text-gray-800'}">${s.label} ${s.id === solStyle ? '· Selected' : ''}</p>
         </button>`).join('');
       document.querySelectorAll('.sol-style').forEach(b => b.addEventListener('click', () => {
         solStyle = b.dataset.s;
