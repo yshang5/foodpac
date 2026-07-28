@@ -19,7 +19,7 @@
   <meta name="twitter:title" content="Get a Free Quote – Custom Restaurant Packaging Canada | foodPac" />
   <meta name="twitter:description" content="Request a free quote and AI packaging design mockup for your restaurant. Response within 24 hours. Serving Toronto, Vancouver, Montreal and all of Canada." />
   <meta name="twitter:image" content="https://foodpac.ai/assets/images/hero-box.jpg" />
-  <link rel="stylesheet" href="css/tailwind.css?v=20260728h">
+  <link rel="stylesheet" href="css/tailwind.css?v=20260726f">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/main.css">
@@ -146,8 +146,17 @@
               <div class="grid sm:grid-cols-2 gap-5 mb-5">
                 <div>
                   <label class="block text-sm font-medium text-gray-700 mb-1.5">Restaurant / Business Name *</label>
-                  <input type="text" name="businessName" required placeholder="e.g. Green Garden Café"
-                         class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm">
+                  <div class="relative">
+                    <input type="text" name="businessName" required placeholder="e.g. Green Garden Café"
+                           class="w-full border border-gray-200 rounded-lg px-4 py-2.5 pr-10 text-sm">
+                    <button type="button" id="qf-kit-toggle" title="Load a saved brand"
+                            class="hidden absolute right-2 top-1/2 -translate-y-1/2 w-7 h-7 items-center justify-center rounded-md text-gray-400 hover:text-primary-700 hover:bg-primary-50">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                      </svg>
+                    </button>
+                    <div id="qf-kit-menu" class="hidden absolute z-20 left-0 right-0 top-full mt-1 bg-white border border-gray-200 rounded-xl shadow-xl py-1 max-h-64 overflow-auto"></div>
+                  </div>
                 </div>
                 <div>
                   <label class="block text-sm font-medium text-gray-700 mb-1.5">Contact Name *</label>
@@ -173,13 +182,15 @@
                   <label class="block text-sm font-medium text-gray-700 mb-1.5">Restaurant Type</label>
                   <select name="restaurantType" class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm bg-white">
                     <option value="">Select type…</option>
-                    <option value="cafe">Cafe / Coffee Shop</option>
-                    <option value="asian">Asian Restaurant</option>
-                    <option value="fastfood">Fast Food / Burgers</option>
-                    <option value="pizza">Pizza / Italian</option>
-                    <option value="healthy">Healthy / Salads</option>
-                    <option value="foodtruck">Food Truck / Pop-Up</option>
-                    <option value="other">Other</option>
+                    <option>Chinese</option><option>Cantonese / Dim Sum</option><option>Sichuan / Hunan</option>
+                    <option>Hot Pot</option><option>Japanese / Sushi</option><option>Ramen</option>
+                    <option>Korean</option><option>Thai</option><option>Vietnamese / Pho</option>
+                    <option>Indian</option><option>Middle Eastern</option><option>Mediterranean / Greek</option>
+                    <option>Mexican</option><option>Italian / Pizza</option><option>Burgers / Fast Food</option>
+                    <option>Fried Chicken</option><option>BBQ / Grill</option><option>Seafood / Fish &amp; Chips</option>
+                    <option>Cafe / Coffee Shop</option><option>Bakery / Desserts</option><option>Bubble Tea / Juice</option>
+                    <option>Ice Cream</option><option>Salad / Healthy</option><option>Poke Bowl</option>
+                    <option>Brunch / Breakfast</option><option>Food Truck</option><option>Other</option>
                   </select>
                 </div>
               </div>
@@ -252,10 +263,11 @@
   <div id="footer"></div>
 
   <script type="module">
-    import { initNav, initFooter } from './js/components.js?v=20260728h';
-    import { submitQuote } from './js/api.js?v=20260728h';
-    import { CATEGORIES } from './js/products.js?v=20260728h';
-    import { initDesignWidget } from './js/design-widget.js?v=20260728h';
+    import { initNav, initFooter } from './js/components.js?v=20260726f';
+    import { submitQuote, API_BASE } from './js/api.js?v=20260726f';
+    import { CATEGORIES } from './js/products.js?v=20260726f';
+    import { initDesignWidget } from './js/design-widget.js?v=20260726f';
+    import { getCurrentUser } from './js/auth.js?v=20260726f';
 
     initNav();
     initFooter();
@@ -284,6 +296,69 @@
         if (cb) cb.checked = true;
       }
     }
+
+    // ── Prefill from profile + AI Design brand kits ──
+    const qForm = document.getElementById('quoteForm');
+    const qEsc = (s) => String(s ?? '').replace(/[&<>"']/g,
+      c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+    const qHex = (c) => /^#[0-9a-fA-F]{6}$/.test(c || '') ? c : '#4a7c59';
+    const setIfEmpty = (name, val) => {
+      const el = qForm.elements[name];
+      if (el && val && !el.value) el.value = val;
+    };
+
+    function applyKit(kit) {
+      qForm.elements.businessName.value = kit.brandText || '';
+      const typeSel = qForm.elements.restaurantType;
+      if (kit.restaurantType && [...typeSel.options].some(o => o.value === kit.restaurantType))
+        typeSel.value = kit.restaurantType;
+      if (kit.logoFile) qForm.elements.hasLogo.value = 'yes';
+      setIfEmpty('phone', kit.phone);
+    }
+
+    (async () => {
+      const [user, kitsRes] = await Promise.all([
+        getCurrentUser().catch(() => null),
+        fetch(`${API_BASE}/design/kits`, { credentials: 'include' })
+          .then(r => r.ok ? r.json() : null).catch(() => null),
+      ]);
+
+      if (user) {
+        setIfEmpty('contactName', user.name);
+        setIfEmpty('email', user.email);
+        setIfEmpty('phone', user.phone);
+        setIfEmpty('businessName', user.company);
+      }
+
+      const kits = kitsRes?.kits || [];
+      if (!kits.length) return;
+
+      // 最近一个 brand kit 自动带入（不覆盖用户已输入的内容）
+      if (!qForm.elements.businessName.value.trim()) applyKit(kits[0]);
+
+      // 多个品牌时提供下拉切换，与设计弹窗一致：Brand — slogan（品牌色）
+      const toggle = document.getElementById('qf-kit-toggle');
+      const menu = document.getElementById('qf-kit-menu');
+      toggle.classList.remove('hidden');
+      toggle.classList.add('flex');
+      menu.innerHTML = `
+        <button type="button" data-k="-1" class="w-full text-left px-4 py-2.5 text-sm text-gray-500 hover:bg-gray-50">Start fresh — type a new brand</button>
+        ${kits.map((k, i) => `
+          <button type="button" data-k="${i}" class="w-full text-left px-4 py-2.5 text-sm font-semibold hover:bg-primary-50 truncate"
+                  style="color:${qHex(k.brandColor)}">${qEsc(k.brandText)}${k.slogan ? ` — ${qEsc(k.slogan)}` : ''}</button>`).join('')}`;
+      toggle.addEventListener('click', (e) => { e.stopPropagation(); menu.classList.toggle('hidden'); });
+      document.addEventListener('click', () => menu.classList.add('hidden'));
+      menu.addEventListener('click', (e) => {
+        const btn = e.target.closest('button[data-k]');
+        if (!btn) return;
+        const i = Number(btn.dataset.k);
+        if (i < 0) {
+          qForm.elements.businessName.value = '';
+          qForm.elements.restaurantType.value = '';
+        } else applyKit(kits[i]);
+        menu.classList.add('hidden');
+      });
+    })();
 
     // Form submission
     const form       = document.getElementById('quoteForm');
