@@ -13,9 +13,9 @@
  *   window.fpChipBusy(on)     — toggle the chip generating animation
  */
 
-import { loginWithGoogle } from './auth.js?v=20260728n';
-import { _refreshCartBadge } from './components.js?v=20260728n';
-import { STYLE_LIBRARY, styleImg, styleThumb, getStyle, setStyle } from './styles.js?v=20260728n';
+import { loginWithGoogle } from './auth.js?v=20260728p';
+import { _refreshCartBadge } from './components.js?v=20260728p';
+import { STYLE_LIBRARY, styleImg, styleThumb, getStyle, setStyle } from './styles.js?v=20260728p';
 
 const FP_CSS = `
   .fp-swatch.sel { outline: 3px solid #1b5e20; outline-offset: 2px; }
@@ -163,10 +163,13 @@ const FP_HTML = `
         </div>
 
         <div id="fpd-error" class="hidden text-sm text-red-700 bg-red-50 border border-red-200 rounded-lg px-4 py-2.5"></div>
-        <button type="submit" id="fpd-submit" disabled
-                class="w-full py-3.5 bg-accent-500 hover:bg-accent-600 text-white font-bold rounded-xl transition-colors shadow-lg shadow-accent-500/25 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-accent-500">
-          ✨ Generate My Designs
-        </button>
+        <!-- 表单过长时按钮吸底：内容在上方滚动，按钮始终可见 -->
+        <div class="sticky bottom-0 bg-white" style="margin:0 -24px -20px;padding:10px 24px 20px;box-shadow:0 -10px 18px -10px rgba(0,0,0,.10)">
+          <button type="submit" id="fpd-submit" disabled
+                  class="w-full py-3.5 bg-accent-500 hover:bg-accent-600 text-white font-bold rounded-xl transition-colors shadow-lg shadow-accent-500/25 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-accent-500">
+            ✨ Generate My Designs
+          </button>
+        </div>
       </form>
       </div>
     </div>
