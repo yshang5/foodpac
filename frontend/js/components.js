@@ -11,10 +11,11 @@
  *   </script>
  */
 
-import { getCurrentUser, loginWithGoogle, logout } from './auth.js?v=20260728k';
-import { initOnboarding } from './onboarding.js?v=20260728k';
-import { avatarHtml } from './avatar.js?v=20260728k';
-import { API_BASE } from './api.js?v=20260728k';
+import { getCurrentUser, loginWithGoogle, logout } from './auth.js?v=20260728n';
+import { initOnboarding } from './onboarding.js?v=20260728n';
+import { initDropdowns } from './dropdown.js?v=20260728n';
+import { avatarHtml } from './avatar.js?v=20260728n';
+import { API_BASE } from './api.js?v=20260728n';
 
 const CART_PENDING_KEY = '_fp_pendingCart';
 
@@ -98,6 +99,7 @@ export async function initNav(activePage = '') {
   el.classList.add('sticky', 'top-0', 'z-50');
 
   _fixTailwindResponsive();
+  initDropdowns();   // 全站统一自定义下拉框（含之后注入的弹窗）
 
   // Products — mega dropdown with category cards.
   // On the homepage window.fpGoCat switches the in-page category tab;

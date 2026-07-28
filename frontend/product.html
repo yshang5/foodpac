@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Product – foodPac</title>
   <meta name="description" content="Custom branded food packaging for Canadian restaurants — free AI design, low minimums, nationwide delivery." />
-  <link rel="stylesheet" href="css/tailwind.css?v=20260728k">
+  <link rel="stylesheet" href="css/tailwind.css?v=20260728n">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/main.css">
@@ -90,12 +90,9 @@
         <div class="grid sm:grid-cols-2 gap-4 mb-5">
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1.5">Size</label>
-            <div class="relative">
-              <select id="p-size" class="w-full appearance-none border border-gray-200 rounded-lg px-4 py-2.5 pr-10 text-sm bg-white cursor-pointer">
-                <option value="">Loading sizes…</option>
-              </select>
-              <svg class="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
-            </div>
+            <select id="p-size" class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm bg-white">
+              <option value="">Loading sizes…</option>
+            </select>
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1.5">Quantity</label>
@@ -361,11 +358,11 @@
   </style>
 
   <script type="module">
-    import { initNav, initFooter, _refreshCartBadge } from './js/components.js?v=20260728k';
-    import { getCurrentUser } from './js/auth.js?v=20260728k';
-    import { parseExtra } from './js/onboarding.js?v=20260728k';
-    import { getProducts } from './js/products.js?v=20260728k';
-    import { initDesignModal } from './js/design-modal.js?v=20260728k';
+    import { initNav, initFooter, _refreshCartBadge } from './js/components.js?v=20260728n';
+    import { getCurrentUser } from './js/auth.js?v=20260728n';
+    import { parseExtra } from './js/onboarding.js?v=20260728n';
+    import { getProducts } from './js/products.js?v=20260728n';
+    import { initDesignModal } from './js/design-modal.js?v=20260728n';
 
     initNav('products');
     initFooter();
