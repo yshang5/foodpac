@@ -13,9 +13,9 @@
  *   window.fpChipBusy(on)     — toggle the chip generating animation
  */
 
-import { loginWithGoogle } from './auth.js?v=20260728r';
-import { _refreshCartBadge } from './components.js?v=20260728r';
-import { STYLE_LIBRARY, styleImg, styleThumb, getStyle, setStyle } from './styles.js?v=20260728r';
+import { loginWithGoogle } from './auth.js?v=20260728s';
+import { _refreshCartBadge } from './components.js?v=20260728s';
+import { STYLE_LIBRARY, styleImg, styleThumb, getStyle, setStyle } from './styles.js?v=20260728s';
 
 const FP_CSS = `
   .fp-swatch.sel { outline: 3px solid #1b5e20; outline-offset: 2px; }
@@ -190,25 +190,22 @@ const FP_HTML = `
   <!-- ══════════ 编辑设计：大图 + 修改指令输入 ══════════ -->
   <div id="fp-edit-modal" class="hidden fixed inset-0 bg-black/85 z-[9993] flex flex-col items-center justify-center p-4 sm:p-8">
     <button id="fpe-close" class="absolute top-4 right-5 text-white/70 hover:text-white text-3xl leading-none z-10">×</button>
-    <div class="relative max-w-3xl">
-      <img id="fpe-img" src="" alt="Design being edited" class="max-w-full rounded-2xl shadow-2xl object-contain" style="max-height:62vh">
-      <div id="fpe-glass" class="hidden absolute inset-0 fp-genglass flex-col items-center justify-center gap-3 rounded-2xl">
-        <img src="assets/images/logo-icon-v2.png?v=9" alt="" class="fp-genspin w-10 h-10 rounded-full bg-white/90 object-contain p-1 shadow">
-        <span class="text-sm font-bold text-gray-800 bg-white/85 rounded-full px-4 py-1.5">Applying your edit…</span>
-      </div>
-    </div>
-    <div class="w-full max-w-3xl mt-5 shrink-0">
-      <div id="fpe-error" class="hidden mb-3 text-sm text-red-100 bg-red-900/70 border border-red-500/40 rounded-lg px-4 py-2.5"></div>
-      <div class="flex flex-col sm:flex-row gap-3">
-        <input type="text" id="fpe-input" maxlength="500"
-               placeholder="Describe the change — e.g. make the logo bigger, use a red background…"
-               class="flex-1 rounded-xl px-4 py-3 text-sm bg-white border border-gray-200">
-        <div class="flex gap-3 shrink-0">
-          <button id="fpe-confirm"
-                  class="flex-1 sm:flex-none px-8 py-3 bg-accent-500 hover:bg-accent-600 text-white text-sm font-bold rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed">Confirm</button>
-          <button id="fpe-cancel"
-                  class="flex-1 sm:flex-none px-6 py-3 bg-white/15 hover:bg-white/25 text-white text-sm font-bold rounded-xl transition-colors">Cancel</button>
+    <!-- 列宽由图片决定：输入框 w-full 跟随，左右与图片边框对齐 -->
+    <div class="max-w-3xl" style="width:fit-content">
+      <div class="relative">
+        <img id="fpe-img" src="" alt="Design being edited" class="max-w-full rounded-2xl shadow-2xl object-contain" style="max-height:58vh">
+        <div id="fpe-glass" class="hidden absolute inset-0 fp-genglass flex-col items-center justify-center gap-3 rounded-2xl">
+          <img src="assets/images/logo-icon-v2.png?v=9" alt="" class="fp-genspin w-10 h-10 rounded-full bg-white/90 object-contain p-1 shadow">
+          <span class="text-sm font-bold text-gray-800 bg-white/85 rounded-full px-4 py-1.5">Applying your edit…</span>
         </div>
+      </div>
+      <div id="fpe-error" class="hidden mt-3 text-sm text-red-100 bg-red-900/70 border border-red-500/40 rounded-lg px-4 py-2.5"></div>
+      <div class="relative mt-4">
+        <textarea id="fpe-input" rows="3" maxlength="500"
+                  placeholder="Describe the change — e.g. make the logo bigger, use a red background…"
+                  class="w-full rounded-xl px-4 py-3 text-sm bg-white border border-gray-200 resize-none" style="padding-bottom:52px"></textarea>
+        <button id="fpe-confirm"
+                class="absolute px-7 py-2 bg-accent-500 hover:bg-accent-600 text-white text-sm font-bold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed" style="right:12px;bottom:14px">Run</button>
       </div>
     </div>
   </div>
@@ -863,7 +860,6 @@ export function initDesignModal() {
       fpeEl('fp-edit-modal').classList.add('hidden');
       fpEditCtx = null;
     };
-    fpeEl('fpe-cancel').addEventListener('click', fpEditClose);
     fpeEl('fpe-close').addEventListener('click', fpEditClose);
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && !fpeEl('fp-edit-modal').classList.contains('hidden')) fpEditClose();
@@ -934,7 +930,9 @@ export function initDesignModal() {
       }
     }
     fpeEl('fpe-confirm').addEventListener('click', fpEditConfirm);
-    fpeEl('fpe-input').addEventListener('keydown', (e) => { if (e.key === 'Enter') fpEditConfirm(); });
+    fpeEl('fpe-input').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); fpEditConfirm(); }
+    });
 
     // ── 下单 ──
     let fpOrderCtx = null;
