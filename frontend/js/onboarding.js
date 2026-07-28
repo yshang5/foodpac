@@ -3,7 +3,7 @@
  * can prefill everywhere. Two steps, each skippable; shows once per user
  * (flag persisted in user.extra JSON as {"onboarded":true}).
  */
-import { API_BASE } from './api.js?v=20260728j';
+import { API_BASE } from './api.js?v=20260728k';
 
 const TYPE_OPTIONS = [
   'Chinese', 'Cantonese / Dim Sum', 'Sichuan / Hunan', 'Hot Pot', 'Japanese / Sushi',
@@ -56,58 +56,58 @@ function render(user, extra, kit) {
   wrap.id = 'fp-onboard';
   wrap.className = 'fixed inset-0 bg-black/60 z-[9990] flex items-center justify-center p-4';
   wrap.innerHTML = `
-    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
-      <div class="px-6 py-5 bg-primary-800 text-white">
-        <p class="font-bold text-lg leading-snug">Tell us about your restaurant</p>
-        <p class="text-primary-200 text-sm mt-1">So our AI can design and quote for you better — takes 20 seconds.</p>
-      </div>
-      <div class="px-6 pt-4 pb-6">
+    <div class="bg-white rounded-3xl shadow-2xl w-full max-w-xl overflow-hidden">
+      <div style="padding:36px 40px 30px" class="bg-primary-800 text-white">
         <div class="flex items-center gap-2 mb-5">
-          <span id="ob-dot1" style="height:6px" class="rounded-full bg-primary-700 flex-1"></span>
-          <span id="ob-dot2" style="height:6px" class="rounded-full bg-gray-200 flex-1"></span>
-          <span class="text-xs text-gray-400 ml-1" id="ob-stepno">1 / 2</span>
+          <span id="ob-dot1" style="height:5px;max-width:44px;background:#fff" class="rounded-full flex-1"></span>
+          <span id="ob-dot2" style="height:5px;max-width:44px;background:rgba(255,255,255,.28)" class="rounded-full flex-1"></span>
+          <span class="text-xs text-primary-200 ml-1" id="ob-stepno">1 / 2</span>
         </div>
+        <p class="font-extrabold text-2xl leading-snug tracking-tight">Tell us about your restaurant</p>
+        <p class="text-primary-200 text-[15px] mt-2 leading-relaxed">So our AI can design and quote for you better — takes 20 seconds.</p>
+      </div>
+      <div style="padding:32px 40px 36px">
 
-        <div id="ob-step1" class="space-y-4">
+        <div id="ob-step1" class="space-y-6">
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1.5">Restaurant name</label>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Restaurant name</label>
             <input type="text" id="ob-name" placeholder="e.g. Green Garden Café" value="${esc(kit?.brandText || user.company || '')}"
-                   class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm">
+                   class="w-full border border-gray-200 rounded-xl px-4 py-3 text-[15px]">
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1.5">Restaurant type</label>
-            <select id="ob-type" class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm bg-white">
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Restaurant type</label>
+            <select id="ob-type" class="w-full border border-gray-200 rounded-xl px-4 py-3 text-[15px] bg-white">
               <option value="">Select type…</option>
               ${TYPE_OPTIONS.map(t => `<option${(kit?.restaurantType || extra.restaurantType) === t ? ' selected' : ''}>${t}</option>`).join('')}
             </select>
           </div>
-          <div class="flex items-center justify-between pt-2">
-            <button type="button" id="ob-skip1" class="text-sm text-gray-400 hover:text-gray-600">Skip for now</button>
-            <button type="button" id="ob-next" class="px-6 py-2.5 bg-primary-800 hover:bg-primary-900 text-white text-sm font-semibold rounded-xl">Next</button>
+          <div class="flex items-center justify-between gap-4 pt-4">
+            <button type="button" id="ob-skip1" class="px-4 py-3 text-sm text-gray-400 hover:text-gray-600">Skip for now</button>
+            <button type="button" id="ob-next" style="padding:12px 40px" class="bg-primary-800 hover:bg-primary-900 text-white text-[15px] font-bold rounded-xl shadow-lg shadow-primary-800/20 transition-colors">Next</button>
           </div>
         </div>
 
-        <div id="ob-step2" class="hidden space-y-4">
-          <div class="grid grid-cols-2 gap-4">
+        <div id="ob-step2" class="hidden space-y-6">
+          <div class="grid grid-cols-2 gap-5">
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1.5">Phone</label>
+              <label class="block text-sm font-semibold text-gray-700 mb-2">Phone</label>
               <input type="tel" id="ob-phone" placeholder="+1 (416) 000-0000" value="${esc(user.phone || kit?.phone || '')}"
-                     class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm">
+                     class="w-full border border-gray-200 rounded-xl px-4 py-3 text-[15px]">
             </div>
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1.5">Email</label>
+              <label class="block text-sm font-semibold text-gray-700 mb-2">Email</label>
               <input type="email" id="ob-email" value="${esc(user.email || '')}" readonly title="From your Google account"
-                     class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm bg-gray-50 text-gray-500">
+                     class="w-full border border-gray-200 rounded-xl px-4 py-3 text-[15px] bg-gray-50 text-gray-500">
             </div>
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1.5">Restaurant address</label>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Restaurant address</label>
             <input type="text" id="ob-address" placeholder="123 Queen St W, Toronto, ON" value="${esc(user.address || kit?.address || '')}"
-                   class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm">
+                   class="w-full border border-gray-200 rounded-xl px-4 py-3 text-[15px]">
           </div>
-          <div class="flex items-center justify-between pt-2">
-            <button type="button" id="ob-skip2" class="text-sm text-gray-400 hover:text-gray-600">Skip for now</button>
-            <button type="button" id="ob-done" class="px-6 py-2.5 bg-accent-500 hover:bg-accent-600 text-white text-sm font-semibold rounded-xl">Finish</button>
+          <div class="flex items-center justify-between gap-4 pt-4">
+            <button type="button" id="ob-skip2" class="px-4 py-3 text-sm text-gray-400 hover:text-gray-600">Skip for now</button>
+            <button type="button" id="ob-done" style="padding:12px 40px" class="bg-accent-500 hover:bg-accent-600 text-white text-[15px] font-bold rounded-xl shadow-lg shadow-accent-500/25 transition-colors">Finish</button>
           </div>
         </div>
       </div>
@@ -124,7 +124,7 @@ function render(user, extra, kit) {
   const showStep2 = () => {
     document.getElementById('ob-step1').classList.add('hidden');
     document.getElementById('ob-step2').classList.remove('hidden');
-    document.getElementById('ob-dot2').classList.replace('bg-gray-200', 'bg-primary-700');
+    document.getElementById('ob-dot2').style.background = '#fff';
     document.getElementById('ob-stepno').textContent = '2 / 2';
   };
   const close = () => {

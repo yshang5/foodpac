@@ -3,8 +3,8 @@
  * shows generated images in a floating results panel.
  */
 
-import { loginWithGoogle } from './auth.js?v=20260728j';
-import { _refreshCartBadge } from './components.js?v=20260728j';
+import { loginWithGoogle } from './auth.js?v=20260728k';
+import { _refreshCartBadge } from './components.js?v=20260728k';
 
 const PACKIFY_APP_ID      = 'DBoFUkjLlTIrcrXXYDghX';
 const API_BASE            = '/api/v1';

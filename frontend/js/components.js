@@ -11,10 +11,10 @@
  *   </script>
  */
 
-import { getCurrentUser, loginWithGoogle, logout } from './auth.js?v=20260728j';
-import { initOnboarding } from './onboarding.js?v=20260728j';
-import { avatarHtml } from './avatar.js?v=20260728j';
-import { API_BASE } from './api.js?v=20260728j';
+import { getCurrentUser, loginWithGoogle, logout } from './auth.js?v=20260728k';
+import { initOnboarding } from './onboarding.js?v=20260728k';
+import { avatarHtml } from './avatar.js?v=20260728k';
+import { API_BASE } from './api.js?v=20260728k';
 
 const CART_PENDING_KEY = '_fp_pendingCart';
 
