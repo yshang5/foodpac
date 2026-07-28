@@ -52,8 +52,8 @@
   <!-- ── PRODUCTS（该菜系关联产品）────────────────────────── -->
   <section class="py-14 bg-gray-50 border-t border-gray-100">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <h2 class="text-3xl font-extrabold text-gray-900 mb-1">2 · Everything Your Restaurant Needs</h2>
-      <p id="sol-prod-sub" class="text-gray-500 mb-8">Generate your demo above, then click any item to pick a size, see the price and add it to your cart.</p>
+      <h2 class="text-3xl font-extrabold text-gray-900 mb-8">2 · Everything Your Restaurant Needs</h2>
+      <p id="sol-prod-sub" class="hidden text-gray-500 -mt-5 mb-8"></p>
       <div id="sol-products" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"></div>
     </div>
   </section>
@@ -205,8 +205,11 @@
         });
         if (restored) {
           renderProducts();
-          document.getElementById('sol-prod-sub').innerHTML =
-            '<b class="text-primary-800">Your branded set is ready</b> — click any item to pick a size, see the price and add it to your cart.';
+          if (restored >= solProducts.length) {
+            const sub = document.getElementById('sol-prod-sub');
+            sub.innerHTML = '<b class="text-primary-800">Your branded set is ready</b> — click any item to pick a size, see the price and add it to your cart.';
+            sub.classList.remove('hidden');
+          }
         }
       } catch {}
     })();
@@ -265,8 +268,12 @@
             if (job.status === 'COMPLETED' || job.status === 'FAILED') {
               clearInterval(timer);
               stop();
-              document.getElementById('sol-prod-sub').innerHTML =
-                '<b class="text-primary-800">Your branded set is ready</b> — click any item to pick a size, see the price and add it to your cart.';
+              // 全部图片生成完成才展示 ready 文案
+              if (Object.keys(solItems).length >= solProducts.length) {
+                const sub = document.getElementById('sol-prod-sub');
+                sub.innerHTML = '<b class="text-primary-800">Your branded set is ready</b> — click any item to pick a size, see the price and add it to your cart.';
+                sub.classList.remove('hidden');
+              }
             }
           } catch {}
         }, 3000);
