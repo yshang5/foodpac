@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="robots" content="noindex,nofollow" />
   <title>My Cart – foodPac</title>
-  <link rel="stylesheet" href="css/tailwind.css?v=20260728t">
+  <link rel="stylesheet" href="css/tailwind.css?v=20260728u">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/main.css">
@@ -113,7 +113,7 @@
       </div>
 
       <div class="flex-1 min-h-0 flex flex-col">
-      <div class="flex-1 min-h-0 px-6 py-5 space-y-4 overflow-y-auto">
+      <div class="flex-1 min-h-0 px-6 py-5 space-y-4 overflow-y-auto" style="max-height:calc(92vh - 148px)">
 
         <!-- 摘要（同产品页的灰底摘要块） -->
         <div class="bg-gray-50 rounded-xl p-4">
@@ -153,7 +153,7 @@
         <div id="quoteError" style="display:none" class="text-sm text-red-700 bg-red-50 border border-red-200 rounded-lg px-4 py-2.5"></div>
 
         </div>
-      <div class="shrink-0 sticky bottom-0 bg-white px-6 py-4 border-t border-gray-100" style="box-shadow:0 -10px 18px -10px rgba(0,0,0,.08)">
+      <div class="shrink-0 sticky bottom-0 bg-white px-6 border-t border-gray-100" style="padding-top:18px;padding-bottom:18px;box-shadow:0 -10px 18px -10px rgba(0,0,0,.08)">
         <button id="quoteSubmitBtn"
                 class="w-full py-3.5 bg-accent-500 hover:bg-accent-600 text-white font-bold rounded-xl transition-colors shadow-lg shadow-accent-500/25 disabled:opacity-60">
           Submit Quote Request
@@ -194,8 +194,8 @@
   <div id="footer"></div>
 
   <script type="module">
-    import { initNav, initFooter } from './js/components.js?v=20260728t';
-    import { initCart } from './js/cart.js?v=20260728t';
+    import { initNav, initFooter } from './js/components.js?v=20260728u';
+    import { initCart } from './js/cart.js?v=20260728u';
     initNav();
     initFooter();
     initCart();
