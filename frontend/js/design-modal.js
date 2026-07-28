@@ -13,9 +13,9 @@
  *   window.fpChipBusy(on)     — toggle the chip generating animation
  */
 
-import { loginWithGoogle } from './auth.js?v=20260728s';
-import { _refreshCartBadge } from './components.js?v=20260728s';
-import { STYLE_LIBRARY, styleImg, styleThumb, getStyle, setStyle } from './styles.js?v=20260728s';
+import { loginWithGoogle } from './auth.js?v=20260728t';
+import { _refreshCartBadge } from './components.js?v=20260728t';
+import { STYLE_LIBRARY, styleImg, styleThumb, getStyle, setStyle } from './styles.js?v=20260728t';
 
 const FP_CSS = `
   .fp-swatch.sel { outline: 3px solid #1b5e20; outline-offset: 2px; }
@@ -66,7 +66,9 @@ const FP_HTML = `
         </aside>
 
         <!-- 右侧：表单 -->
-        <form id="fp-design-form" class="flex-1 px-6 py-5 space-y-4 lg:overflow-y-auto">
+        <form id="fp-design-form" class="flex-1 min-h-0 flex flex-col">
+        <!-- 滚动区：所有字段；按钮在滚动区外固定 -->
+        <div class="flex-1 min-h-0 px-6 py-5 space-y-4 overflow-y-auto">
         <div>
           <label class="block text-sm font-bold text-gray-800 mb-1.5">Your brand name <span class="text-red-500">*</span></label>
           <div class="relative">
@@ -163,8 +165,9 @@ const FP_HTML = `
         </div>
 
         <div id="fpd-error" class="hidden text-sm text-red-700 bg-red-50 border border-red-200 rounded-lg px-4 py-2.5"></div>
-        <!-- 表单过长时按钮吸底：内容在上方滚动，按钮始终可见 -->
-        <div class="sticky bottom-0 bg-white" style="margin:0 -24px -20px;padding:10px 24px 20px;box-shadow:0 -10px 18px -10px rgba(0,0,0,.10)">
+        </div>
+        <!-- 固定底部：不参与滚动，按钮始终可见（移动端靠 sticky 贴住外层滚动容器底部）-->
+        <div class="shrink-0 sticky bottom-0 bg-white px-6 py-4 border-t border-gray-100" style="box-shadow:0 -10px 18px -10px rgba(0,0,0,.08)">
           <button type="submit" id="fpd-submit" disabled
                   class="w-full py-3.5 bg-accent-500 hover:bg-accent-600 text-white font-bold rounded-xl transition-colors shadow-lg shadow-accent-500/25 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-accent-500">
             ✨ Generate My Designs

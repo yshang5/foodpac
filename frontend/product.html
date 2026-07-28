@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Product – foodPac</title>
   <meta name="description" content="Custom branded food packaging for Canadian restaurants — free AI design, low minimums, nationwide delivery." />
-  <link rel="stylesheet" href="css/tailwind.css?v=20260728s">
+  <link rel="stylesheet" href="css/tailwind.css?v=20260728t">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/main.css">
@@ -295,7 +295,8 @@
         </div>
         <button id="p-quote-close" class="text-white/70 hover:text-white text-2xl leading-none">×</button>
       </div>
-      <form id="p-quote-form" class="flex-1 min-h-0 px-6 py-5 space-y-4 overflow-y-auto">
+      <form id="p-quote-form" class="flex-1 min-h-0 flex flex-col">
+        <div class="flex-1 min-h-0 px-6 py-5 space-y-4 overflow-y-auto">
         <!-- 摘要 -->
         <div class="bg-gray-50 rounded-xl p-4 flex items-center gap-3">
           <img id="pq-design-thumb" src="" class="hidden w-14 h-14 rounded-lg object-cover border border-gray-200" alt="">
@@ -334,8 +335,8 @@
                     class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm resize-none"></textarea>
         </div>
         <div id="pq-error" class="hidden text-sm text-red-700 bg-red-50 border border-red-200 rounded-lg px-4 py-2.5"></div>
-        <!-- 表单过长时按钮吸底 -->
-        <div class="sticky bottom-0 bg-white" style="margin:0 -24px -20px;padding:10px 24px 20px;box-shadow:0 -10px 18px -10px rgba(0,0,0,.10)">
+        </div>
+        <div class="shrink-0 sticky bottom-0 bg-white px-6 py-4 border-t border-gray-100" style="box-shadow:0 -10px 18px -10px rgba(0,0,0,.08)">
           <button type="submit" id="pq-submit"
                   class="w-full py-3.5 bg-accent-500 hover:bg-accent-600 text-white font-bold rounded-xl transition-colors shadow-lg shadow-accent-500/25 disabled:opacity-60">
             Submit Quote Request
@@ -361,11 +362,11 @@
   </style>
 
   <script type="module">
-    import { initNav, initFooter, _refreshCartBadge } from './js/components.js?v=20260728s';
-    import { getCurrentUser } from './js/auth.js?v=20260728s';
-    import { parseExtra } from './js/onboarding.js?v=20260728s';
-    import { getProducts } from './js/products.js?v=20260728s';
-    import { initDesignModal } from './js/design-modal.js?v=20260728s';
+    import { initNav, initFooter, _refreshCartBadge } from './js/components.js?v=20260728t';
+    import { getCurrentUser } from './js/auth.js?v=20260728t';
+    import { parseExtra } from './js/onboarding.js?v=20260728t';
+    import { getProducts } from './js/products.js?v=20260728t';
+    import { initDesignModal } from './js/design-modal.js?v=20260728t';
 
     initNav('products');
     initFooter();
