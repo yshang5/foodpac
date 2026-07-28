@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/x-icon" href="assets/images/favicon.ico?v=2">
+  <link rel="apple-touch-icon" href="assets/images/apple-touch-icon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Restaurant Packaging Solutions by Cuisine | Custom Branded Takeout Packaging – foodPac</title>
+  <meta name="description" content="Branded takeout packaging solutions for every restaurant type in Canada — Chinese, sushi, burgers, pizza, cafes, bakeries and more. Curated design styles, free AI brand demos, low 1,000-unit minimums." />
+  <link rel="canonical" href="https://foodpac.ai/solutions.html" />
+  <link rel="stylesheet" href="css/tailwind.css?v=20260728h">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/main.css">
+  <style>
+    .hero-gradient { background: linear-gradient(135deg, #0d3311 0%, #1b5e20 45%, #2e7d32 100%); }
+    .card-hover { transition: transform .2s ease, box-shadow .2s ease; }
+    .card-hover:hover { transform: translateY(-4px); box-shadow: 0 20px 40px rgba(0,0,0,.12); }
+  </style>
+</head>
+<body class="font-sans text-gray-800 bg-white">
+
+  <div id="navbar"></div>
+
+  <!-- ── BANNER ────────────────────────────────────────────── -->
+  <section class="hero-gradient text-white py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <p class="text-primary-200 text-sm font-medium mb-3 uppercase tracking-wider">Industry Solutions</p>
+      <h1 class="text-4xl lg:text-5xl font-extrabold mb-4">Packaging Solutions for Every Restaurant</h1>
+      <p class="text-white/75 text-lg max-w-2xl mx-auto">Pick your restaurant type — we'll show curated design styles, the full product set you need, and generate your branded demo in minutes.</p>
+    </div>
+  </section>
+
+  <!-- ── ALL CUISINES ──────────────────────────────────────── -->
+  <section class="py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div id="sols-grid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+    </div>
+  </section>
+
+  <div id="footer"></div>
+
+  <script type="module">
+    import { initNav, initFooter } from './js/components.js?v=20260728h';
+    import { initDesignModal } from './js/design-modal.js?v=20260728h';
+    import { STYLE_LIBRARY, styleThumb } from './js/styles.js?v=20260728h';
+
+    initNav('solutions');
+    initFooter();
+    initDesignModal();
+
+    const ICONS = {
+      chinese: '🥡', fastfood: '🍔', japanese: '🍣', korean: '🍲', seasian: '🍜',
+      indian: '🍛', mideast: '🥙', mexican: '🌮', italian: '🍕', grill: '🍖',
+      seafood: '🐟', cafe: '☕', bakery: '🥐', healthy: '🥗',
+    };
+    const BLURBS = {
+      chinese: 'Takeout pails, soup bowls, chopstick sets',
+      fastfood: 'Burger boxes, fry holders, drink cups',
+      japanese: 'Bento boxes, soup bowls, chopsticks',
+      korean: 'Fried chicken boxes, bento, bowls',
+      seasian: 'Noodle boxes, pho bowls, boba cups',
+      indian: 'Compartment trays, curry containers',
+      mideast: 'Wrap papers, trays, fiber bowls',
+      mexican: 'Taco holders, food trays, salsa cups',
+      italian: 'Pizza boxes, pasta containers',
+      grill: 'Clamshells, trays, wrap papers',
+      seafood: 'Clamshells, fry holders, wraps',
+      cafe: 'Hot cups, sleeves, pastry boxes',
+      bakery: 'Pastry boxes, donut boxes, gift bags',
+      healthy: 'Salad bowls, meal-prep containers',
+    };
+
+    document.getElementById('sols-grid').innerHTML = STYLE_LIBRARY.map(lib => `
+      <a href="solution.html?type=${lib.id}" class="group relative rounded-3xl overflow-hidden h-64 card-hover bg-gray-100 animate-pulse">
+        <img src="${styleThumb(lib.id, lib.styles[0].id)}" alt="${lib.label} packaging solution" loading="lazy"
+             class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-all duration-300 opacity-0"
+             onload="this.classList.remove('opacity-0');this.parentElement.classList.remove('animate-pulse')">
+        <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent"></div>
+        <div class="absolute bottom-0 p-6">
+          <h3 class="text-white text-xl font-bold mb-1">${ICONS[lib.id] || ''} ${lib.label}</h3>
+          <p class="text-white/80 text-sm">${BLURBS[lib.id] || ''} →</p>
+        </div>
+      </a>`).join('');
+
+    // SEO: CollectionPage + ItemList
+    const ld = document.createElement('script');
+    ld.type = 'application/ld+json';
+    ld.textContent = JSON.stringify({
+      '@context': 'https://schema.org', '@type': 'CollectionPage',
+      name: 'Restaurant Packaging Solutions by Cuisine',
+      url: 'https://foodpac.ai/solutions.html',
+      mainEntity: {
+        '@type': 'ItemList',
+        itemListElement: STYLE_LIBRARY.map((lib, i) => ({
+          '@type': 'ListItem', position: i + 1, name: `${lib.label} Packaging Solution`,
+          url: `https://foodpac.ai/solution.html?type=${lib.id}`,
+        })),
+      },
+    });
+    document.head.appendChild(ld);
+  </script>
+</body>
+</html>

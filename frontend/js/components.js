@@ -11,9 +11,9 @@
  *   </script>
  */
 
-import { getCurrentUser, loginWithGoogle, logout } from './auth.js?v=20260728f';
-import { avatarHtml } from './avatar.js?v=20260728f';
-import { API_BASE } from './api.js?v=20260728f';
+import { getCurrentUser, loginWithGoogle, logout } from './auth.js?v=20260728h';
+import { avatarHtml } from './avatar.js?v=20260728h';
+import { API_BASE } from './api.js?v=20260728h';
 
 const CART_PENDING_KEY = '_fp_pendingCart';
 
@@ -142,7 +142,7 @@ export async function initNav(activePage = '') {
 
   const solutionsDropdown = `
     <div class="group">
-      <a href="solution.html?type=chinese"
+      <a href="solutions.html"
          class="nav-link px-5 py-7 text-[15px] font-medium transition-colors inline-flex items-center gap-1
            ${activePage === 'solutions' ? 'text-primary-800' : 'text-gray-700 hover:text-primary-800'}">
         Solutions
@@ -182,7 +182,7 @@ export async function initNav(activePage = '') {
   const mobileLinks = `
     <a href="products.html" class="px-4 py-3 text-[15px] font-medium text-gray-700 hover:text-primary-800 hover:bg-primary-50 rounded-lg transition-colors block">Products</a>
     <div class="grid grid-cols-2 gap-1 pl-6 pb-1">${mobileCategoryLinks}</div>
-    <a href="solution.html?type=chinese" class="px-4 py-3 text-[15px] font-medium text-gray-700 hover:text-primary-800 hover:bg-primary-50 rounded-lg transition-colors block">Solutions</a>
+    <a href="solutions.html" class="px-4 py-3 text-[15px] font-medium text-gray-700 hover:text-primary-800 hover:bg-primary-50 rounded-lg transition-colors block">Solutions</a>
     <div class="grid grid-cols-2 gap-1 pl-6 pb-1">${mobileSolutionLinks}</div>
   ` + NAV_LINKS.map(({ label, href }) =>
     `<a href="${href}" class="px-4 py-3 text-[15px] font-medium text-gray-700 hover:text-primary-800 hover:bg-primary-50 rounded-lg transition-colors block">${label}</a>`
