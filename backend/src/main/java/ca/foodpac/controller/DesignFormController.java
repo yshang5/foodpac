@@ -45,13 +45,21 @@ public class DesignFormController {
     // ── Upload logo / QR image ────────────────────────────────────────────────
 
     @PostMapping("/uploads")
-    public ResponseEntity<?> upload(@RequestParam("file") MultipartFile file) throws IOException {
+    public ResponseEntity<?> upload(@RequestParam("file") MultipartFile file,
+                                    @RequestParam(value = "kind", required = false) String kind) throws IOException {
         if (file.isEmpty() || file.getSize() > MAX_UPLOAD_BYTES)
             return ResponseEntity.badRequest().body(Map.of("error", "File must be 1B–5MB"));
         String ct = file.getContentType();
         if (ct == null || !ct.startsWith("image/"))
             return ResponseEntity.badRequest().body(Map.of("error", "Only image uploads are allowed"));
-        String name = service.storeUpload(file.getBytes(), file.getOriginalFilename());
+        byte[] bytes = file.getBytes();
+        String original = file.getOriginalFilename();
+        if ("logo".equals(kind)) {
+            // logo 先转成去背景的透明底图（QR 等其它上传不动）
+            byte[] cut = service.makeLogoTransparent(bytes);
+            if (cut != bytes) { bytes = cut; original = "logo.png"; }
+        }
+        String name = service.storeUpload(bytes, original);
         return ResponseEntity.ok(Map.of("file", name, "url", "/api/v1/design/files/" + name));
     }
 

@@ -38,6 +38,13 @@ public class DesignFormService {
     private final AiImageService aiImageService;
     private final ObjectMapper mapper = new ObjectMapper();
 
+    /** Appended wherever the customer logo is fed to the model. */
+    private static final String LOGO_FIDELITY =
+            "Reproduce it EXACTLY as provided - identical shapes, letterforms, colors and "
+            + "proportions; do NOT restyle, recolor, redraw, simplify or distort the logo "
+            + "artwork in any way. Integrate it into the packaging only through natural print "
+            + "reproduction: correct surface perspective, lighting and material texture. ";
+
     /** Template set used for legacy (no-style) generation. */
     private static final String TEMPLATE_SET = "default";
 
@@ -74,6 +81,69 @@ public class DesignFormService {
         String name = "up-" + UUID.randomUUID() + "." + ext;
         Files.write(STORAGE_DIR.resolve(name), bytes);
         return name;
+    }
+
+    /**
+     * Logo preprocessing: ensure a clean transparent-background cutout before
+     * generation. Photos/complex backgrounds and images that already carry an
+     * alpha channel are left untouched; solid (e.g. white) backgrounds are
+     * removed by flood-filling from the borders, so same-colored areas INSIDE
+     * the logo artwork are preserved.
+     */
+    public byte[] makeLogoTransparent(byte[] bytes) {
+        try {
+            var src = javax.imageio.ImageIO.read(new java.io.ByteArrayInputStream(bytes));
+            if (src == null) return bytes;   // svg/webp 等无法解码 → 原样保留
+            int w = src.getWidth(), h = src.getHeight();
+            var img = new java.awt.image.BufferedImage(w, h, java.awt.image.BufferedImage.TYPE_INT_ARGB);
+            img.getGraphics().drawImage(src, 0, 0, null);
+            // 已是透明底（抽样 >2% 透明像素）→ 不再处理
+            int step = Math.max(1, Math.min(w, h) / 64), samples = 0, clear = 0;
+            for (int y = 0; y < h; y += step)
+                for (int x = 0; x < w; x += step) {
+                    samples++;
+                    if (((img.getRGB(x, y) >>> 24) & 0xff) < 8) clear++;
+                }
+            if (clear * 50 > samples) return bytes;
+            // 背景色取四角均值；四角彼此差异大（照片类）→ 不处理
+            int[][] corners = { {0,0}, {w-1,0}, {0,h-1}, {w-1,h-1} };
+            long rs = 0, gs = 0, bs = 0;
+            for (int[] c : corners) {
+                int p = img.getRGB(c[0], c[1]);
+                rs += (p >> 16) & 0xff; gs += (p >> 8) & 0xff; bs += p & 0xff;
+            }
+            int br = (int)(rs / 4), bg = (int)(gs / 4), bb = (int)(bs / 4);
+            for (int[] c : corners)
+                if (colorDist(img.getRGB(c[0], c[1]), br, bg, bb) > 45) return bytes;
+            // 从边界洪水填充：只清除与背景相连的近色区域
+            boolean[] seen = new boolean[w * h];
+            var queue = new java.util.ArrayDeque<Integer>();
+            for (int x = 0; x < w; x++) { queue.add(x); queue.add((h - 1) * w + x); }
+            for (int y = 0; y < h; y++) { queue.add(y * w); queue.add(y * w + w - 1); }
+            while (!queue.isEmpty()) {
+                int i = queue.poll();
+                if (seen[i]) continue;
+                seen[i] = true;
+                int x = i % w, y = i / w;
+                int p = img.getRGB(x, y);
+                if (colorDist(p, br, bg, bb) > 48) continue;
+                img.setRGB(x, y, p & 0x00ffffff);
+                if (x > 0) queue.add(i - 1);
+                if (x < w - 1) queue.add(i + 1);
+                if (y > 0) queue.add(i - w);
+                if (y < h - 1) queue.add(i + w);
+            }
+            var out = new java.io.ByteArrayOutputStream();
+            javax.imageio.ImageIO.write(img, "png", out);
+            return out.toByteArray();
+        } catch (Exception e) {
+            log.warn("logo background removal skipped: {}", e.getMessage());
+            return bytes;
+        }
+    }
+
+    private static int colorDist(int p, int r, int g, int b) {
+        return Math.abs(((p >> 16) & 0xff) - r) + Math.abs(((p >> 8) & 0xff) - g) + Math.abs((p & 0xff) - b);
     }
 
     public Path resolveFile(String name) {
@@ -609,7 +679,7 @@ public class DesignFormService {
                                       + job.getBrandColor() + " (darker/lighter tints for hierarchy)"
                                     : "")
                                 + (logo != null
-                                    ? ". The THIRD image is the brand logo — print it faithfully where the main logo sits"
+                                    ? ". The THIRD image is the customer's actual logo — print it where the main logo sits. " + LOGO_FIDELITY
                                     : "")
                                 + ". If an element does not fit this product's surfaces, omit it "
                                 + "rather than altering the product. No other brand names, no "
@@ -757,8 +827,8 @@ public class DesignFormService {
              .append("(kraft paper, white paper base, wood, stone, food) and the scene background keep ")
              .append("their original colors. ");
         if (job.getLogoFile() != null)
-            p.append("The SECOND input image is the brand logo — print it faithfully where the main ")
-             .append("logo sits. ");
+            p.append("The SECOND input image is the customer's actual logo — print it where the ")
+             .append("main logo sits. ").append(LOGO_FIDELITY);
 
         String contact = java.util.stream.Stream.of(job.getPhone(), job.getAddress())
                 .filter(s -> s != null && !s.isBlank())
@@ -809,8 +879,8 @@ public class DesignFormService {
          .append("material, lighting, shadows and background — but REPLACE all existing printed ")
          .append("branding, logos and text on the packaging with the new brand identity: ");
         if (job.getLogoFile() != null)
-            p.append("the SECOND input image is the brand logo — reproduce it faithfully as the ")
-             .append("main printed logo. ");
+            p.append("the SECOND input image is the customer's actual logo — use it as the main ")
+             .append("printed logo. ").append(LOGO_FIDELITY);
         if (job.getBrandText() != null)
             p.append("Brand name: \"").append(job.getBrandText()).append("\". ");
         if (job.getSlogan() != null)

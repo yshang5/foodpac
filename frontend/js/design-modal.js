@@ -13,9 +13,9 @@
  *   window.fpChipBusy(on)     — toggle the chip generating animation
  */
 
-import { loginWithGoogle } from './auth.js?v=20260728v';
-import { _refreshCartBadge } from './components.js?v=20260728v';
-import { STYLE_LIBRARY, styleImg, styleThumb, getStyle, setStyle } from './styles.js?v=20260728v';
+import { loginWithGoogle } from './auth.js?v=20260728w';
+import { _refreshCartBadge } from './components.js?v=20260728w';
+import { STYLE_LIBRARY, styleImg, styleThumb, getStyle, setStyle } from './styles.js?v=20260728w';
 
 const FP_CSS = `
   .fp-swatch.sel { outline: 3px solid #1b5e20; outline-offset: 2px; }
@@ -598,9 +598,10 @@ export function initDesignModal() {
     fpWireFile('fpd-logo', 'fpd-logo-label', 'fpd-logo-preview');
     fpWireFile('fpd-qr', 'fpd-qr-label', 'fpd-qr-preview');
 
-    async function fpUpload(file) {
+    async function fpUpload(file, kind) {
       const fd = new FormData();
       fd.append('file', file);
+      if (kind) fd.append('kind', kind);
       const res = await fetch(`${FP_API}/design/uploads`, { method: 'POST', body: fd, credentials: 'include' });
       if (res.status === 413) throw new Error('That image is too large — please upload a file under 5MB.');
       if (!res.ok) {
@@ -630,7 +631,7 @@ export function initDesignModal() {
           // 行业方案页：品牌信息交回页面，由页面发起整套商品的批量生成
           btn.textContent = 'Uploading…';
           let logoFile = fpKitLogoFile;
-          if (logoInput.files[0]) logoFile = await fpUpload(logoInput.files[0]);
+          if (logoInput.files[0]) logoFile = await fpUpload(logoInput.files[0], 'logo');
           fpCloseDesign();
           window.fpSolutionStart({ brandText: brand, brandColor: fpColor, logoFile });
           return;
@@ -648,9 +649,9 @@ export function initDesignModal() {
           btn.textContent = 'Uploading…';
           // 新上传的文件优先；否则沿用 kit 里保存的 logo/QR
           let logoFile = fpKitLogoFile, qrFile = fpKitQrFile;
-          if (logoInput.files[0]) logoFile = await fpUpload(logoInput.files[0]);
+          if (logoInput.files[0]) logoFile = await fpUpload(logoInput.files[0], 'logo');
           const qrInput = document.getElementById('fpd-qr');
-          if (qrInput.files[0]) qrFile = await fpUpload(qrInput.files[0]);
+          if (qrInput.files[0]) qrFile = await fpUpload(qrInput.files[0], 'qr');
           btn.textContent = 'Starting generation…';
           res = await fetch(`${FP_API}/design/generate`, {
             method: 'POST', credentials: 'include',
