@@ -11,11 +11,11 @@
  *   </script>
  */
 
-import { getCurrentUser, loginWithGoogle, logout } from './auth.js?v=20260728x';
-import { initOnboarding } from './onboarding.js?v=20260728x';
-import { initDropdowns } from './dropdown.js?v=20260728x';
-import { avatarHtml } from './avatar.js?v=20260728x';
-import { API_BASE } from './api.js?v=20260728x';
+import { getCurrentUser, loginWithGoogle, logout } from './auth.js?v=20260728y';
+import { initOnboarding } from './onboarding.js?v=20260728y';
+import { initDropdowns } from './dropdown.js?v=20260728y';
+import { avatarHtml } from './avatar.js?v=20260728y';
+import { API_BASE } from './api.js?v=20260728y';
 
 const CART_PENDING_KEY = '_fp_pendingCart';
 

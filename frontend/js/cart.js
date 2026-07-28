@@ -1,6 +1,6 @@
-import { API_BASE } from './api.js?v=20260728x';
-import { getCurrentUser, loginWithGoogle } from './auth.js?v=20260728x';
-import { _refreshCartBadge } from './components.js?v=20260728x';
+import { API_BASE } from './api.js?v=20260728y';
+import { getCurrentUser, loginWithGoogle } from './auth.js?v=20260728y';
+import { _refreshCartBadge } from './components.js?v=20260728y';
 
 const MATERIAL_LABELS = {
   KRAFT:      'Kraft Paper',
@@ -10,9 +10,11 @@ const MATERIAL_LABELS = {
 };
 
 export async function initCart() {
-  const user = await getCurrentUser();
+  _showSkeleton();
+  // 用户信息与购物车并行拉取，首屏不串行等待
+  const [user, cartState] = await Promise.all([getCurrentUser(), _loadCart()]);
 
-  if (!user) {
+  if (!user || cartState === 'unauth') {
     document.getElementById('cartEmpty').classList.add('hidden');
     document.getElementById('cartList').classList.add('hidden');
     document.getElementById('cartLogin').classList.remove('hidden');
@@ -20,8 +22,25 @@ export async function initCart() {
     return;
   }
 
-  await _loadCart();
   _initQuoteModal(user);
+}
+
+/** 数据到达前先铺骨架卡 */
+function _showSkeleton() {
+  document.getElementById('cartList').classList.remove('hidden');
+  document.getElementById('cartGrid').innerHTML = Array.from({ length: 3 }, () => `
+    <div class="bg-white rounded-2xl overflow-hidden border-2 border-gray-200">
+      <div class="bg-gray-100 animate-pulse" style="aspect-ratio:1"></div>
+      <div class="p-4 space-y-2">
+        <div class="h-3 w-3/4 bg-gray-100 rounded animate-pulse"></div>
+        <div class="h-3 w-1/3 bg-gray-100 rounded animate-pulse"></div>
+      </div>
+    </div>`).join('');
+}
+
+/** 生成图卡片走 320px 服务端缩略缓存 */
+function _cartThumb(u) {
+  return u && u.includes('/api/v1/design/files/') && !u.includes('?') ? `${u}?w=320` : u;
 }
 
 // ── Load cart items ────────────────────────────────────────────────────────────
@@ -32,13 +51,14 @@ async function _loadCart() {
 
   try {
     const res = await fetch(`${API_BASE}/cart`, { credentials: 'include' });
+    if (res.status === 401 || res.status === 403) { grid.innerHTML = ''; return 'unauth'; }
     if (!res.ok) throw new Error();
     const items = await res.json();
 
     if (items.length === 0) {
       list.classList.add('hidden');
       empty.classList.remove('hidden');
-      return;
+      return 'empty';
     }
 
     empty.classList.add('hidden');
@@ -58,10 +78,11 @@ async function _loadCart() {
             <input type="checkbox" class="cart-checkbox w-4 h-4 accent-primary-700 cursor-pointer rounded"
                    data-id="${item.id}" onchange="window._fpSelectionChanged()">
           </label>
-          <div class="relative overflow-hidden bg-gray-50" style="aspect-ratio:1">
-            <img src="${item.imageUrl}" alt="Design"
-                 class="w-full h-full object-cover"
-                 onerror="this.parentElement.style.background='#f3f4f6'">
+          <div class="relative overflow-hidden bg-gray-100 animate-pulse" style="aspect-ratio:1">
+            <img src="${_cartThumb(item.imageUrl)}" alt="Design" loading="lazy"
+                 class="w-full h-full object-cover opacity-0 transition-opacity duration-300"
+                 onload="this.classList.remove('opacity-0');this.parentElement.classList.remove('animate-pulse')"
+                 onerror="this.parentElement.style.background='#f3f4f6';this.parentElement.classList.remove('animate-pulse')">
             <button onclick="event.stopPropagation(); window._fpRemoveCart('${item.id}')"
                     class="absolute top-2 right-2 w-8 h-8 bg-white/90 hover:bg-red-50 rounded-full flex items-center justify-center text-gray-400 hover:text-red-500 shadow transition-colors opacity-0 group-hover:opacity-100">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
