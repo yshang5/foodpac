@@ -1,6 +1,6 @@
-import { API_BASE } from './api.js?v=20260728w';
-import { getCurrentUser, loginWithGoogle } from './auth.js?v=20260728w';
-import { _refreshCartBadge } from './components.js?v=20260728w';
+import { API_BASE } from './api.js?v=20260728x';
+import { getCurrentUser, loginWithGoogle } from './auth.js?v=20260728x';
+import { _refreshCartBadge } from './components.js?v=20260728x';
 
 const MATERIAL_LABELS = {
   KRAFT:      'Kraft Paper',
@@ -182,7 +182,8 @@ function _initQuoteModal(user) {
 }
 
 function _openQuoteModal() {
-  const allItems = document.querySelectorAll('#cartGrid [data-id]');
+  // 只取卡片本身（卡片内的复选框也带 data-id，误入会渲染成裂图空行）
+  const allItems = document.querySelectorAll('#cartGrid > [data-id]');
   if (allItems.length === 0) {
     alert('Your cart is empty. Add designs before requesting a quote.');
     return;
@@ -194,24 +195,46 @@ function _openQuoteModal() {
     ? Array.from(allItems).filter(c => selectedIds.includes(c.dataset.id))
     : Array.from(allItems);
 
-  // Build items summary
+  // Build items summary：第一行产品名，第二行尺寸 · 数量
   const summary = document.getElementById('quoteSummary');
-  summary.innerHTML = targetItems.map(card => {
+  const rows = targetItems.map(card => {
     const img      = card.querySelector('img');
     const specEl   = card.querySelectorAll('.p-4 p');
     const specText = specEl[0]?.textContent?.trim() || 'Design';
     const qtyText  = specEl[1]?.textContent?.trim() || '';
+    const parts    = specText.split(' · ');
+    const name     = parts[0] || 'Design';
+    const line2    = [parts.slice(1).join(' · '), qtyText].filter(Boolean).join(' · ');
+    let src = img?.src || '';
+    if (src.includes('/api/v1/design/files/') && !src.includes('?')) src += '?w=96';
     return `
-      <div class="flex items-center gap-3 p-2 bg-gray-50 rounded-lg">
-        <img src="${img?.src || ''}" alt="Design"
+      <div class="flex items-center gap-3 p-2 bg-white rounded-lg">
+        <img src="${src}" alt=""
              style="width:44px;height:44px;border-radius:8px;object-fit:cover;border:1px solid #e5e7eb;flex-shrink:0;">
         <div class="flex-1 min-w-0">
-          <p class="text-sm font-medium text-gray-800 truncate">${specText}</p>
-          ${qtyText ? `<p class="text-xs" style="color:#2e7d32">${qtyText}</p>` : ''}
+          <p class="text-sm font-medium text-gray-800 truncate">${name}</p>
+          ${line2 ? `<p class="text-xs truncate" style="color:#2e7d32">${line2}</p>` : ''}
         </div>
       </div>
     `;
-  }).join('');
+  });
+  // 超过 2 个时收起余下的，可展开查看全部
+  if (rows.length > 2) {
+    summary.innerHTML = rows.slice(0, 2).join('')
+      + `<div id="qsMore" class="hidden space-y-2">${rows.slice(2).join('')}</div>`
+      + `<button type="button" id="qsToggle"
+           class="w-full text-center text-sm font-semibold text-primary-700 hover:text-primary-900 py-1.5">
+           Show ${rows.length - 2} more ▾
+         </button>`;
+    const more = document.getElementById('qsMore');
+    const toggle = document.getElementById('qsToggle');
+    toggle.addEventListener('click', () => {
+      const open = more.classList.toggle('hidden');
+      toggle.textContent = open ? `Show ${rows.length - 2} more ▾` : 'Show less ▴';
+    });
+  } else {
+    summary.innerHTML = rows.join('');
+  }
 
   // Store target IDs on modal for submit
   document.getElementById('quoteModal').dataset.itemIds = selectedIds.join(',');
