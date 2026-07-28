@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Product – foodPac</title>
   <meta name="description" content="Custom branded food packaging for Canadian restaurants — free AI design, low minimums, nationwide delivery." />
-  <link rel="stylesheet" href="css/tailwind.css?v=20260728h">
+  <link rel="stylesheet" href="css/tailwind.css?v=20260728j">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/main.css">
@@ -361,9 +361,11 @@
   </style>
 
   <script type="module">
-    import { initNav, initFooter, _refreshCartBadge } from './js/components.js?v=20260728h';
-    import { getProducts } from './js/products.js?v=20260728h';
-    import { initDesignModal } from './js/design-modal.js?v=20260728h';
+    import { initNav, initFooter, _refreshCartBadge } from './js/components.js?v=20260728j';
+    import { getCurrentUser } from './js/auth.js?v=20260728j';
+    import { parseExtra } from './js/onboarding.js?v=20260728j';
+    import { getProducts } from './js/products.js?v=20260728j';
+    import { initDesignModal } from './js/design-modal.js?v=20260728j';
 
     initNav('products');
     initFooter();
@@ -786,8 +788,39 @@
       document.body.classList.toggle('has-stickybar', show);
     }, { threshold: 0 }).observe(document.getElementById('p-cart-btn'));
 
+    // ── Quote 弹窗预填：个人资料 + 最近的 brand kit，用户尽量不用再打字 ──
+    let pqPrefilled = false;
+    async function pqPrefill() {
+      if (pqPrefilled) return;
+      pqPrefilled = true;
+      const setIfEmpty = (id, val) => {
+        const el = document.getElementById(id);
+        if (el && val && !el.value.trim()) el.value = val;
+      };
+      const [user, kitsRes] = await Promise.all([
+        getCurrentUser().catch(() => null),
+        fetch(`${FP_API}/design/kits`, { credentials: 'include' })
+          .then(r => r.ok ? r.json() : null).catch(() => null),
+      ]);
+      const kit = kitsRes?.kits?.[0];
+      if (user) {
+        setIfEmpty('pq-name', user.name);
+        setIfEmpty('pq-email', user.email);
+        setIfEmpty('pq-phone', user.phone);
+        setIfEmpty('pq-biz', user.company);
+        // onboarding 里填过餐厅地址的，抽出城市段（"123 Queen St W, Toronto, ON" → Toronto）
+        const parts = (user.address || '').split(',').map(s => s.trim()).filter(Boolean);
+        if (parts.length >= 2) setIfEmpty('pq-city', parts[parts.length - 2].replace(/\d+/g, '').trim());
+      }
+      if (kit) {
+        setIfEmpty('pq-biz', kit.brandText);
+        setIfEmpty('pq-phone', kit.phone);
+      }
+    }
+
     // ── Quote 提交 ──
     document.getElementById('p-quote-btn').addEventListener('click', () => {
+      pqPrefill();
       const size = document.getElementById('p-size').value || 'Not selected';
       const qty = document.getElementById('p-qty').value || 'TBD';
       document.getElementById('pq-summary').textContent = p.name;

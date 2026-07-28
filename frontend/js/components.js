@@ -11,9 +11,10 @@
  *   </script>
  */
 
-import { getCurrentUser, loginWithGoogle, logout } from './auth.js?v=20260728h';
-import { avatarHtml } from './avatar.js?v=20260728h';
-import { API_BASE } from './api.js?v=20260728h';
+import { getCurrentUser, loginWithGoogle, logout } from './auth.js?v=20260728j';
+import { initOnboarding } from './onboarding.js?v=20260728j';
+import { avatarHtml } from './avatar.js?v=20260728j';
+import { API_BASE } from './api.js?v=20260728j';
 
 const CART_PENDING_KEY = '_fp_pendingCart';
 
@@ -314,6 +315,7 @@ export async function initNav(activePage = '') {
       if (retried) {
         _renderUserMenu(retried);
         _refreshCartBadge();
+        initOnboarding(retried);
       }
     }, 4000);
   }
@@ -335,6 +337,7 @@ export async function initNav(activePage = '') {
     }
     // Load cart badge count
     _refreshCartBadge();
+    initOnboarding(user);
   }
 }
 
