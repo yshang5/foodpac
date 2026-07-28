@@ -294,7 +294,7 @@ public class DesignFormService {
                             // AI re-brand: template photo + logo/QR → gpt-image-1
                             byte[] template = loadTemplate(product.baseImage());
                             image = aiImageService.rebrand(template, logo, qr,
-                                    buildPrompt(product, spec, job));
+                                    buildPrompt(product, spec, job), "1024x1024", logo != null ? "medium" : null);
                             ext = "png";
                         } catch (Exception aiEx) {
                             log.warn("AI image failed for {} ({}), falling back to composite",
@@ -541,7 +541,7 @@ public class DesignFormService {
                             aiSpec.panelBg(), aiSpec.textColor(), aiSpec.styleName());
             Files.createDirectories(STORAGE_DIR);
             byte[] template = loadTemplate(product.baseImage());
-            byte[] image = aiImageService.rebrand(template, logo, qr, buildPrompt(product, spec, job));
+            byte[] image = aiImageService.rebrand(template, logo, qr, buildPrompt(product, spec, job), "1024x1024", logo != null ? "medium" : null);
             String name = "gen-" + jobId + "-" + product.id() + ".png";
             Files.write(STORAGE_DIR.resolve(name), image);
             itemRepo.save(DesignJobItem.builder()
@@ -715,7 +715,7 @@ public class DesignFormService {
                                 + ". If an element does not fit this product's surfaces, omit it "
                                 + "rather than altering the product. No other brand names, no "
                                 + "watermarks, nothing added to or removed from the scene.");
-                            byte[] png = aiImageService.rebrand(template, ref, logo, prompt);
+                            byte[] png = aiImageService.rebrand(template, ref, logo, prompt, "1024x1024", logo != null ? "medium" : null);
                             String base = image.replaceAll("\\.(jpg|png)$", "");
                             String name = "gen-" + jobId + "-" + base + ".png";
                             Files.write(STORAGE_DIR.resolve(name), png);
@@ -768,7 +768,8 @@ public class DesignFormService {
                             byte[] template = Files.readAllBytes(
                                     styleTemplatePath(job.getStyleType(), job.getStyleId(), part.part()));
                             byte[] png = aiImageService.rebrand(template, logo, qr,
-                                    buildStyledPrompt(job, part.part()), part.size());
+                                    buildStyledPrompt(job, part.part()), part.size(),
+                                    logo != null ? "medium" : null);
                             String name = "gen-" + jobId + "-" + part.cellId() + ".png";
                             Files.write(STORAGE_DIR.resolve(name), png);
                             itemRepo.save(DesignJobItem.builder()

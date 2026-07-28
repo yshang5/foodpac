@@ -58,13 +58,18 @@ public class AiImageService {
     }
 
     public byte[] rebrand(byte[] templateJpg, byte[] logoPng, byte[] qrPng, String prompt, String size) {
+        return rebrand(templateJpg, logoPng, qrPng, prompt, size, null);
+    }
+
+    /** qualityOverride 非空时覆盖默认档位（带客户 logo 的生成用 medium 保 logo 一致性）。 */
+    public byte[] rebrand(byte[] templateJpg, byte[] logoPng, byte[] qrPng, String prompt, String size, String qualityOverride) {
         // Plain MultiValueMap multipart — MultipartBodyBuilder needs reactive-streams
         // on the classpath, which this servlet-only app doesn't ship.
         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
         body.add("model", imageModel);
         body.add("prompt", prompt);
         body.add("size", size);
-        body.add("quality", quality);
+        body.add("quality", qualityOverride != null ? qualityOverride : quality);
         body.add("n", "1");
         body.add("image[]", new NamedResource(templateJpg, "template.jpg"));
         if (logoPng != null) body.add("image[]", new NamedResource(logoPng, "logo.png"));
