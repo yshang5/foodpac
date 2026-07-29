@@ -13,9 +13,9 @@
  *   window.fpChipBusy(on)     — toggle the chip generating animation
  */
 
-import { loginWithGoogle } from './auth.js?v=20260729c';
-import { _refreshCartBadge } from './components.js?v=20260729c';
-import { STYLE_LIBRARY, styleImg, styleThumb, getStyle, setStyle } from './styles.js?v=20260729c';
+import { loginWithGoogle } from './auth.js?v=20260729d';
+import { _refreshCartBadge } from './components.js?v=20260729d';
+import { STYLE_LIBRARY, styleImg, styleThumb, getStyle, setStyle } from './styles.js?v=20260729d';
 
 const FP_CSS = `
   .fp-swatch.sel { outline: 3px solid #1b5e20; outline-offset: 2px; }
@@ -24,7 +24,17 @@ const FP_CSS = `
   #fp-dock-chip.generating .fp-chip-icon { animation: fp-chip-spin 1.1s linear infinite; }
   .fp-genglass { background: rgba(255,255,255,.35); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
   /* Safari 的嵌套 flex min-height 链不可靠——滚动区直接给显式高度上限 */
-  @media (min-width:1024px) { .fp-form-scroll { max-height: calc(92vh - 148px); } }
+  /* 弹窗右侧表单列：桌面自成滚动区（Safari 的嵌套 flex min-height 链不可靠，
+     所以显式给高度上限）；移动端整列不滚，交给外层容器连同参考风格图一起滚动。
+     lg:flex-1 / lg:min-h-0 不在静态 CSS 构建里，故一律用媒体查询表达。 */
+  @media (min-width:1024px) {
+    .fp-form-col   { flex: 1 1 0; min-height: 0; }
+    .fp-form-scroll { max-height: calc(92vh - 148px); }
+  }
+  @media (max-width:1023px) {
+    .fp-form-col   { flex: 0 0 auto; min-height: 0; display: block; }
+    .fp-form-scroll { overflow: visible; max-height: none; }
+  }
   .fp-genspin { animation: fp-chip-spin 1.1s linear infinite; }
   #fp-dock-chip.generating { animation: fp-chip-glow 1.4s ease-in-out infinite; }
   @keyframes fp-chip-spin { to { transform: rotate(360deg); } }
@@ -69,7 +79,7 @@ const FP_HTML = `
 
         <!-- 右侧：表单 -->
         <!-- flex-1/min-h-0 只在 lg 生效：移动端表单要按内容撑开高度，交给外层容器统一滚动 -->
-        <form id="fp-design-form" class="lg:flex-1 lg:min-h-0 flex flex-col">
+        <form id="fp-design-form" class="fp-form-col flex flex-col">
         <!-- 滚动区：所有字段；按钮在滚动区外固定。
              移动端不能在这里再开一个滚动容器，否则触摸滚动被它吃掉，
              上面的「参考风格」永远滚不走 —— 所以 overflow 也只在 lg 打开。 -->
