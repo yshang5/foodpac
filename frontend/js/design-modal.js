@@ -13,9 +13,9 @@
  *   window.fpChipBusy(on)     — toggle the chip generating animation
  */
 
-import { loginWithGoogle } from './auth.js?v=20260728z';
-import { _refreshCartBadge } from './components.js?v=20260728z';
-import { STYLE_LIBRARY, styleImg, styleThumb, getStyle, setStyle } from './styles.js?v=20260728z';
+import { loginWithGoogle } from './auth.js?v=20260729a';
+import { _refreshCartBadge } from './components.js?v=20260729a';
+import { STYLE_LIBRARY, styleImg, styleThumb, getStyle, setStyle } from './styles.js?v=20260729a';
 
 const FP_CSS = `
   .fp-swatch.sel { outline: 3px solid #1b5e20; outline-offset: 2px; }
@@ -215,6 +215,25 @@ const FP_HTML = `
     </div>
   </div>
 
+  <!-- ══════════ AI 额度用尽：联系销售换取 designer 权限 ══════════ -->
+  <div id="fp-ailimit-modal" class="hidden fixed inset-0 bg-black/60 z-[9996] flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-8 text-center">
+      <div class="w-14 h-14 bg-accent-100 rounded-full flex items-center justify-center mx-auto mb-4">
+        <svg class="w-7 h-7 text-accent-600" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+        </svg>
+      </div>
+      <h3 class="text-xl font-bold text-gray-900 mb-2">You've used your free AI credits</h3>
+      <p class="text-gray-500 text-sm mb-5">Email our sales team to unlock more AI generation credits and keep designing. We'll upgrade your account within a few hours.</p>
+      <a id="fp-ailimit-mail" href="#"
+         class="block w-full py-3 bg-accent-500 hover:bg-accent-600 text-white font-bold rounded-xl transition-colors mb-3">
+        Email <span id="fp-ailimit-email">hi@foodpac.ai</span>
+      </a>
+      <button onclick="document.getElementById('fp-ailimit-modal').classList.add('hidden')"
+              class="text-sm text-gray-400 hover:text-gray-600">Close</button>
+    </div>
+  </div>
+
   <!-- ══════════ 登录提示弹窗（游客第二次生成）══════════ -->
   <div id="fp-login-modal" class="hidden fixed inset-0 bg-black/60 z-[9995] flex items-center justify-center p-4">
     <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-8 text-center">
@@ -321,6 +340,24 @@ export function initDesignModal() {
     let fpJobId = localStorage.getItem('fp_last_job') || null;
     let fpPollTimer = null;
     let fpSeen = new Set();
+
+    // ── AI 生成额度用尽拦截：弹窗提示联系销售 ──
+    window.fpAiLimit = (data) => {
+      const email = (data && data.email) || 'hi@foodpac.ai';
+      document.getElementById('fp-ailimit-email').textContent = email;
+      document.getElementById('fp-ailimit-mail').href =
+        `mailto:${email}?subject=${encodeURIComponent('Request more AI design credits')}`
+        + `&body=${encodeURIComponent("Hi foodPac team,\n\nI'd like more AI generation credits to keep designing. My account email is: ")}`;
+      document.getElementById('fp-ailimit-modal').classList.remove('hidden');
+    };
+    // 任意生成响应：命中 402 AI_LIMIT_REACHED 时弹窗并返回 true（调用方据此中止）
+    window.fpHitAiLimit = async (res) => {
+      if (res.status !== 402) return false;
+      let data = null;
+      try { data = await res.clone().json(); } catch {}
+      if (data && data.error === 'AI_LIMIT_REACHED') { window.fpAiLimit(data); return true; }
+      return false;
+    };
 
     let fpModalMode = 'form';   // 'form' = Design Online 入口, 'hero' = 首屏光点入口
     const fpSyncSubmit = () => {
@@ -667,6 +704,7 @@ export function initDesignModal() {
             })
           });
         }
+        if (await window.fpHitAiLimit(res)) { fpCloseDesign(); return; }
         if (res.status === 401) {
           const data = await res.json().catch(() => ({}));
           if (data.error === 'LOGIN_REQUIRED' || data.error === 'Unauthorized') {
@@ -810,6 +848,7 @@ export function initDesignModal() {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ itemId: id })
         });
+        if (await window.fpHitAiLimit(res)) { stop(''); return; }
         if (res.status === 401) {
           stop('');
           document.getElementById('fp-login-modal').classList.remove('hidden');
@@ -894,6 +933,7 @@ export function initDesignModal() {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ itemId: editingId, instruction })
         });
+        if (await window.fpHitAiLimit(res)) { fail(''); return; }
         if (res.status === 401) {
           fail('');
           document.getElementById('fp-login-modal').classList.remove('hidden');

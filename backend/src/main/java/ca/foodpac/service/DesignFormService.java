@@ -191,6 +191,21 @@ public class DesignFormService {
         return anonToken != null && jobRepo.countByAnonToken(anonToken) >= 2;
     }
 
+    /** Free AI generation cap per identity (~$1-2 of tokens). Designers bypass it. */
+    public static final int FREE_IMAGE_LIMIT = 40;
+
+    /** Total images this identity has ever generated (deleted ones still counted). */
+    public long imageCount(User user, String anonToken) {
+        if (user != null) return itemRepo.countByJob_User_Id(user.getId());
+        return anonToken == null ? 0 : itemRepo.countByJob_AnonToken(anonToken);
+    }
+
+    /** True when the identity has hit the free cap and isn't a granted designer. */
+    public boolean imageLimitReached(User user, String anonToken) {
+        if (user != null && Boolean.TRUE.equals(user.getDesigner())) return false;
+        return imageCount(user, anonToken) >= FREE_IMAGE_LIMIT;
+    }
+
     /** Attach all of a guest's jobs to the now-logged-in user. Returns merged count. */
     public int claimGuestJobs(User user, String anonToken) {
         if (user == null || anonToken == null) return 0;

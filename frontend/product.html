@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Product – foodPac</title>
   <meta name="description" content="Custom branded food packaging for Canadian restaurants — free AI design, low minimums, nationwide delivery." />
-  <link rel="stylesheet" href="css/tailwind.css?v=20260728z">
+  <link rel="stylesheet" href="css/tailwind.css?v=20260729a">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/main.css">
@@ -362,11 +362,11 @@
   </style>
 
   <script type="module">
-    import { initNav, initFooter, _refreshCartBadge } from './js/components.js?v=20260728z';
-    import { getCurrentUser } from './js/auth.js?v=20260728z';
-    import { parseExtra } from './js/onboarding.js?v=20260728z';
-    import { getProducts } from './js/products.js?v=20260728z';
-    import { initDesignModal } from './js/design-modal.js?v=20260728z';
+    import { initNav, initFooter, _refreshCartBadge } from './js/components.js?v=20260729a';
+    import { getCurrentUser } from './js/auth.js?v=20260729a';
+    import { parseExtra } from './js/onboarding.js?v=20260729a';
+    import { getProducts } from './js/products.js?v=20260729a';
+    import { initDesignModal } from './js/design-modal.js?v=20260729a';
 
     initNav('products');
     initFooter();
@@ -672,6 +672,7 @@
             productType: cat.type
           })
         });
+        if (window.fpHitAiLimit && await window.fpHitAiLimit(res)) { off(); return; }
         if (res.status === 401) {
           off();
           document.getElementById('fp-login-modal').classList.remove('hidden');

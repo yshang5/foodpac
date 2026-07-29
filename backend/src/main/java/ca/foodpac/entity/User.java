@@ -32,6 +32,9 @@ public class User {
     private String company;
     private String address;
 
+    /** When true, this user bypasses the free AI generation cap (sales-granted). */
+    private Boolean designer;
+
     /**
      * Extensible JSON blob (TEXT column) for future fields we haven't thought of yet.
      * e.g. {"googlePicture":"https://...", "preferredLang":"en", "notifications":{"email":true}}

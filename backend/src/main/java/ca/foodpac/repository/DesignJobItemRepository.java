@@ -9,4 +9,8 @@ public interface DesignJobItemRepository extends JpaRepository<DesignJobItem, St
     List<DesignJobItem> findByJobIdAndDeletedFalseOrderByCreatedAtAsc(String jobId);
     List<DesignJobItem> findByJob_User_IdAndDeletedFalseOrderByCreatedAtDesc(Long userId);
     List<DesignJobItem> findByJob_AnonTokenAndDeletedFalseOrderByCreatedAtDesc(String anonToken);
+
+    // 累计生成量（含已删除——删掉的图也消耗了 token）用于 AI 额度上限
+    long countByJob_User_Id(Long userId);
+    long countByJob_AnonToken(String anonToken);
 }

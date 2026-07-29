@@ -97,6 +97,7 @@ public class DesignFormController {
                 ? req.brandColor().toLowerCase() : null;
         // Style reference is optional; silently fall back to the legacy set if unknown
         boolean styled = service.styleExists(trim(req.styleType()), trim(req.styleId()));
+        if (service.imageLimitReached(user, anonToken)) return aiLimitResponse();
         DesignJob job = service.createJob(user, anonToken,
                 trim(req.brandText()), trim(req.logoFile()), trim(req.restaurantType()),
                 trim(req.slogan()), trim(req.address()), trim(req.phone()), trim(req.qrFile()), color,
@@ -173,6 +174,7 @@ public class DesignFormController {
         }
 
         boolean styled = service.styleExists(trim(req.styleType()), trim(req.styleId()));
+        if (service.imageLimitReached(user, anonToken)) return aiLimitResponse();
         DesignJob job = service.createHeroJob(user, anonToken, req.brandText().trim(), color,
                 styled ? trim(req.styleType()) : null, styled ? trim(req.styleId()) : null);
         return ResponseEntity.ok(Map.of("jobId", job.getId(), "status", job.getStatus().name()));
@@ -211,6 +213,7 @@ public class DesignFormController {
                 : anonToken != null && anonToken.equals(src.getAnonToken());
         if (!owned) return ResponseEntity.status(403).body(Map.of("error", "Forbidden"));
 
+        if (service.imageLimitReached(user, anonToken)) return aiLimitResponse();
         DesignJob job = service.createRedesignJob(user, anonToken, item);
         return ResponseEntity.ok(Map.of("jobId", job.getId(), "status", job.getStatus().name()));
     }
@@ -245,6 +248,7 @@ public class DesignFormController {
                 : anonToken.equals(src.getAnonToken());
         if (!owned) return ResponseEntity.status(403).body(Map.of("error", "Forbidden"));
 
+        if (service.imageLimitReached(user, anonToken)) return aiLimitResponse();
         DesignJob job = service.createEditJob(user, anonToken, item, instruction);
         return ResponseEntity.ok(Map.of("jobId", job.getId(), "status", job.getStatus().name()));
     }
@@ -292,6 +296,7 @@ public class DesignFormController {
                 : anonToken != null && anonToken.equals(src.getAnonToken());
         if (!owned) return ResponseEntity.status(403).body(Map.of("error", "Forbidden"));
 
+        if (service.imageLimitReached(user, anonToken)) return aiLimitResponse();
         DesignJob job = service.createApplyJob(user, anonToken, item,
                 productImage, label, type);
         return ResponseEntity.ok(Map.of("jobId", job.getId(), "status", job.getStatus().name()));
@@ -346,6 +351,7 @@ public class DesignFormController {
                         ANON_COOKIE, anonToken, cookieSecure ? "; Secure" : ""));
             }
         }
+        if (service.imageLimitReached(user, anonToken)) return aiLimitResponse();
         DesignJob job = service.createBulkJob(user, anonToken, req.brandText().trim(), color,
                 trim(req.logoFile()), trim(req.styleType()), trim(req.styleId()), products);
         return ResponseEntity.ok(Map.of("jobId", job.getId(), "status", job.getStatus().name()));
@@ -409,6 +415,14 @@ public class DesignFormController {
                 .contentType(type)
                 .header("Cache-Control", "public, max-age=86400")
                 .body(Files.readAllBytes(p));
+    }
+
+    /** AI 生成额度用尽：提示联系销售换取 designer 权限。 */
+    private ResponseEntity<?> aiLimitResponse() {
+        return ResponseEntity.status(402).body(Map.of(
+                "error", "AI_LIMIT_REACHED",
+                "message", "You've used your free AI design credits. Please contact our sales team to unlock more AI credits and keep designing.",
+                "email", "hi@foodpac.ai"));
     }
 
     private static String readCookie(HttpServletRequest req) {
