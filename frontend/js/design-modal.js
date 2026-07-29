@@ -13,9 +13,9 @@
  *   window.fpChipBusy(on)     — toggle the chip generating animation
  */
 
-import { loginWithGoogle } from './auth.js?v=20260729a';
-import { _refreshCartBadge } from './components.js?v=20260729a';
-import { STYLE_LIBRARY, styleImg, styleThumb, getStyle, setStyle } from './styles.js?v=20260729a';
+import { loginWithGoogle } from './auth.js?v=20260729c';
+import { _refreshCartBadge } from './components.js?v=20260729c';
+import { STYLE_LIBRARY, styleImg, styleThumb, getStyle, setStyle } from './styles.js?v=20260729c';
 
 const FP_CSS = `
   .fp-swatch.sel { outline: 3px solid #1b5e20; outline-offset: 2px; }
@@ -219,7 +219,7 @@ const FP_HTML = `
   </div>
 
   <!-- ══════════ AI 额度用尽：联系销售换取 designer 权限 ══════════ -->
-  <div id="fp-ailimit-modal" class="hidden fixed inset-0 bg-black/60 z-[9996] flex items-center justify-center p-4">
+  <div id="fp-ailimit-modal" style="z-index:99998" class="hidden fixed inset-0 bg-black/60 flex items-center justify-center p-4">
     <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-8 text-center">
       <div class="w-14 h-14 bg-accent-100 rounded-full flex items-center justify-center mx-auto mb-4">
         <svg class="w-7 h-7 text-accent-600" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
