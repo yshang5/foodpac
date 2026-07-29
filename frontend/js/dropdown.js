@@ -22,6 +22,13 @@ function closeOpen() {
 }
 document.addEventListener('click', closeOpen);
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeOpen(); });
+// fixed 面板不随页面滚动，页面滚动/缩放时收起避免悬空错位；
+// 但面板自身的滚动（选项列表）必须放行，否则列表刚滚就被关掉
+window.addEventListener('scroll', (e) => {
+  if (openPanel && e.target instanceof Node && openPanel.panel.contains(e.target)) return;
+  closeOpen();
+}, true);
+window.addEventListener('resize', closeOpen);
 
 export function fpSelect(sel) {
   if (!sel || sel.dataset.fpsel || sel.multiple) return;
@@ -39,7 +46,9 @@ export function fpSelect(sel) {
   if (sel.disabled) btn.disabled = true;
 
   const panel = document.createElement('div');
-  panel.className = 'hidden absolute z-40 left-0 right-0 top-full mt-1.5 bg-white border border-gray-100 rounded-xl shadow-xl py-1.5 max-h-64 overflow-auto';
+  panel.className = 'hidden bg-white border border-gray-100 rounded-xl shadow-xl py-1.5';
+  // fixed 定位：脱离弹窗/滚动容器的 overflow 裁剪；高度与滚动写成内联，不依赖 CSS 构建
+  panel.style.cssText = 'position:fixed;z-index:100000;max-height:16rem;overflow-y:auto;';
 
   wrap.append(btn, panel);
 
@@ -79,12 +88,32 @@ export function fpSelect(sel) {
     }).join('');
   }
 
+  function positionPanel() {
+    const r = btn.getBoundingClientRect();
+    const gap = 6, margin = 8;
+    panel.style.width = r.width + 'px';
+    panel.style.left = r.left + 'px';
+    const below = window.innerHeight - r.bottom - gap - margin;
+    const above = r.top - gap - margin;
+    // 下方放不下且上方更宽敞时向上弹出
+    if (below < 160 && above > below) {
+      panel.style.maxHeight = Math.min(256, above) + 'px';
+      panel.style.top = '';
+      panel.style.bottom = (window.innerHeight - r.top + gap) + 'px';
+    } else {
+      panel.style.maxHeight = Math.min(256, below) + 'px';
+      panel.style.bottom = '';
+      panel.style.top = (r.bottom + gap) + 'px';
+    }
+  }
+
   btn.addEventListener('click', (e) => {
     e.stopPropagation();
     if (openPanel && openPanel.panel === panel) { closeOpen(); return; }
     closeOpen();
     renderItems();
     panel.classList.remove('hidden');
+    positionPanel();
     btn.querySelector('.fps-chevron').style.transform = 'rotate(180deg)';
     openPanel = { panel, btn };
     const cur = panel.querySelector('.bg-primary-50');
