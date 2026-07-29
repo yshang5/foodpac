@@ -32,6 +32,10 @@ public class QuoteNotificationScheduler {
     @Value("${app.mail.notify-to}")
     private String notifyTo;
 
+    /** 邮件里的图片必须是绝对地址——邮件客户端没有页面那样的相对路径基准。 */
+    @Value("${app.site-url:https://foodpac.ai}")
+    private String siteUrl;
+
     private static final DateTimeFormatter FMT =
             DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.of("America/Toronto"));
 
@@ -89,7 +93,7 @@ public class QuoteNotificationScheduler {
                 </tr>
                 """,
                 idx++,
-                item.getImageUrl(),
+                absUrl(item.getImageUrl()),
                 nvl(item.getProductLabel(), item.getProductType()),
                 nvl(item.getSizeSpec(), ""),
                 nvl(item.getMaterial(), ""),
@@ -206,6 +210,14 @@ public class QuoteNotificationScheduler {
             submittedAt,
             q.getId()
         );
+    }
+
+    /** 相对路径（/api/... 或 assets/...）补成绝对地址，供邮件客户端加载。 */
+    private String absUrl(String url) {
+        if (url == null || url.isBlank()) return "";
+        if (url.startsWith("http://") || url.startsWith("https://")) return url;
+        String base = siteUrl.endsWith("/") ? siteUrl.substring(0, siteUrl.length() - 1) : siteUrl;
+        return base + (url.startsWith("/") ? url : "/" + url);
     }
 
     private String nvl(String v, String fallback) {
