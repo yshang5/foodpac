@@ -68,9 +68,12 @@ const FP_HTML = `
         </aside>
 
         <!-- 右侧：表单 -->
-        <form id="fp-design-form" class="flex-1 min-h-0 flex flex-col">
-        <!-- 滚动区：所有字段；按钮在滚动区外固定 -->
-        <div class="fp-form-scroll flex-1 min-h-0 px-6 py-5 space-y-4 overflow-y-auto">
+        <!-- flex-1/min-h-0 只在 lg 生效：移动端表单要按内容撑开高度，交给外层容器统一滚动 -->
+        <form id="fp-design-form" class="lg:flex-1 lg:min-h-0 flex flex-col">
+        <!-- 滚动区：所有字段；按钮在滚动区外固定。
+             移动端不能在这里再开一个滚动容器，否则触摸滚动被它吃掉，
+             上面的「参考风格」永远滚不走 —— 所以 overflow 也只在 lg 打开。 -->
+        <div class="fp-form-scroll lg:flex-1 lg:min-h-0 px-6 py-5 space-y-4 lg:overflow-y-auto">
         <div>
           <label class="block text-sm font-bold text-gray-800 mb-1.5">Your brand name <span class="text-red-500">*</span></label>
           <div class="relative">
@@ -200,7 +203,7 @@ const FP_HTML = `
       <div class="relative">
         <img id="fpe-img" src="" alt="Design being edited" class="max-w-full rounded-2xl shadow-2xl object-contain" style="max-height:58vh">
         <div id="fpe-glass" class="hidden absolute inset-0 fp-genglass flex-col items-center justify-center gap-3 rounded-2xl">
-          <img src="assets/images/logo-icon-v2.png?v=9" alt="" class="fp-genspin w-10 h-10 rounded-full bg-white/90 object-contain p-1 shadow">
+          <img src="assets/images/logo-icon-v2.png?v=20260729b" alt="" class="fp-genspin w-10 h-10 rounded-full bg-white/90 object-contain p-1 shadow">
           <span class="text-sm font-bold text-gray-800 bg-white/85 rounded-full px-4 py-1.5">Applying your edit…</span>
         </div>
       </div>
@@ -280,7 +283,7 @@ const FP_HTML = `
       class="hidden items-center px-4 bg-accent-500 hover:bg-accent-600 text-white text-sm font-bold border-r border-white/25 whitespace-nowrap">+ New</button>
     <button id="fp-chip-main"
       class="flex items-center gap-2.5 px-4 py-3 bg-primary-800 hover:bg-primary-900 text-white text-sm font-bold whitespace-nowrap">
-      <img src="assets/images/logo-icon-v2.png?v=9" alt="" class="fp-chip-icon w-5 h-5 rounded-full bg-white/90 object-contain">
+      <img src="assets/images/logo-icon-v2.png?v=20260729b" alt="" class="fp-chip-icon w-5 h-5 rounded-full bg-white/90 object-contain">
       <span id="fp-chip-label">Design Online</span>
       <span id="fp-chip-count" class="hidden bg-accent-500 text-white text-xs font-bold rounded-full px-2 py-0.5"></span>
     </button>
@@ -368,10 +371,12 @@ export function initDesignModal() {
     window.fpOpenDesign = (mode = 'form') => {
       fpModalMode = mode;
       fpsRefresh();
-      // 自动带入最近一个品牌的设计 kit（表单还空着时）；
-      // hero/solution 入口的参考风格 = 页面当前选中的风格，不被 kit 里存的旧风格覆盖
+      // 自动带入最近一个品牌的设计 kit（表单还空着时）。
+      // keepStyle 恒为 true：自动带入只填表单，绝不改当前风格 —— 否则 setStyle 会广播
+      // fp:style，把首页 hero 四张图在用户没刷新的情况下换掉。想换风格只能靠
+      // "Change Style" 或下拉里手动选 kit（那两条路才是用户明确表达的意图）。
       if (fpKits.length && !document.getElementById('fpd-brand').value.trim())
-        fpApplyKit(fpKits[0], mode === 'hero' || mode === 'solution');
+        fpApplyKit(fpKits[0], true);
       document.getElementById('fp-design-modal').classList.remove('hidden');
       fpSyncSubmit();
       setTimeout(() => document.getElementById('fpd-brand').focus(), 50);
@@ -393,10 +398,10 @@ export function initDesignModal() {
       const t = document.getElementById('fpd-kit-toggle');
       t.classList.toggle('hidden', fpKits.length === 0);
       t.classList.toggle('flex', fpKits.length > 0);
-      // 弹窗已开且表单还空着（如 ?design=1 深链）→ 补一次自动带入
+      // 弹窗已开且表单还空着（如 ?design=1 深链）→ 补一次自动带入（同样不动风格）
       if (fpKits.length && !document.getElementById('fp-design-modal').classList.contains('hidden')
           && !document.getElementById('fpd-brand').value.trim())
-        fpApplyKit(fpKits[0], fpModalMode === 'hero' || fpModalMode === 'solution');
+        fpApplyKit(fpKits[0], true);
     }
 
     function fpSelectSwatchFor(color) {
@@ -748,7 +753,7 @@ export function initDesignModal() {
           <div class="relative aspect-[4/3] rounded-xl overflow-hidden border border-gray-200">
             ${imgUrl ? `<img src="${imgUrl}" alt="" class="w-full h-full object-cover">` : ''}
             <div class="absolute inset-0 fp-genglass flex flex-col items-center justify-center gap-2">
-              <img src="assets/images/logo-icon-v2.png?v=9" alt=""
+              <img src="assets/images/logo-icon-v2.png?v=20260729b" alt=""
                    class="fp-genspin w-9 h-9 rounded-full bg-white/90 object-contain p-1 shadow">
               <span class="text-xs font-bold text-gray-700 bg-white/80 rounded-full px-3 py-1">Generating…</span>
             </div>

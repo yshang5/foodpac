@@ -88,22 +88,22 @@ const PRODUCTS = [
   // ── Cups & Lids ────────────────────────────────────────────
   { id: 'cup-hot', price: '0.14',     category: 'cups',    name: 'Hot Drink Cup (8/12/16 oz)',
     tag: 'Best Seller', tagStyle: 'orange', moq: '1,000',
-    image: 'assets/images/prod-cup-hot.jpg?v=2',
+    image: 'assets/images/prod-cup-hot.jpg?v=20260729b',
     description: 'Single-wall paper cup for coffee, tea, and hot drinks. Compatible with standard lids. Full-wrap print.' },
 
   { id: 'cup-cold', price: '0.13',    category: 'cups',    name: 'Cold Drink Cup (16/22 oz)',
     tag: '',            tagStyle: '',       moq: '1,000',
-    image: 'assets/images/prod-cup-cold.jpg?v=2',
+    image: 'assets/images/prod-cup-cold.jpg?v=20260729b',
     description: 'Clear PLA cold cup — 100% compostable. Dome or flat lid options. Great for iced drinks and smoothies.' },
 
   { id: 'cup-sleeve', cuisines: ['cafe'], price: '0.07',  category: 'cups',    name: 'Cup Sleeve',
     tag: 'Eco Pick',    tagStyle: 'green',  moq: '2,000',
-    image: 'assets/images/prod-cup-sleeve.jpg?v=2',
+    image: 'assets/images/prod-cup-sleeve.jpg?v=20260729b',
     description: 'Corrugated kraft sleeve for hot cups. Keeps hands cool while showing off your brand.' },
 
   { id: 'cup-lid', price: '0.06',     category: 'cups',    name: 'Compostable Lids',
     tag: 'Eco Pick',    tagStyle: 'green',  moq: '2,000',
-    image: 'assets/images/prod-cup-lid.jpg?v=2',
+    image: 'assets/images/prod-cup-lid.jpg?v=20260729b',
     description: 'PLA flat and dome lids to pair with our hot and cold cups. Fully compostable.' },
   { id: 'cup-boba', cuisines: ['cafe', 'seasian'], price: '0.18',     category: 'cups',    name: 'Premium Boba Cup (16/22 oz)',
     tag: 'New',         tagStyle: 'blue',   moq: '2,000',
@@ -149,17 +149,17 @@ const PRODUCTS = [
   // ── Paper Bags ─────────────────────────────────────────────
   { id: 'bag-sm', price: '0.18',      category: 'bags',    name: 'Kraft Paper Bag (Small)',
     tag: '',            tagStyle: '',       moq: '1,000',
-    image: 'assets/images/prod-bag-sm.jpg?v=2',
+    image: 'assets/images/prod-bag-sm.jpg?v=20260729b',
     description: 'Flat-bottom kraft bag for light takeout and pastries. Twisted paper handles. Printed with your logo.' },
 
   { id: 'bag-lg', price: '0.24',      category: 'bags',    name: 'Kraft Paper Bag (Large)',
     tag: 'Best Seller', tagStyle: 'orange', moq: '1,000',
-    image: 'assets/images/prod-bag-lg.jpg?v=2',
+    image: 'assets/images/prod-bag-lg.jpg?v=20260729b',
     description: 'Larger flat-bottom bag for full meal orders. Strong twisted handles support up to 3 kg. Fully recyclable.' },
 
   { id: 'bag-foil', cuisines: ['chinese', 'indian', 'seasian', 'grill'], price: '0.42',    category: 'bags',    name: 'Foil-Lined Insulated Bag',
     tag: 'New',         tagStyle: 'blue',   moq: '1,000',
-    image: 'assets/images/prod-bag-foil.jpg?v=2',
+    image: 'assets/images/prod-bag-foil.jpg?v=20260729b',
     description: 'Keeps food warm during delivery. Foil interior with kraft exterior. Ideal for delivery platforms.' },
   { id: 'bag-white', cuisines: ['bakery', 'cafe', 'healthy'], price: '0.26',   category: 'bags',    name: 'White Paper Bag w/ Handle',
     tag: '',            tagStyle: '',       moq: '1,000',
@@ -200,17 +200,17 @@ const PRODUCTS = [
   // ── Bowls ──────────────────────────────────────────────────
   { id: 'bowl-salad', cuisines: ['healthy', 'cafe'], price: '0.19',  category: 'bowls',   name: 'Salad & Grain Bowl',
     tag: 'Eco Pick',    tagStyle: 'green',  moq: '1,000',
-    image: 'assets/images/prod-bowl-salad.jpg?v=2',
+    image: 'assets/images/prod-bowl-salad.jpg?v=20260729b',
     description: 'Wide, shallow bowl for salads, grain bowls, and poke. Kraft exterior, PLA-lined interior. Leak-proof.' },
 
   { id: 'bowl-soup', cuisines: ['chinese', 'japanese', 'korean', 'seasian'], price: '0.28',   category: 'bowls',   name: 'Soup & Ramen Bowl',
     tag: 'Best Seller', tagStyle: 'orange', moq: '1,000',
-    image: 'assets/images/prod-bowl-soup.jpg?v=2',
+    image: 'assets/images/prod-bowl-soup.jpg?v=20260729b',
     description: 'Deep bowl with vented lid designed for soups, ramen, and hot broths. Double-wall for heat retention.' },
 
   { id: 'bowl-lid', price: '0.08',    category: 'bowls',   name: 'Bowl Lids (Flat & Vented)',
     tag: '',            tagStyle: '',       moq: '2,000',
-    image: 'assets/images/prod-bowl-lid.jpg?v=2',
+    image: 'assets/images/prod-bowl-lid.jpg?v=20260729b',
     description: 'Compostable PLA lids in flat and vented styles to fit our full bowl range.' },
   { id: 'bowl-mealprep', cuisines: ['healthy'], price: '0.22', category: 'bowls',  name: 'Paper Meal Prep Container',
     tag: 'New',         tagStyle: 'blue',   moq: '2,000',
@@ -236,18 +236,18 @@ const PRODUCTS = [
   // ── Wrapping Paper ─────────────────────────────────────────
   { id: 'wrap-deli', cuisines: ['fastfood', 'grill', 'seafood', 'mideast'], price: '0.05',   category: 'wraps',   name: 'Deli Wrap Paper',
     tag: 'Eco Pick',    tagStyle: 'green',  moq: '2,000',
-    image: 'assets/images/prod-wrap-deli.jpg?v=2',
+    image: 'assets/images/prod-wrap-deli.jpg?v=20260729b',
     description: 'Greaseproof kraft deli paper in sheets or rolls. Perfect for wrapping burgers, sandwiches, and fish & chips.' },
 
   { id: 'wrap-tissue', price: '0.04', category: 'wraps',   name: 'Custom Tissue Paper',
     tag: 'New',         tagStyle: 'blue',   moq: '2,000',
-    image: 'assets/images/prod-wrap-tissue.jpg?v=2',
+    image: 'assets/images/prod-wrap-tissue.jpg?v=20260729b',
     description: 'Lightweight tissue paper printed with your logo or pattern. Great for lining bags and food trays.' },
 
   // ── Cutlery ────────────────────────────────────────────────
   { id: 'cut-set', price: '0.09',     category: 'cutlery', name: 'Compostable Cutlery Set',
     tag: 'Eco Pick',    tagStyle: 'green',  moq: '1,000',
-    image: 'assets/images/prod-cut-set.jpg?v=2',
+    image: 'assets/images/prod-cut-set.jpg?v=20260729b',
     description: 'Fork, knife, and spoon made from CPLA (cornstarch). Wrapped individually. Heat-resistant up to 85°C.' },
 
   { id: 'cut-set4', price: '0.16',    category: 'cutlery', name: 'Cutlery Set (Fork, Knife, Spoon, Napkin)',
@@ -277,17 +277,17 @@ const PRODUCTS = [
 
   { id: 'cut-fork', price: '0.04',    category: 'cutlery', name: 'CPLA Fork',
     tag: '',            tagStyle: '',       moq: '2,000',
-    image: 'assets/images/prod-cut-fork.jpg?v=2',
+    image: 'assets/images/prod-cut-fork.jpg?v=20260729b',
     description: 'Sturdy CPLA fork — compostable and stronger than standard PLA. Sold individually or in bulk.' },
 
   { id: 'cut-spoon', price: '0.04',   category: 'cutlery', name: 'CPLA Spoon',
     tag: '',            tagStyle: '',       moq: '2,000',
-    image: 'assets/images/prod-cut-spoon.jpg?v=2',
+    image: 'assets/images/prod-cut-spoon.jpg?v=20260729b',
     description: 'Deep-bowl CPLA spoon, ideal for soups, desserts, and rice dishes.' },
 
   { id: 'cut-straw', price: '0.03',   category: 'cutlery', name: 'Paper Straws',
     tag: 'Eco Pick',    tagStyle: 'green',  moq: '2,000',
-    image: 'assets/images/prod-straw.jpg?v=2',
+    image: 'assets/images/prod-straw.jpg?v=20260729b',
     description: 'Food-grade paper straws. Stays firm for 2+ hours. Available in plain kraft or custom-printed.' },
 ];
 

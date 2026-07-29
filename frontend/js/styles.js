@@ -183,7 +183,7 @@ export const STYLE_LIBRARY = [
 
 /** Bump when template images are replaced in place — busts the CDN cache.
  *  Keep in sync with the inline hero script in index.html. */
-export const STYLE_VER = 'v2';
+export const STYLE_VER = 'v3';
 
 /** parts: 'family' | 'box' | 'cup' | 'bag' */
 export function styleImg(typeId, styleId, part) {

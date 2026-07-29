@@ -229,7 +229,7 @@ export async function initNav(activePage = '') {
 
             <!-- Logo -->
             <a href="index.html" class="flex items-center shrink-0">
-              <img src="assets/images/logo-horizontal-v2.png?v=9"
+              <img src="assets/images/logo-horizontal-v2.png?v=20260729b"
                    alt="foodPac"
                    class="h-12 w-auto"
                    onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
@@ -497,7 +497,7 @@ export function initFooter() {
 
           <div class="lg:col-span-1">
             <div class="flex items-center gap-2.5 mb-4">
-              <img src="assets/images/logo-icon-v2.png?v=9"
+              <img src="assets/images/logo-icon-v2.png?v=20260729b"
                    alt="foodPac"
                    class="h-9 w-9 object-contain rounded-xl"
                    onerror="this.style.display='none'">

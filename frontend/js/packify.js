@@ -214,7 +214,7 @@ function injectResultsPanel() {
         <!-- Header -->
         <div class="flex items-center justify-between px-6 py-4 bg-primary-800 text-white shrink-0">
           <div class="flex items-center gap-3">
-            <img src="/assets/images/logo-icon-v2.png?v=9" class="w-8 h-8 rounded-full object-contain bg-white p-0.5">
+            <img src="/assets/images/logo-icon-v2.png?v=20260729b" class="w-8 h-8 rounded-full object-contain bg-white p-0.5">
             <div>
               <div class="font-semibold text-base">Your Designs Are Ready</div>
               <div class="text-primary-200 text-xs">Select a design to add to your quote</div>
@@ -369,7 +369,7 @@ export async function initPackify() {
       language: navigator.language?.startsWith('zh') ? 'zh' : 'en',
       packifyConfig: {
         themeColor:    '#2e7d32',
-        enterpriseLogo: window.location.origin + '/assets/images/logo-icon-v2.png?v=9',
+        enterpriseLogo: window.location.origin + '/assets/images/logo-icon-v2.png?v=20260729b',
         numberOfDesignImages: 4
       }
     }),

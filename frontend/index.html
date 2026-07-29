@@ -12,13 +12,14 @@
   <meta property="og:title" content="Custom Restaurant Takeout Packaging Canada | AI Design in 5 Minutes – foodPac" />
   <meta property="og:description" content="Branded takeout packaging for Canadian restaurants. AI-powered design in 5 minutes, 100% compostable materials, low 1,000-unit minimums, delivered across Canada." />
   <meta property="og:url" content="https://foodpac.ai/" />
-  <meta property="og:image" content="https://foodpac.ai/assets/images/hero-box.jpg?v=2" />
+  <meta property="og:image" content="https://foodpac.ai/assets/images/hero-box.jpg?v=20260729b" />
   <meta property="og:locale" content="en_CA" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Custom Restaurant Takeout Packaging Canada | AI Design in 5 Minutes – foodPac" />
   <meta name="twitter:description" content="Branded takeout packaging for Canadian restaurants. AI-powered design in 5 minutes, 100% compostable materials, low 1,000-unit minimums, delivered across Canada." />
-  <meta name="twitter:image" content="https://foodpac.ai/assets/images/hero-box.jpg?v=2" />
+  <meta name="twitter:image" content="https://foodpac.ai/assets/images/hero-box.jpg?v=20260729b" />
   <link rel="stylesheet" href="css/tailwind.css?v=20260729a">
+  <script src="js/img-skeleton.js" defer></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
@@ -37,6 +38,29 @@
     /* 移动端分类 tab 横向滑动，隐藏滚动条 */
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     .no-scrollbar::-webkit-scrollbar { display: none; }
+    /* ── 图片骨架屏 ──
+       微光画在 <img> 自己的 background 上：位图没解码出来之前背景可见，解码完成后
+       不透明的照片直接盖住它。所以不用包一层占位 DOM，也不用等 JS 执行就有首帧效果。
+       js/img-skeleton.js 只负责加载完成后补 .is-loaded 把动画停掉。 */
+    .fp-img {
+      background-color: #eceeec;
+      background-image: linear-gradient(100deg, #eceeec 30%, #f7f8f7 50%, #eceeec 70%);
+      background-size: 300% 100%;
+      background-repeat: no-repeat;
+      animation: fp-shimmer 1.5s ease-in-out infinite;
+    }
+    .fp-img.is-loaded {
+      background-image: none;
+      animation: none;
+    }
+    @keyframes fp-shimmer {
+      from { background-position: 150% 0; }
+      to   { background-position: -50% 0; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .fp-img { animation: none; }
+    }
+
     /* ── Hero 品牌替换彩蛋 ── */
     .fp-dot {
       position: absolute; width: 22px; height: 22px; border-radius: 9999px;
@@ -229,25 +253,25 @@
           <div class="absolute -top-10 -right-14 w-96 h-96 bg-primary-50 rounded-full blur-3xl"></div>
           <div class="relative grid grid-cols-12 grid-rows-6 gap-4 h-[540px]">
             <div class="fp-hero-cell relative col-span-7 row-span-4 rounded-3xl overflow-hidden shadow-xl border border-gray-100" data-hero="hero-box">
-              <img alt="Custom takeout boxes" class="w-full h-full object-cover">
+              <img alt="Custom takeout boxes" class="fp-img w-full h-full object-cover">
               <span class="fp-dot" onclick="fpHeroOpen()" style="left:47%; top:56%"></span>
               <button onclick="fpHeroOpen()" class="fp-try-btn px-4 py-2 bg-gray-900/85 hover:bg-gray-900 text-white text-xs font-bold rounded-full shadow-xl" style="left:47%; top:62%">✨ Try Your Brand Here</button>
               <div class="fp-glass"></div>
             </div>
             <div class="fp-hero-cell relative col-span-5 row-span-3 rounded-3xl overflow-hidden shadow-xl border border-gray-100" data-hero="hero-cup">
-              <img alt="Custom cups" class="w-full h-full object-cover">
+              <img alt="Custom cups" class="fp-img w-full h-full object-cover">
               <span class="fp-dot" onclick="fpHeroOpen()" style="left:50%; top:55%"></span>
               <button onclick="fpHeroOpen()" class="fp-try-btn px-4 py-2 bg-gray-900/85 hover:bg-gray-900 text-white text-xs font-bold rounded-full shadow-xl" style="left:50%; top:52%">✨ Try Your Brand Here</button>
               <div class="fp-glass"></div>
             </div>
             <div class="fp-hero-cell relative col-span-5 row-span-3 rounded-3xl overflow-hidden shadow-xl border border-gray-100" data-hero="hero-bag">
-              <img alt="Custom kraft bags" class="w-full h-full object-cover">
+              <img alt="Custom kraft bags" class="fp-img w-full h-full object-cover">
               <span class="fp-dot" onclick="fpHeroOpen()" style="left:52%; top:52%"></span>
               <button onclick="fpHeroOpen()" class="fp-try-btn px-4 py-2 bg-gray-900/85 hover:bg-gray-900 text-white text-xs font-bold rounded-full shadow-xl" style="left:52%; top:60%">✨ Try Your Brand Here</button>
               <div class="fp-glass"></div>
             </div>
             <div class="fp-hero-cell relative col-span-7 row-span-2 rounded-3xl overflow-hidden shadow-xl border border-gray-100" data-hero="hero-ai">
-              <img alt="AI packaging design" class="w-full h-full object-cover">
+              <img alt="AI packaging design" class="fp-img w-full h-full object-cover">
               <span class="fp-dot" onclick="fpHeroOpen()" style="left:40%; top:52%"></span>
               <button onclick="fpHeroOpen()" class="fp-try-btn px-4 py-2 bg-gray-900/85 hover:bg-gray-900 text-white text-xs font-bold rounded-full shadow-xl" style="left:40%; top:64%">✨ Try Your Brand Here</button>
               <div class="fp-glass"></div>
@@ -295,10 +319,21 @@
             var styles = LIBS[type];
             var style = styles[Math.floor(Math.random() * styles.length)];
             var parts = { 'hero-box': 'box', 'hero-cup': 'cup', 'hero-bag': 'bag', 'hero-ai': 'family' };
-            for (var cell in parts) {
-              var img = document.querySelector('.fp-hero-cell[data-hero="' + cell + '"] img');
-              if (img) img.src = 'assets/styles/' + type + '/' + style + '-' + parts[cell] + '.jpg?v2';
+
+            // 拼图整体是 hidden lg:block，但 display:none 的 <img> 一样会发请求。
+            // 所以窄屏先不写 src，等真的宽到 lg 了再写 —— 手机端省掉 4 张大图。
+            var wide = window.matchMedia('(min-width: 1024px)');
+            function fill() {
+              if (!wide.matches) return;
+              for (var cell in parts) {
+                var img = document.querySelector('.fp-hero-cell[data-hero="' + cell + '"] img');
+                // ?v3 需与 js/styles.js 的 STYLE_VER 一致，否则同一张图会被下载两次
+                if (img && !img.src) img.src = 'assets/styles/' + type + '/' + style + '-' + parts[cell] + '.jpg?v3';
+              }
             }
+            fill();
+            if (!wide.matches) wide.addEventListener('change', fill);
+
             try { localStorage.setItem('fp_style', JSON.stringify({ type: type, style: style })); } catch (e) {}
           })();
         </script>
@@ -421,7 +456,7 @@
           </button>
         </div>
         <div class="relative">
-          <img src="assets/images/hero-ai.jpg?v=2" alt="AI packaging design" loading="lazy" class="rounded-3xl w-full shadow-2xl border border-white/15 object-cover max-h-[480px]">
+          <img src="assets/images/hero-ai.jpg?v=20260729b" alt="AI packaging design" loading="lazy" class="fp-img rounded-3xl w-full shadow-2xl border border-white/15 object-cover max-h-[480px]">
           <div class="absolute -top-5 -right-3 bg-white text-gray-900 rounded-2xl shadow-2xl px-5 py-3">
             <p class="font-black text-primary-800 text-2xl leading-none">5 min</p>
             <p class="text-gray-500 text-xs mt-1">logo → print-ready</p>
@@ -440,7 +475,7 @@
       </div>
       <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
         <a href="solution.html?type=chinese" class="group relative rounded-3xl overflow-hidden h-64 card-hover bg-gray-100">
-          <img src="assets/styles/chinese/s1-imperial-family-thumb.jpg?v2" alt="Chinese Cuisine packaging" loading="lazy" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+          <img src="assets/styles/chinese/s1-imperial-family-thumb.jpg?v=20260729b" alt="Chinese Cuisine packaging" loading="lazy" class="fp-img absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
           <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent"></div>
           <div class="absolute bottom-0 p-6">
             <h3 class="text-white text-xl font-bold mb-1">Chinese Cuisine</h3>
@@ -448,7 +483,7 @@
           </div>
         </a>
         <a href="solution.html?type=fastfood" class="group relative rounded-3xl overflow-hidden h-64 card-hover bg-gray-100">
-          <img src="assets/styles/fastfood/s1-diner-family-thumb.jpg?v2" alt="Burgers & Fast Food packaging" loading="lazy" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+          <img src="assets/styles/fastfood/s1-diner-family-thumb.jpg?v=20260729b" alt="Burgers & Fast Food packaging" loading="lazy" class="fp-img absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
           <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent"></div>
           <div class="absolute bottom-0 p-6">
             <h3 class="text-white text-xl font-bold mb-1">Burgers & Fast Food</h3>
@@ -456,7 +491,7 @@
           </div>
         </a>
         <a href="solution.html?type=japanese" class="group relative rounded-3xl overflow-hidden h-64 card-hover bg-gray-100">
-          <img src="assets/styles/japanese/s1-zen-family-thumb.jpg?v2" alt="Japanese & Sushi packaging" loading="lazy" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+          <img src="assets/styles/japanese/s1-zen-family-thumb.jpg?v=20260729b" alt="Japanese & Sushi packaging" loading="lazy" class="fp-img absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
           <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent"></div>
           <div class="absolute bottom-0 p-6">
             <h3 class="text-white text-xl font-bold mb-1">Japanese & Sushi</h3>
@@ -464,7 +499,7 @@
           </div>
         </a>
         <a href="solution.html?type=korean" class="group relative rounded-3xl overflow-hidden h-64 card-hover bg-gray-100">
-          <img src="assets/styles/korean/s1-kbbq-family-thumb.jpg?v2" alt="Korean packaging" loading="lazy" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+          <img src="assets/styles/korean/s1-kbbq-family-thumb.jpg?v=20260729b" alt="Korean packaging" loading="lazy" class="fp-img absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
           <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent"></div>
           <div class="absolute bottom-0 p-6">
             <h3 class="text-white text-xl font-bold mb-1">Korean</h3>
@@ -472,7 +507,7 @@
           </div>
         </a>
         <a href="solution.html?type=seasian" class="group relative rounded-3xl overflow-hidden h-64 card-hover bg-gray-100">
-          <img src="assets/styles/seasian/s1-bangkok-family-thumb.jpg?v2" alt="Thai & Vietnamese packaging" loading="lazy" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+          <img src="assets/styles/seasian/s1-bangkok-family-thumb.jpg?v=20260729b" alt="Thai & Vietnamese packaging" loading="lazy" class="fp-img absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
           <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent"></div>
           <div class="absolute bottom-0 p-6">
             <h3 class="text-white text-xl font-bold mb-1">Thai & Vietnamese</h3>
@@ -480,7 +515,7 @@
           </div>
         </a>
         <a href="solution.html?type=indian" class="group relative rounded-3xl overflow-hidden h-64 card-hover bg-gray-100">
-          <img src="assets/styles/indian/s1-jaipur-family-thumb.jpg?v2" alt="Indian packaging" loading="lazy" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+          <img src="assets/styles/indian/s1-jaipur-family-thumb.jpg?v=20260729b" alt="Indian packaging" loading="lazy" class="fp-img absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
           <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent"></div>
           <div class="absolute bottom-0 p-6">
             <h3 class="text-white text-xl font-bold mb-1">Indian</h3>
@@ -538,7 +573,7 @@
       <!-- Why we make this — 点卡片展开对应详解 -->
       <div id="why-detail" class="hidden mt-6">
         <div class="why-panel hidden bg-white rounded-3xl border border-primary-100 shadow-md overflow-hidden grid md:grid-cols-2" data-why="ai">
-          <img src="assets/images/why-ai.jpg?v=20260729a" alt="AI generating a packaging design next to the printed box" loading="lazy" class="w-full h-full object-cover" style="min-height:260px">
+          <img src="assets/images/why-ai.jpg?v=20260729b" alt="AI generating a packaging design next to the printed box" loading="lazy" class="fp-img w-full h-full object-cover" style="min-height:260px">
           <div class="p-8 lg:p-12 flex flex-col justify-center">
             <p class="text-accent-500 font-bold text-xs uppercase tracking-wider mb-2">Why we can make this</p>
             <h3 class="text-2xl font-extrabold text-gray-900 mb-4">The best AI already designs this well</h3>
@@ -546,7 +581,7 @@
           </div>
         </div>
         <div class="why-panel hidden bg-white rounded-3xl border border-primary-100 shadow-md overflow-hidden grid md:grid-cols-2" data-why="eco">
-          <img src="assets/images/why-eco.jpg?v=20260729a" alt="Certified compostable packaging in a Canadian-compliant factory" loading="lazy" class="w-full h-full object-cover" style="min-height:260px">
+          <img src="assets/images/why-eco.jpg?v=20260729b" alt="Certified compostable packaging in a Canadian-compliant factory" loading="lazy" class="fp-img w-full h-full object-cover" style="min-height:260px">
           <div class="p-8 lg:p-12 flex flex-col justify-center">
             <p class="text-accent-500 font-bold text-xs uppercase tracking-wider mb-2">Why we can make this</p>
             <h3 class="text-2xl font-extrabold text-gray-900 mb-4">We've done this for hundreds of Canadian kitchens</h3>
@@ -554,7 +589,7 @@
           </div>
         </div>
         <div class="why-panel hidden bg-white rounded-3xl border border-primary-100 shadow-md overflow-hidden grid md:grid-cols-2" data-why="moq">
-          <img src="assets/images/why-moq.jpg?v=20260729a" alt="Many restaurant designs printed together on one shared press sheet" loading="lazy" class="w-full h-full object-cover" style="min-height:260px">
+          <img src="assets/images/why-moq.jpg?v=20260729b" alt="Many restaurant designs printed together on one shared press sheet" loading="lazy" class="fp-img w-full h-full object-cover" style="min-height:260px">
           <div class="p-8 lg:p-12 flex flex-col justify-center">
             <p class="text-accent-500 font-bold text-xs uppercase tracking-wider mb-2">Why we can make this</p>
             <h3 class="text-2xl font-extrabold text-gray-900 mb-4">No trade secret — it's gang-run printing</h3>
@@ -562,7 +597,7 @@
           </div>
         </div>
         <div class="why-panel hidden bg-white rounded-3xl border border-primary-100 shadow-md overflow-hidden grid md:grid-cols-2" data-why="warehouse">
-          <img src="assets/images/why-warehouse.jpg?v=20260729a" alt="Forward warehouse shelves holding customers' packaging stock" loading="lazy" class="w-full h-full object-cover" style="min-height:260px">
+          <img src="assets/images/why-warehouse.jpg?v=20260729b" alt="Forward warehouse shelves holding customers' packaging stock" loading="lazy" class="fp-img w-full h-full object-cover" style="min-height:260px">
           <div class="p-8 lg:p-12 flex flex-col justify-center">
             <p class="text-accent-500 font-bold text-xs uppercase tracking-wider mb-2">Why we can make this</p>
             <h3 class="text-2xl font-extrabold text-gray-900 mb-4">Forward stock, because your back room is tiny</h3>
@@ -591,6 +626,15 @@
             });
           }
 
+          // 未展开的 panel 是 display:none，里面 loading="lazy" 的图要等轮播切过来才开始下载，
+          // 于是每次切换都先白一下。空闲时改成 eager —— display:none 只挡 lazy，不挡 eager，
+          // 所以这会让这 4 个 <img> 元素本身就把图取回来，切换时直接是 complete 的。
+          function warm() {
+            document.querySelectorAll('#why-detail img[loading="lazy"]')
+              .forEach((img) => { img.loading = 'eager'; });
+          }
+          (window.requestIdleCallback || ((f) => setTimeout(f, 1200)))(warm);
+
           // 默认展开第一张，每 5s 轮播到下一张；用户手动点击后停止自动轮播
           show(KEYS[0]);
           timer = setInterval(() => { idx = (idx + 1) % KEYS.length; show(KEYS[idx]); }, 5000);
@@ -618,28 +662,28 @@
       </div>
       <div class="grid md:grid-cols-2 gap-6">
         <figure class="bg-gray-50 rounded-3xl overflow-hidden border border-gray-100 grid sm:grid-cols-5">
-          <img src="assets/images/rest-asian.jpg?v=2" alt="" loading="lazy" class="sm:col-span-2 w-full h-full object-cover min-h-44">
+          <img src="assets/images/rest-asian.jpg?v=20260729b" alt="" loading="lazy" class="fp-img sm:col-span-2 w-full h-full object-cover min-h-44">
           <div class="sm:col-span-3 p-7 flex flex-col justify-center">
             <blockquote class="text-gray-700 leading-relaxed mb-4">"The AI design was ready before our lunch rush ended. Our branded boxes arrived three weeks later — customers photograph them for Instagram now."</blockquote>
             <figcaption class="text-sm"><strong class="text-gray-900">Sushi Bar Owner</strong> <span class="text-gray-400">· Toronto, ON</span></figcaption>
           </div>
         </figure>
         <figure class="bg-gray-50 rounded-3xl overflow-hidden border border-gray-100 grid sm:grid-cols-5">
-          <img src="assets/images/rest-cafe.jpg?v=2" alt="" loading="lazy" class="sm:col-span-2 w-full h-full object-cover min-h-44">
+          <img src="assets/images/rest-cafe.jpg?v=20260729b" alt="" loading="lazy" class="fp-img sm:col-span-2 w-full h-full object-cover min-h-44">
           <div class="sm:col-span-3 p-7 flex flex-col justify-center">
             <blockquote class="text-gray-700 leading-relaxed mb-4">"Storage is tight in our kitchen, so foodPac holding our stock and shipping weekly has been a lifesaver. No more boxes stacked in the hallway."</blockquote>
             <figcaption class="text-sm"><strong class="text-gray-900">Brunch Café Owner</strong> <span class="text-gray-400">· Vancouver, BC</span></figcaption>
           </div>
         </figure>
         <figure class="bg-gray-50 rounded-3xl overflow-hidden border border-gray-100 grid sm:grid-cols-5">
-          <img src="assets/images/rest-healthy.jpg?v=2" alt="" loading="lazy" class="sm:col-span-2 w-full h-full object-cover min-h-44">
+          <img src="assets/images/rest-healthy.jpg?v=20260729b" alt="" loading="lazy" class="fp-img sm:col-span-2 w-full h-full object-cover min-h-44">
           <div class="sm:col-span-3 p-7 flex flex-col justify-center">
             <blockquote class="text-gray-700 leading-relaxed mb-4">"We had no clear idea what we wanted. The AI gave us four directions in minutes and we refined from there — didn't pay a cent for design."</blockquote>
             <figcaption class="text-sm"><strong class="text-gray-900">Poke Shop Owner</strong> <span class="text-gray-400">· Montreal, QC</span></figcaption>
           </div>
         </figure>
         <figure class="bg-gray-50 rounded-3xl overflow-hidden border border-gray-100 grid sm:grid-cols-5">
-          <img src="assets/images/rest-fastfood.jpg?v=2" alt="" loading="lazy" class="sm:col-span-2 w-full h-full object-cover min-h-44">
+          <img src="assets/images/rest-fastfood.jpg?v=20260729b" alt="" loading="lazy" class="fp-img sm:col-span-2 w-full h-full object-cover min-h-44">
           <div class="sm:col-span-3 p-7 flex flex-col justify-center">
             <blockquote class="text-gray-700 leading-relaxed mb-4">"Switching to compostable packaging felt expensive until we found foodPac — same price we paid for generic, but branded and compliant."</blockquote>
             <figcaption class="text-sm"><strong class="text-gray-900">Burger Joint Owner</strong> <span class="text-gray-400">· Calgary, AB</span></figcaption>
@@ -798,8 +842,15 @@
     // ── Hero 风格模板：随机展示一组，四格 = 盒/杯/袋/全家福 ──
     const FP_HERO_PARTS = { 'hero-box': 'box', 'hero-cup': 'cup', 'hero-bag': 'bag', 'hero-ai': 'family' };
 
-    function fpApplyHeroStyle(cur, fade = true) {
+    // 只更新徽章文案，不动图片
+    function fpHeroLabel(cur) {
       window.__fpStyleLabel = `${cur.type.label} · ${cur.style.label}`;
+      const sub = document.getElementById('fp-hero-badge-sub');
+      if (sub && !document.querySelector('.fp-hero-cell.designing')) sub.textContent = window.__fpStyleLabel;
+    }
+
+    function fpApplyHeroStyle(cur, fade = true) {
+      fpHeroLabel(cur);
       Object.entries(FP_HERO_PARTS).forEach(([cellId, part]) => {
         const img = document.querySelector(`.fp-hero-cell[data-hero="${cellId}"] img`);
         if (!img) return;
@@ -812,8 +863,6 @@
         };
         pre.src = url;
       });
-      const sub = document.getElementById('fp-hero-badge-sub');
-      if (sub && !document.querySelector('.fp-hero-cell.designing')) sub.textContent = window.__fpStyleLabel;
     }
 
     window.fpShuffleStyle = () => {
@@ -822,8 +871,10 @@
     };
     window.addEventListener('fp:style', e => fpApplyHeroStyle(e.detail));
 
-    // 首屏内联脚本已在首帧前随机好并写入 fp_style（无闪动）——这里只同步徽章文案
-    fpApplyHeroStyle(getStyle(), false);
+    // 首屏内联脚本已在首帧前随机好并写入 fp_style，四张图早就贴上了。
+    // 这里只补徽章文案 —— 千万别再调 fpApplyHeroStyle，那会把 4 个 src 重写一遍，
+    // 一旦它和内联脚本选的风格不一致，用户就会看到图“过一会儿自己变了”。
+    fpHeroLabel(getStyle());
     // 记录用户菜系偏好供下次刷新使用（本次不再切换，避免二次闪动）
     fetch('/api/v1/design/kits', { credentials: 'include' })
       .then(r => r.ok ? r.json() : null)
@@ -846,7 +897,7 @@
           <div class="relative aspect-square rounded-2xl overflow-hidden bg-gray-50 border border-gray-100 mb-4">
             ${p.tag ? `<span class="absolute top-3 left-3 z-10 ${TAG_CLS[p.tagStyle] || 'bg-gray-700'} text-white text-xs font-bold px-3 py-1 rounded-full">${p.tag}</span>` : ''}
             <img src="${p.image}" alt="${p.name}" loading="lazy"
-                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                 class="fp-img w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
           </div>
           <h3 class="font-bold text-gray-900 leading-snug mb-1.5 group-hover:text-primary-800 transition-colors">${p.name}</h3>
           <p class="text-sm text-gray-500">From <span class="font-extrabold text-gray-900">$${p.price}</span> + Shipping&nbsp;&nbsp;<span class="text-gray-300">|</span>&nbsp;&nbsp;MOQ: <span class="font-semibold text-gray-700">${p.moq}</span></p>
